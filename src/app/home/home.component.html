@@ -1,0 +1,39 @@
+<div class="viewWindow">
+  <form action="/waiting" method="get">
+    <fieldset class="fade">
+      <legend>Enter Web Crawler Criteria:</legend>
+      <fieldset>
+        <label>Starting URL :
+          <input type="text" name="URL">
+        </label>
+      </fieldset>
+      <fieldset>
+        <label>Value of <i>n</i> :
+          <input type="number" name="n" min="1" max="12" step="1" value="1">
+        </label>
+      </fieldset>
+      <fieldset>
+        <label>Optional Search Phrase:
+          <input type="text" name="searchPhrase">
+        </label>
+      </fieldset>
+      <fieldset class="fade">
+        <p class="searchLabel">Select a Search Type:</p>
+        <p>
+          <label>
+              <input type="radio" name="searchType" value="BFS" />Breadth First Search</label>
+          <br/>
+          <label>
+              <input type="radio" name="searchType" value="RDFS" />Random Depth First Search</label>
+          <br/>
+          <label>
+              <input type="radio" name="searchType" value="TDFS" />True Depth First Search</label>
+          <br/>
+        </p>
+        <div class="btnDiv">
+          <input  type="submit" class="btn" value="Start Crawling"/>
+        </div>
+      </fieldset>
+    </fieldset>
+  </form>
+</div>
