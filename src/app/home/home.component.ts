@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
 
   //accept all the search parameters from the search form
   search(URL: string, n: string, searchPhrase: string, searchType: string): void {
+    console.log("Search received some terms!");
     // trim the incoming strings just in case the user left whitespace on either side
     URL = URL.trim();
     searchPhrase = searchPhrase.trim();

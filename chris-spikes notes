@@ -18,5 +18,5 @@ Angular Home component
 -Need to inject the ParrotSearchService into home.component.ts so that the form at home.component.html can have a route for the POST to be sent.
   -Import parrotSearch object
   -Import ParrotSearchService
-  -When I make a constructor in home.component.ts to define the search, Homepage won't render.
-  -Without the constructor, angular throws back an error about search not being defined...
+
+-Cannot figure out how to structure form in home.component.html to send POST to the search(); function in home.component.ts
