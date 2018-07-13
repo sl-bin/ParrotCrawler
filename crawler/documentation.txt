@@ -1,4 +1,0 @@
-1. Each crawler script utilizes command line arguments in order to fetch data.
-2. Calling a script without arguments will provide usage instructions.
-    ie. >> dfs.py
-        >> Usage: dfs.py [starting URL] [depth] [query term (optional)]
