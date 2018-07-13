@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
     searchType = searchType.trim();
 
     //pass them to the search service
-    this.searchService.postSearch( {URL, n, searchPhrase, searchType} as ParrotSearch).subscribe;
+    this.searchService.postSearch( {URL, n, searchPhrase, searchType} as ParrotSearch);
   }
 
 }
