@@ -57,10 +57,9 @@ while currentDepth < targetDepth:
 		# If this error hits, it should be the starting page.
 
 	else:
+		currentURL = currentHTML.geturl()	# Update our URL if a redirect was followed.
 		currentRes = currentHTML.info()
 		currentType = currentRes.get_content_type()
-
-#		print(currentHTML.status) # Debugging Statement
 
 		# Page was successfully opened --> convert to bs4 object.
 		currentPage = BeautifulSoup(currentHTML.read(), "html5lib")
@@ -98,18 +97,60 @@ while currentDepth < targetDepth:
 				continue
 
 			if item['href'][0] == "/":		# Append href value to parent URL, if necessary
-				childURL = currentURL + item['href']
+				childURL = str(urllib.parse.urljoin(currentURL, item['href']))
+				
 			else:
 				childURL = item['href']
 
 			# OPEN CHILD URL
+
+			childData = {}
+			childTitle = ""
+
 			try:
 				childHTML = opener.open(childURL)
-			except urllib.error.HTTPError as err: print(err)
+			except urllib.error.HTTPError as err:
 				# --> Handle child HTTP error page data here.
-			except urllib.error.URLError: print("Incorrect Domain or Server Down.")
-				# --> Handle URL error page data here.
+				print(err)
+				isDead = 1
+				childTitle = str(err)
+				pass
 
+			except urllib.error.URLError:
+				# --> Handle URL error page data here.
+				print("Incorrect Domain or Server Down.")
+				isDead = 1
+				childTitle = "Incorrect Domain/Server Down"
+				pass
+
+			# If Value Error in URL is received, try one final concatenation:
+			except ValueError as err:
+				try:
+					childURL = str(urllib.parse.urljoin(currentURL, childURL))
+					childHTML = opener.open(childURL)
+				except ValueError as finalErr:
+					isDead = 1
+					childTitle = "Value Error: Improper/Unknown URL Format."
+					pass
+				except urllib.error.HTTPError as finalErr:
+					# --> Handle child HTTP error page data here.
+					print(err)
+					isDead = 1
+					childTitle = str(err)
+					pass
+				except urllib.error.URLError:
+					# --> Handle URL error page data here.
+					print("Incorrect Domain or Server Down.")
+					isDead = 1
+					childTitle = "Incorrect Domain/Server Down"
+					pass
+				else:
+					# If our final attempt to correct the URL succeeded, import the page.
+					childRes = childHTML.info()
+					childType = childRes.get_content_type()
+					childPage = BeautifulSoup(childHTML.read(), "html5lib")
+					if childPage.title is None: childTitle = "No Title"
+					else: childTitle = childPage.title.getText()
 			else:
 				childRes = childHTML.info()
 				childType = childRes.get_content_type()
@@ -117,32 +158,33 @@ while currentDepth < targetDepth:
 #				print(childHTML.status) # Debugging Statement
 
 				childPage = BeautifulSoup(childHTML.read(), "html5lib")
+				if childPage.title is None: childTitle = "No Title"
+				else: childTitle = childPage.title.getText()
 
-				# COLLECT CHILD PAGE DATA:
-				childData = {}
-				childData['id'] = nextID
-				nextID += 1
-				childData['depth'] = currentDepth + 1
 
-				if childPage.title is None: childData['title'] = "No Title"
-				else: childData['title'] = childPage.title.getText()
+			# COLLECT CHILD PAGE DATA:
+			childData['id'] = nextID; nextID += 1
+			childData['depth'] = currentDepth + 1
+			childData['title'] = childTitle
+
 					
-				childData['url'] = childURL
-				childData['dead'] = isDead
-				childData['found'] = hasQuery
-				childData['links'] = 0
-				childData['children'] = []
+			childData['url'] = childURL
+			childData['dead'] = isDead
+			childData['found'] = hasQuery
+			childData['links'] = 0
+			childData['children'] = []
 
-				# APPEND CHILD ID TO PARENT DATASET
-				data['children'].append(copy.deepcopy(childData['id']))
+			# APPEND CHILD ID TO PARENT DATASET
+			data['children'].append(copy.deepcopy(childData['id']))
 
-				# APPEND CHILD TO CHILDREN DATASET:
-				childrenData.append(copy.deepcopy(childData))
+			# APPEND CHILD TO CHILDREN DATASET:
+			childrenData.append(copy.deepcopy(childData))
 
-				# IF CHILD IS LIVE AND VALID HTML, ADD TO LINK POOL:
-				if childData['dead'] == 0 and childType == "text/html": linkPool.append(copy.deepcopy(childData))
+			# IF CHILD IS LIVE AND VALID HTML, ADD TO LINK POOL:
+			if childData['dead'] == 0 and childType == "text/html": linkPool.append(copy.deepcopy(childData))
 
 		# 4. RECORD ALL TIER DATA TO FILE AS JSON
+
 		jsonData = json.dumps(data)
 		print(jsonData)
 		print("\n")
@@ -150,13 +192,17 @@ while currentDepth < targetDepth:
 		print(jsonData)
 		print("\n")
 
+#		print(data)								# Python Dictionary Format
+#		print("\n")								# Python Dictionary Format
+#		for each in childrenData: print(each)	# Python Dictionary Format
+
 		# 5. SELECT NEW LINK FROM LIST, INC DEPTH, SET UP FOR NEXT ITERATION
 		if len(linkPool) < 1:
 			print("0 Available links, Parrot flying home!")
 			break
 		else:
-			currentURL = linkPool[0]['url'] # <-- Should be random assignment
-			currentID = linkPool[0]['id']	# <-- Should be random assignment
+			currentURL = linkPool[1]['url'] # <-- Should be random assignment
+			currentID = linkPool[1]['id']	# <-- Should be random assignment
 			isDead = 0
 			hasQuery = 0
 			currentDepth += 1
