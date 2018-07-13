@@ -1,16 +1,31 @@
+# DFS Webcrawler Implementation
+#
+#	To execute, use the following argument format:
+#		dfs.py [ URL of starting page ] [ depth constraint ] [ user query term ]
+#		Example:	dfs.py http://cultofthepartyparrot.com 2 basket
+
+import sys
 import urllib
 from bs4 import BeautifulSoup
 #from collections import deque
 import json
 import copy
 
-## To be passed in via user input ##
-urlParam = "http://cultofthepartyparrot.com"
-depthParam = 2
-queryParam = "basket"
+## Debugging Test Values ###########
+#urlParam = "http://cultofthepartyparrot.com"
+#depthParam = 2
+#queryParam = "basket"
 ####################################
 
-# Error check input here
+# VALIDATE ARGS
+if len(sys.argv) < 3:
+	print("\tUsage: dfs.py [starting URL] [depth] [query (optional)]")
+	sys.exit(2)
+
+URLParam = str(sys.argv[1])
+depthParam = int(sys.argv[2])
+if len(sys.argv) < 4: queryParam = None
+else: queryParam = str(sys.argv[3])
 
 # Set URL Opener - assign valid user-agent to prevent bot detection
 opener = urllib.request.build_opener()
@@ -19,7 +34,7 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 # Assign starting values
 nextID = 1
 currentID = 0
-currentURL = urlParam
+currentURL = URLParam
 currentDepth = 0
 targetDepth = depthParam
 isDead = 0
@@ -78,7 +93,7 @@ while currentDepth < targetDepth:
 
 			# Make sure Child URL is properly formatted.
 #			if item['href'][0] != "#" and item['href'] != "/":	# Skip/Ignore # URLs
-			if item['href'] == '' or item['href'] == "#":
+			if item['href'] == '' or item['href'][0] == "#":
 				data['links'] -= 1
 				continue
 
