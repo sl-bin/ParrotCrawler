@@ -41,9 +41,9 @@ nav {
 /* styles the div that contains the zoom buttons and the border */
 .zooms {
   margin: 40px;
-  position: absolute;
-  bottom: 20px;
-  right: 30px;
+  position: fixed;
+  top: 75vh;
+  right: 2vw;
   border: solid 2px white;
   border-radius: 120px;
 }

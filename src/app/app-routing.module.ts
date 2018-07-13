@@ -4,23 +4,37 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { HomeComponent } from './home/home.component';
 import { WaitingComponent } from './waiting/waiting.component';
 import { ResultsComponent } from './results/results.component';
+import { NotfoundComponent } from './notfound/notfound.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: WelcomeComponent
+    redirectTo: 'welcome',
+    pathMatch: 'full'
+  },
+  {
+    path: 'welcome',
+    component: WelcomeComponent,
+    data: { state: 'welcome'}
   },
   {
     path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
+    data: { state: 'home'}
   },
   {
     path: 'waiting',
-    component: WaitingComponent
+    component: WaitingComponent,
+    data: { state: 'waiting'}
   },
   {
     path: 'results',
-    component: ResultsComponent
+    component: ResultsComponent,
+    data: { state: 'results'}
+  },
+  {
+    path: '**',
+    component: NotfoundComponent
   }
 ];
 
@@ -29,3 +43,7 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+
+export const AppRouting = RouterModule.forRoot(routes, {
+  useHash: true
+});

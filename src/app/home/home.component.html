@@ -1,7 +1,7 @@
 <div class="viewWindow">
-  <form action="/waiting" method="get">
+  <form action="/waiting" method="post" onsubmit="return false;">
     <fieldset class="fade">
-      <legend>Enter Web Crawler Criteria:</legend>
+      <legend><span class="legend">Enter Web Crawler Criteria:</span></legend>
       <fieldset>
         <label>Starting URL :
           <input type="text" name="URL">
@@ -31,7 +31,7 @@
           <br/>
         </p>
         <div class="btnDiv">
-          <input  type="submit" class="btn" value="Start Crawling"/>
+          <input  type="submit" class="btn" value="Start Crawling" routerLink="/waiting"/>
         </div>
       </fieldset>
     </fieldset>
