@@ -1,0 +1,11 @@
+7/12/18
+Started 7 PM
+
+Angular ParrotSearch Service:
+-Branched master branch to chris-spikes
+-Used angular cmd line to generate a new service, ParrotSearchService, held in ./src/app
+-This service will wrap an HTTP request (to the node server) in a nice package.
+  -Using example from this site: https://www.concretepage.com/angular/angular-httpclient-post
+  -Also using guide at https://angular.io/guide/http#making-a-post-request
+
+-The form held at ./src/app/home/home.component.html needs to be injected with this service
