@@ -13,7 +13,7 @@ const httpOptions = {
 export class ParrotSearchService {
 
   // node route URL to accept search POST request
-  private nodeURL = "localhost:8000/api/search";
+  private nodeURL = "http://localhost:8000/api/search";
 
   constructor(private http: HttpClient) { }
 

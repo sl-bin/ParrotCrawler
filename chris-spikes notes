@@ -1,6 +1,6 @@
+#--------------------------------------------------------------------------
 7/12/18
-Started 7 PM
-
+7 PM
 Angular ParrotSearch Service:
 -Branched master branch to chris-spikes
 -Used angular cmd line to generate a new service, ParrotSearchService, held in ./src/app
@@ -9,14 +9,20 @@ Angular ParrotSearch Service:
 -This service will wrap an HTTP request (to the node server) in a nice package.
   -Using example from this site: https://www.concretepage.com/angular/angular-httpclient-post
   -Also using guide at https://angular.io/guide/http#making-a-post-request
-
 -The form held at ./src/app/home/home.component.html needs to be injected with this service
 
+#--------------------------------------------------------------------------
 7/13/18
-Started 10 AM
+10 AM
 Angular Home component
 -Need to inject the ParrotSearchService into home.component.ts so that the form at home.component.html can have a route for the POST to be sent.
   -Import parrotSearch object
   -Import ParrotSearchService
-
 -Cannot figure out how to structure form in home.component.html to send POST to the search(); function in home.component.ts
+  -Will ask Charles for help with this.
+
+2:30 PM
+Node server to accept POST request.
+Following guide at https://malcoded.com/posts/angular-backend-express
+-Created node file called parrotServe.js at ./parrotServe.js
+-Route at /api/search accepts POST request and prints out the values to console
