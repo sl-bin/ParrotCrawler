@@ -1,6 +1,6 @@
 import urllib
 from bs4 import BeautifulSoup
-from collections import deque
+#from collections import deque
 import json
 import copy
 
@@ -45,7 +45,7 @@ while currentDepth < targetDepth:
 		currentRes = currentHTML.info()
 		currentType = currentRes.get_content_type()
 
-		print(currentHTML.status) # Debugging Statement
+#		print(currentHTML.status) # Debugging Statement
 
 		# Page was successfully opened --> convert to bs4 object.
 		currentPage = BeautifulSoup(currentHTML.read(), "html5lib")
@@ -77,7 +77,7 @@ while currentDepth < targetDepth:
 			hasQuery = 0
 
 			# Make sure Child URL is properly formatted.
-	#		if item['href'][0] != "#" and item['href'] != "/":	# Skip/Ignore # URLs
+#			if item['href'][0] != "#" and item['href'] != "/":	# Skip/Ignore # URLs
 			if item['href'] == '' or item['href'] == "#":
 				data['links'] -= 1
 				continue
@@ -99,7 +99,7 @@ while currentDepth < targetDepth:
 				childRes = childHTML.info()
 				childType = childRes.get_content_type()
 
-				print(childHTML.status) # Debugging Statement
+#				print(childHTML.status) # Debugging Statement
 
 				childPage = BeautifulSoup(childHTML.read(), "html5lib")
 
