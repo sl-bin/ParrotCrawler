@@ -27,6 +27,7 @@ opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 # Assign starting values
+jsonDump = ""
 nextID = 1
 currentID = 0
 currentURL = URLParam
@@ -40,17 +41,19 @@ hasQuery = 0
 while currentDepth < targetDepth:
 
 	# 1. LOAD PAGE
+
+	# HTML ERROR HANDLING --- TRY / EXCEPT BLOCK --------------------------
 	try:
 		currentHTML = opener.open(currentURL)
-	except urllib.error.HTTPError as err: print(err)
+	except urllib.error.HTTPError as err: print(err + "Parent site invalid."); sys.exit(2)
 		# --> Handle HTTP error page data here.
 		# If this error hits, it should be the starting page.
-	except urllib.error.URLError: print("Incorrect Domain or Server Down.")
+	except urllib.error.URLError: print("Parent site invalid."); sys.exit(2)
 		# --> Handle URL error page data here.
 		# If this error hits, it should be the starting page.
 
 	else:
-		currentURL = currentHTML.geturl()	# Update our URL if a redirect was followed.
+		currentURL = currentHTML.geturl()	# Update our URL in case a redirect was followed.
 		currentRes = currentHTML.info()
 		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
@@ -59,7 +62,7 @@ while currentDepth < targetDepth:
 
 		# 2. COLLECT PAGE DATA:
 
-		# --> Search for user query here
+		# --> Search for user query here <--#
 
 		# Scrape links from page:
 		links = currentPage.find_all("a", href=True)
@@ -99,6 +102,7 @@ while currentDepth < targetDepth:
 			childData = {}
 			childTitle = ""
 
+			# HTML ERROR HANDLING --- TRY / EXCEPT BLOCK --------------------------
 			try:
 				childHTML = opener.open(childURL)
 			except urllib.error.HTTPError as err:
@@ -150,7 +154,7 @@ while currentDepth < targetDepth:
 				childPage = BeautifulSoup(childHTML.read(), "html5lib")
 				if childPage.title is None: childTitle = "No Title"
 				else: childTitle = childPage.title.getText()
-
+			# END OF HTML ERROR HANDLING ------------------------------------------
 
 			# COLLECT CHILD PAGE DATA:
 			childData['id'] = nextID; nextID += 1
@@ -176,11 +180,11 @@ while currentDepth < targetDepth:
 		# 4. RECORD ALL TIER DATA TO FILE AS JSON
 
 		jsonData = json.dumps(data)
-		print(jsonData)
-		print("\n")
+		jsonDump += jsonData
+		jsonDump += "\n"
 		jsonData = json.dumps(childrenData)
-		print(jsonData)
-		print("\n")
+		jsonDump += jsonData
+		jsonDump += "\n"
 
 #		print(data)								# Python Dictionary Format
 #		print("\n")								# Python Dictionary Format
@@ -196,3 +200,5 @@ while currentDepth < targetDepth:
 			isDead = 0
 			hasQuery = 0
 			currentDepth += 1
+
+print(jsonDump)
