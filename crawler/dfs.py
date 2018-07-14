@@ -1,21 +1,16 @@
-# DFS Webcrawler Implementation
+# DFS Webcrawler Implementation ------------------------------------------------
 #
 #	To execute, use the following argument format:
 #		dfs.py [ URL of starting page ] [ depth constraint ] [ user query term ]
 #		Example:	dfs.py http://cultofthepartyparrot.com 2 basket
+#-------------------------------------------------------------------------------
 
 import sys
 import urllib
 from bs4 import BeautifulSoup
-#from collections import deque
 import json
 import copy
 
-## Debugging Test Values ###########
-#urlParam = "http://cultofthepartyparrot.com"
-#depthParam = 2
-#queryParam = "basket"
-####################################
 
 # VALIDATE ARGS
 if len(sys.argv) < 3:
@@ -45,8 +40,6 @@ hasQuery = 0
 while currentDepth < targetDepth:
 
 	# 1. LOAD PAGE
-	#		Check for HTTP/URL Errors
-	#		Get HTML response Content Type: We only want to load text/html links.
 	try:
 		currentHTML = opener.open(currentURL)
 	except urllib.error.HTTPError as err: print(err)
@@ -59,7 +52,7 @@ while currentDepth < targetDepth:
 	else:
 		currentURL = currentHTML.geturl()	# Update our URL if a redirect was followed.
 		currentRes = currentHTML.info()
-		currentType = currentRes.get_content_type()
+		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
 		# Page was successfully opened --> convert to bs4 object.
 		currentPage = BeautifulSoup(currentHTML.read(), "html5lib")
@@ -91,7 +84,6 @@ while currentDepth < targetDepth:
 			hasQuery = 0
 
 			# Make sure Child URL is properly formatted.
-#			if item['href'][0] != "#" and item['href'] != "/":	# Skip/Ignore # URLs
 			if item['href'] == '' or item['href'][0] == "#":
 				data['links'] -= 1
 				continue
@@ -134,13 +126,13 @@ while currentDepth < targetDepth:
 					pass
 				except urllib.error.HTTPError as finalErr:
 					# --> Handle child HTTP error page data here.
-					print(err)
+					#print(err)
 					isDead = 1
 					childTitle = str(err)
 					pass
 				except urllib.error.URLError:
 					# --> Handle URL error page data here.
-					print("Incorrect Domain or Server Down.")
+					#print("Incorrect Domain or Server Down.")
 					isDead = 1
 					childTitle = "Incorrect Domain/Server Down"
 					pass
@@ -154,8 +146,6 @@ while currentDepth < targetDepth:
 			else:
 				childRes = childHTML.info()
 				childType = childRes.get_content_type()
-
-#				print(childHTML.status) # Debugging Statement
 
 				childPage = BeautifulSoup(childHTML.read(), "html5lib")
 				if childPage.title is None: childTitle = "No Title"
