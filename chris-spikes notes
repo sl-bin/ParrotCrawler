@@ -25,4 +25,11 @@ Angular Home component
 Node server to accept POST request.
 Following guide at https://malcoded.com/posts/angular-backend-express
 -Created node file called parrotServe.js at ./parrotServe.js
--Route at /api/search accepts POST request and prints out the values to console
+-Route at /api/search accepts POST request, and prints out the values to console
+-Can send back a 200 'OK' and any other data we choose (likely the search results)
+
+#--------------------------------------------------------------------------
+7/14/15
+1:00 PM
+Node server to call python-shell correctly and recieve results
+-
