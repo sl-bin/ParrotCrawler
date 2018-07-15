@@ -4,7 +4,7 @@ form {
   margin: 2% 5%;
   font-size: 2em;
 
-  legend {
+  .legend {
     font-size: 2em;
   }
 
@@ -72,4 +72,21 @@ fieldset {
 .btn {
   margin: 1%;
   font-size: 1.5em;
+}
+
+.btn[disabled] {
+  background-color: #DDD;
+  border: solid 2px black;
+  color: #AAA;
+}
+
+.btn[disabled]:hover {
+  background-color: #DDD;
+  border: solid 2px black;
+  color: #AAA;
+}
+
+.required {
+  color: #ea1b10;
+  padding: 0 2%;
 }
