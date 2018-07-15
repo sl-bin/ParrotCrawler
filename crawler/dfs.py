@@ -27,7 +27,8 @@ opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 # Assign starting values
-jsonDump = ""
+jsonDump = {}
+jsonDump['results'] = []
 nextID = 1
 currentID = 0
 currentURL = URLParam
@@ -179,12 +180,18 @@ while currentDepth < targetDepth:
 
 		# 4. RECORD ALL TIER DATA TO FILE AS JSON
 
-		jsonData = json.dumps(data)
-		jsonDump += jsonData
-		jsonDump += "\n"
-		jsonData = json.dumps(childrenData)
-		jsonDump += jsonData
-		jsonDump += "\n"
+		jsonTier = {}
+		jsonTier['node'] = data
+		jsonTier['leaves'] = childrenData
+
+		jsonDump['results'].append(copy.deepcopy(jsonTier))
+
+#		jsonData = json.dumps(data)
+#		jsonDump += jsonData
+#		jsonDump += "\n"
+#		jsonData = json.dumps(childrenData)
+#		jsonDump += jsonData
+#		jsonDump += "\n"
 
 #		print(data)								# Python Dictionary Format
 #		print("\n")								# Python Dictionary Format
@@ -201,4 +208,4 @@ while currentDepth < targetDepth:
 			hasQuery = 0
 			currentDepth += 1
 
-print(jsonDump)
+print(json.dumps(jsonDump))
