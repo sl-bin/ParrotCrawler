@@ -19,7 +19,7 @@ import {trigger, animate, style, group, query, transition} from '@angular/animat
             animate('1.5s ease-in-out', style({ transform: 'translateY(-100%)' }))
           ], { optional: true }),
         ])
-      ])
+      ]),
       transition('home => waiting', [
         query(':enter, :leave', style({ position: 'fixed', height:'250%', width: '100%' })
           , { optional: true }),
@@ -33,7 +33,7 @@ import {trigger, animate, style, group, query, transition} from '@angular/animat
             animate('1.5s ease-in-out', style({ transform: 'translateY(-100%)' }))
           ], { optional: true }),
         ])
-      ])
+      ]),
       transition('waiting => results', [
         query(':enter, :leave', style({ position: 'fixed', height:'250%', width: '100%' })
           , { optional: true }),
@@ -47,7 +47,7 @@ import {trigger, animate, style, group, query, transition} from '@angular/animat
             animate('1.5s ease-in-out', style({ transform: 'translateY(-100%)' }))
           ], { optional: true }),
         ])
-      ])
+      ]),
       transition('results => home', [
         query(':enter, :leave', style({ position: 'fixed', height:'250%', width: '100%' })
           , { optional: true }),
