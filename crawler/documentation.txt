@@ -1,0 +1,43 @@
+DFS CRAWLER -------------------------------------------------------------------
+
+INPUT
+-->     Each crawler script utilizes command line arguments in order to fetch data.
+-->     Calling a script without arguments will provide usage instructions.
+            ie. >> dfs.py
+                >> Usage: dfs.py [starting URL] [depth] [query term (optional)]
+
+OUTPUT
+    Crawler data is output via STDOUT as collected.
+    Data output is formatted into JSON.
+
+-->     A JSON string is created for each site, formatted as follows:
+        {"id": int, "depth": int, "title": "str", "url": "str", "dead": int, "found": int, "links": int, "children": [list of ints]}
+        
+-->     ON JSON KEY/VALUE PAIRS:
+        id:     Unique id of the page, assigned in order of discovery. The starting URL is assigned an id value of 0.
+        depth:  The "tree depth" of the page. The depth of the starting URL is always 0, and all of its children are 1.
+        title:  The string text found within the html title tags of the page.
+                If the URL is not of html/text type, a value of "No Title" is given.
+        url:    The URL of the page in string format.
+        dead:   A boolean value signifying the status of the page.
+                Bad status codes will set this value to 1, and its data will not be parsed.
+        found:  A boolean value signifying whether the user's query term was found on the page.
+                A found query sets this value to 1.
+        links:  The number of scrapable links on the page. Also the length of the page's 'children' array.
+                Href values beginning with "#" or containing empty strings are not included.
+        children:   A list of 'child' links found on the page. These are in the form of id values.
+        
+-->     When crawler data is output, it follows the following format:
+    
+            {Current Page PARENT}
+            NEWLINE
+            [{Current Page CHILD #1}, {Current Page CHILD #2}, ... {Current Page CHILD #N}]
+            NEWLINE
+            {Next Current Page PARENT, selected from Child links}
+            NEWLINE
+            [{Next Current Page CHILD #1}, {Next Current Page CHILD #2}, ... {Next Current Page CHILD #N}]
+        
+        * NOTE: The list of child links superceding their parent hold 0 values for 'link' and 'children' fields.
+                Links and children fields are only given if a child link is selected as a new parent.
+                Links and children field data will be given once the child is presented as the new parent:
+                    {Next Current Page PARENT, selected from Child links} <-- This JSON line holds true link/children data.

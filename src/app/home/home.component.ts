@@ -2,20 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { tap, first } from 'rxjs/operators';
 
+import { ParrotSearch } from '../parrotSearch';
+import { ParrotSearchService } from '../parrot-search.service';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
 
+export class HomeComponent implements OnInit {
+  
   homeForm: FormGroup;
 
   // states for asynchronous form use
   loading = false;
   success = false;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private searchService: ParrotSearchService) { }
 
   ngOnInit() {
     this.homeForm = this.fb.group({
@@ -48,6 +52,17 @@ export class HomeComponent implements OnInit {
   get searchType() {
     return this.homeForm.get('searchType');
   };
+
+  //accept all the search parameters from the search form
+  search(URL: string, n: string, searchPhrase: string, searchType: string): void {
+    console.log("Search received some terms!");
+    // trim the incoming strings just in case the user left whitespace on either side
+    URL = URL.trim();
+    searchPhrase = searchPhrase.trim();
+    searchType = searchType.trim();
+
+    //pass them to the search service
+    this.searchService.postSearch( {URL, n, searchPhrase, searchType} as ParrotSearch);
 
   // submission handler
   async onSubmit() {
