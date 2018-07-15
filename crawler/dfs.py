@@ -1,21 +1,16 @@
-# DFS Webcrawler Implementation
+# DFS Webcrawler Implementation ------------------------------------------------
 #
 #	To execute, use the following argument format:
 #		dfs.py [ URL of starting page ] [ depth constraint ] [ user query term ]
 #		Example:	dfs.py http://cultofthepartyparrot.com 2 basket
+#-------------------------------------------------------------------------------
 
 import sys
 import urllib
 from bs4 import BeautifulSoup
-#from collections import deque
 import json
 import copy
 
-## Debugging Test Values ###########
-#urlParam = "http://cultofthepartyparrot.com"
-#depthParam = 2
-#queryParam = "basket"
-####################################
 
 # VALIDATE ARGS
 if len(sys.argv) < 3:
@@ -32,6 +27,8 @@ opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 # Assign starting values
+jsonDump = {}
+jsonDump['results'] = []
 nextID = 1
 currentID = 0
 currentURL = URLParam
@@ -45,28 +42,28 @@ hasQuery = 0
 while currentDepth < targetDepth:
 
 	# 1. LOAD PAGE
-	#		Check for HTTP/URL Errors
-	#		Get HTML response Content Type: We only want to load text/html links.
+
+	# HTML ERROR HANDLING --- TRY / EXCEPT BLOCK --------------------------
 	try:
 		currentHTML = opener.open(currentURL)
-	except urllib.error.HTTPError as err: print(err)
+	except urllib.error.HTTPError as err: print(err + "Parent site invalid."); sys.exit(2)
 		# --> Handle HTTP error page data here.
 		# If this error hits, it should be the starting page.
-	except urllib.error.URLError: print("Incorrect Domain or Server Down.")
+	except urllib.error.URLError: print("Parent site invalid."); sys.exit(2)
 		# --> Handle URL error page data here.
 		# If this error hits, it should be the starting page.
 
 	else:
-		currentURL = currentHTML.geturl()	# Update our URL if a redirect was followed.
+		currentURL = currentHTML.geturl()	# Update our URL in case a redirect was followed.
 		currentRes = currentHTML.info()
-		currentType = currentRes.get_content_type()
+		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
 		# Page was successfully opened --> convert to bs4 object.
 		currentPage = BeautifulSoup(currentHTML.read(), "html5lib")
 
 		# 2. COLLECT PAGE DATA:
 
-		# --> Search for user query here
+		# --> Search for user query here <--#
 
 		# Scrape links from page:
 		links = currentPage.find_all("a", href=True)
@@ -91,7 +88,6 @@ while currentDepth < targetDepth:
 			hasQuery = 0
 
 			# Make sure Child URL is properly formatted.
-#			if item['href'][0] != "#" and item['href'] != "/":	# Skip/Ignore # URLs
 			if item['href'] == '' or item['href'][0] == "#":
 				data['links'] -= 1
 				continue
@@ -107,6 +103,7 @@ while currentDepth < targetDepth:
 			childData = {}
 			childTitle = ""
 
+			# HTML ERROR HANDLING --- TRY / EXCEPT BLOCK --------------------------
 			try:
 				childHTML = opener.open(childURL)
 			except urllib.error.HTTPError as err:
@@ -134,13 +131,13 @@ while currentDepth < targetDepth:
 					pass
 				except urllib.error.HTTPError as finalErr:
 					# --> Handle child HTTP error page data here.
-					print(err)
+					#print(err)
 					isDead = 1
 					childTitle = str(err)
 					pass
 				except urllib.error.URLError:
 					# --> Handle URL error page data here.
-					print("Incorrect Domain or Server Down.")
+					#print("Incorrect Domain or Server Down.")
 					isDead = 1
 					childTitle = "Incorrect Domain/Server Down"
 					pass
@@ -155,12 +152,10 @@ while currentDepth < targetDepth:
 				childRes = childHTML.info()
 				childType = childRes.get_content_type()
 
-#				print(childHTML.status) # Debugging Statement
-
 				childPage = BeautifulSoup(childHTML.read(), "html5lib")
 				if childPage.title is None: childTitle = "No Title"
 				else: childTitle = childPage.title.getText()
-
+			# END OF HTML ERROR HANDLING ------------------------------------------
 
 			# COLLECT CHILD PAGE DATA:
 			childData['id'] = nextID; nextID += 1
@@ -185,12 +180,19 @@ while currentDepth < targetDepth:
 
 		# 4. RECORD ALL TIER DATA TO FILE AS JSON
 
-		jsonData = json.dumps(data)
-		print(jsonData)
-		print("\n")
-		jsonData = json.dumps(childrenData)
-		print(jsonData)
-		print("\n")
+		jsonTier = {}
+		jsonTier['node'] = data
+		jsonTier['leaves'] = childrenData
+
+		jsonDump['results'].append(copy.deepcopy(jsonTier))
+
+#		OUTPUT TESTING
+#		jsonData = json.dumps(data)
+#		jsonDump += jsonData
+#		jsonDump += "\n"
+#		jsonData = json.dumps(childrenData)
+#		jsonDump += jsonData
+#		jsonDump += "\n"
 
 #		print(data)								# Python Dictionary Format
 #		print("\n")								# Python Dictionary Format
@@ -206,3 +208,5 @@ while currentDepth < targetDepth:
 			isDead = 0
 			hasQuery = 0
 			currentDepth += 1
+
+print(json.dumps(jsonDump))
