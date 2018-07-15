@@ -31,5 +31,17 @@ Following guide at https://malcoded.com/posts/angular-backend-express
 #--------------------------------------------------------------------------
 7/14/15
 1:00 PM
-Node server to call python-shell correctly and recieve results
--
+JS Function to call python-shell and receive results
+  -Recieves POST with JSON-encoded search terms (URL, n, searchPhrase, searchType)
+  -Passes them into the pyParrotCrawl function
+    - Parses JSON into start URL, n, search phrase, and search type
+    - Runs switch statement to choose the correct search script
+    - Passes in URL, n, search phrase as cmd-line args
+    - Spawns search script
+    - Returns search results
+
+Issues I ran into:
+- ParrotTest.js was a testing file I used to figure out what was causing errors when spawning script
+  -Turns out that we need the absolute path for where the python3 interpreter lives, which is not /usr/bin/python3 in a Mac
+  -We will need to change that path as well as the path of the python script for the production version
+  -How to get the resutlts out of the PythonShell?????
