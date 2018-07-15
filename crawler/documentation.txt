@@ -10,7 +10,7 @@ OUTPUT
     Crawler data is output via STDOUT as collected.
     Data output is formatted into JSON.
 
--->     A JSON string is created for each site, formatted as follows:
+-->     A JSON string is created for each page, formatted as follows:
         {"id": int, "depth": int, "title": "str", "url": "str", "dead": int, "found": int, "links": int, "children": [list of ints]}
         
 -->     ON JSON KEY/VALUE PAIRS:
@@ -27,17 +27,22 @@ OUTPUT
                 Href values beginning with "#" or containing empty strings are not included.
         children:   A list of 'child' links found on the page. These are in the form of id values.
         
--->     When crawler data is output, it follows the following format:
+-->     When crawler data is output, it follows the following JSON string format:
     
-            {Current Page PARENT}
-            NEWLINE
-            [{Current Page CHILD #1}, {Current Page CHILD #2}, ... {Current Page CHILD #N}]
-            NEWLINE
-            {Next Current Page PARENT, selected from Child links}
-            NEWLINE
-            [{Next Current Page CHILD #1}, {Next Current Page CHILD #2}, ... {Next Current Page CHILD #N}]
+            { "Results": [
+                { "node": {PARENT_1_DATA}, "leaves": [{CHILD_1_DATA}, {CHILD_2_DATA} ... {CHILD_N_DATA}] },
+                { "node": {PARENT_2_DATA}, "leaves": [{CHILD_1_DATA}, {CHILD_2_DATA} ... {CHILD_N_DATA}] },
+                ...
+                { "node": {PARENT_M_DATA}, "leaves": [{CHILD_1_DATA}, {CHILD_2_DATA} ... {CHILD_N_DATA}] }
+            ]}
+
         
-        * NOTE: The list of child links superceding their parent hold 0 values for 'link' and 'children' fields.
-                Links and children fields are only given if a child link is selected as a new parent.
-                Links and children field data will be given once the child is presented as the new parent:
-                    {Next Current Page PARENT, selected from Child links} <-- This JSON line holds true link/children data.
+        The first index of the Results array corresponds with the depth level is was scraped from. So...
+            Results[0]['node']          : refers to the first parent(starting page) data.
+            Results[1]['leaves']        : refers to the second parent's child array data.
+            Results[1]['leaves'][4]     : refers to the data of the second parent's 5th child.
+            Results[1]['node']['title'] : refers to the second parent's page title.
+
+        * NOTE: The list of child links that follows their parent holds 0 values for 'link' and 'children' fields.
+                Valid 'links' and 'children' fields are only given if a child link is selected as a new parent.
+                Valid 'links' and 'children' field data will be given once the child is presented as the new parent.

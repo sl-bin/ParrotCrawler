@@ -186,6 +186,7 @@ while currentDepth < targetDepth:
 
 		jsonDump['results'].append(copy.deepcopy(jsonTier))
 
+#		OUTPUT TESTING
 #		jsonData = json.dumps(data)
 #		jsonDump += jsonData
 #		jsonDump += "\n"
