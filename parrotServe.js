@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+
 //---------  App Requirements ----------//
 app.use(bodyParser.json());
 app.use(cors());
@@ -12,12 +13,14 @@ app.use(cors());
 //------------  App Routes ------------//
 //recieve the POST search request from the frontend
 app.route('/api/search/').post((req,res) => {
-  console.log("here I am in node having just received the request");
   var searchJSON = req.body;
 
-  /*trace statements for testing that JSON received is correct
+  callbackCount = 0;
+  var crawlResults;
+
+  //trace statements for testing that JSON received is correct
   var searchString = JSON.stringify(searchJSON);
-  console.log("POST search request recieved with values: " + searchString);
+  console.log("Node: POST recieved with values: " + searchString);
   var startURL = searchJSON.url;
   var nDepth = searchJSON.n;
   var phrase = searchJSON.searchPhrase;
@@ -26,14 +29,12 @@ app.route('/api/search/').post((req,res) => {
   console.log("nDepth: " + nDepth);
   console.log("searchPhrase: " + phrase);
   console.log("searchType: " + type);
-  */
 
-  //call the crawler and get back the results
-  pyParrotCrawl(searchJSON);
-  //console.log(crawlerResults);
+  //call the parrot crawl function
+  pyParrotCrawl(searchJSON, res);
 
-  //send the search terms back to angular (might replace this with an AJAX call at some point)
-  //res.send(crawlerResults);
+  //send that the response was received
+  res.sendStatus(200);
 });
 
 
@@ -47,7 +48,7 @@ app.listen(8000, () => {
 //function to call python-shell when search is recieved
 //Takes JSON-encoded search terms: URL, depth of search, optional search phrase, and search type
 //Returns web crawler results as string
-function pyParrotCrawl(searchTerms) {
+function pyParrotCrawl(searchTerms, response) {
 
   //parse search terms out into individual variables
   var startURL = searchTerms.url;
@@ -81,7 +82,7 @@ function pyParrotCrawl(searchTerms) {
       args: [startURL, nDepth , phrase]
   };
 
-  var crawlerResults;
+  console.log("Node: Calling crawler");
   //call crawl script and pass it the search terms
   PythonShell.run(scriptToRun, options, function(err, results) {
     if(err) {
@@ -89,9 +90,18 @@ function pyParrotCrawl(searchTerms) {
       throw err;
     }
     else {
-      crawlerResults = JSON.parse(results);
+      crawlResults = results;
+      complete(response);
     }
   });
+}
 
-  console.log("Crawler results are: " + crawlerResults);
+
+//----------  Callback that will do things with the crawl results ----------//
+function complete(response){
+  callbackCount++
+  if(callbackCount > 0)
+  {
+    console.log("The crawler results are " + crawlResults);
+  }
 }
