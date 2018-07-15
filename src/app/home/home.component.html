@@ -1,5 +1,5 @@
 <div class="viewWindow">
-  <form action="/waiting" method="get">
+  <form action="/waiting" method="post">
     <fieldset class="fade">
       <legend>Enter Web Crawler Criteria:</legend>
       <fieldset>
@@ -30,8 +30,9 @@
               <input type="radio" name="searchType" value="TDFS" />True Depth First Search</label>
           <br/>
         </p>
+        <!-- (click) passes input value to add() and then clears the input -->
         <div class="btnDiv">
-          <input  type="submit" class="btn" value="Start Crawling"/>
+          <input type="submit" class="btn" value="Start Crawling"/>
         </div>
       </fieldset>
     </fieldset>
