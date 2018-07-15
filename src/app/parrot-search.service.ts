@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ParrotSearch } from './parrotSearch'
+import { ParrotSearch } from './parrot-search'
 
 // the http headers that define the content type
 const httpOptions = {
