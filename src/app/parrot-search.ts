@@ -1,6 +1,7 @@
-export class ParrotSearch {
-  public url: string;
-  public n: number;
-  public searchPhrase: string;
-  public searchType: string;
+// this is the definition for the search input JSON
+export interface ParrotSearch {
+  url: string;
+  n: number;
+  searchPhrase: string;
+  searchType: string;
 }
