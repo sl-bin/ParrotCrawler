@@ -51,3 +51,9 @@ Issues I ran into:
 11 AM
 Finally figured out how to get data out of the pythonshell: a callback. Thanks Rena!
 We will need to use Server-Sent Events to return the crawler results to the frontend
+
+#--------------------------------------------------------------------------
+7/17/18
+Node server function to POST results back to Angular
+-Gets called by pyParrotCrawl function
+-POSTs data to URL declared in "App Setup and Globals" at top of file
