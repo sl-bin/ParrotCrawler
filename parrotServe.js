@@ -4,7 +4,6 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-
 //---------  App Requirements ----------//
 app.use(bodyParser.json());
 app.use(cors());
@@ -31,7 +30,7 @@ app.route('/api/search/').post((req,res) => {
   console.log("searchType: " + type);
 
   //call the parrot crawl function
-  pyParrotCrawl(searchJSON, res);
+  pyParrotCrawl(searchJSON);
 
   //send that the response was received
   res.sendStatus(200);
@@ -48,7 +47,7 @@ app.listen(8000, () => {
 //function to call python-shell when search is recieved
 //Takes JSON-encoded search terms: URL, depth of search, optional search phrase, and search type
 //Returns web crawler results as string
-function pyParrotCrawl(searchTerms, response) {
+function pyParrotCrawl(searchTerms) {
 
   //parse search terms out into individual variables
   var startURL = searchTerms.url;
@@ -78,7 +77,7 @@ function pyParrotCrawl(searchTerms, response) {
       pythonPath: '/Library/Frameworks/Python.framework/Versions/3.6/bin/python3',
       pythonOptions: ['-u'],
       //can change depending on the directory of the script
-      //scriptPath: './',
+      scriptPath: './crawler/',
       args: [startURL, nDepth , phrase]
   };
 
@@ -91,14 +90,14 @@ function pyParrotCrawl(searchTerms, response) {
     }
     else {
       crawlResults = results;
-      complete(response);
+      complete();
     }
   });
 }
 
 
 //----------  Callback that will do things with the crawl results ----------//
-function complete(response){
+function complete(){
   callbackCount++
   if(callbackCount > 0)
   {
