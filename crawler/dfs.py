@@ -27,8 +27,6 @@ opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 # Assign starting values
-jsonDump = {}
-jsonDump['results'] = []
 nextID = 1
 currentID = 0
 currentURL = URLParam
@@ -36,22 +34,58 @@ currentDepth = 0
 targetDepth = depthParam
 isDead = 0
 hasQuery = 0
+maxWidth = 0
+
+# Set up dataset:
+data = {}
+
+data['input'] = {}
+data['input']['url'] = currentURL
+data['input']['n'] = targetDepth
+data['input']['type'] = "DFSrand"
+data['input']['search'] = queryParam
+
+data['dimensions'] = {}
+data['dimensions']['height'] = 0
+data['dimensions']['width'] = 0
+
+data['results'] = []
+
+# Place Starting page entry into dataset:
+parentnode = {}
+parentnode['id'] = currentID
+parentnode['depth'] = currentDepth
+parentnode['title'] = ""
+parentnode['url'] = currentURL
+parentnode['dead'] = 0
+parentnode['found'] = 0
+parentnode['links'] = 0
+parentnode['children'] = []
+
+data['results'].append(copy.deepcopy(parentnode))
 
 # Begin Crawl
 
 while currentDepth < targetDepth:
 
-	# 1. LOAD PAGE
+	# 1. LOAD PARENT PAGE
 
 	# HTML ERROR HANDLING --- TRY / EXCEPT BLOCK --------------------------
 	try:
 		currentHTML = opener.open(currentURL)
-	except urllib.error.HTTPError as err: print(err + "Parent site invalid."); sys.exit(2)
+	except urllib.error.HTTPError as err:
 		# --> Handle HTTP error page data here.
 		# If this error hits, it should be the starting page.
-	except urllib.error.URLError: print("Parent site invalid."); sys.exit(2)
+		data['results'][currentID]['title'] = "Parent site invalid."
+		data['results'][currentID]['dead'] = 1
+		sys.exit(2)
+
+	except urllib.error.URLError:
 		# --> Handle URL error page data here.
 		# If this error hits, it should be the starting page.
+		data['results'][currentID]['title'] = "Parent site invalid."
+		data['results'][currentID]['dead'] = 1
+		sys.exit(2)
 
 	else:
 		currentURL = currentHTML.geturl()	# Update our URL in case a redirect was followed.
@@ -68,19 +102,14 @@ while currentDepth < targetDepth:
 		# Scrape links from page:
 		links = currentPage.find_all("a", href=True)
 
-		data = {}
-		data['id'] = currentID
-		data['depth'] = currentDepth
-		data['title'] = currentPage.title.getText()
-		data['url'] = currentURL
-		data['dead'] = isDead
-		data['found'] = hasQuery
-		data['links'] = len(links)
-		data['children'] = []
+		data['results'][currentID]['title'] = currentPage.title.getText()
+		data['results'][currentID]['url'] = currentURL	# <-- Update URL
+		data['results'][currentID]['found'] = hasQuery
+		data['results'][currentID]['links'] = len(links)
 
 		# 3. PARSE SCRAPED/CHILD LINKS
 		linkPool = []
-		childrenData = []
+		childrenNodes = []
 
 		for item in links:
 
@@ -89,18 +118,19 @@ while currentDepth < targetDepth:
 
 			# Make sure Child URL is properly formatted.
 			if item['href'] == '' or item['href'][0] == "#":
-				data['links'] -= 1
+				data['results'][currentID]['links'] -= 1
 				continue
 
-			if item['href'][0] == "/":		# Append href value to parent URL, if necessary
-				childURL = str(urllib.parse.urljoin(currentURL, item['href']))
+		#	if item['href'][0] == "/":		# Append href value to parent URL, if necessary
+		#		childURL = str(urllib.parse.urljoin(currentURL, item['href']))
 				
 			else:
-				childURL = item['href']
+			#	childURL = item['href']
+				childURL = str(urllib.parse.urljoin(currentURL, item['href']))
 
 			# OPEN CHILD URL
 
-			childData = {}
+			childNode = {}
 			childTitle = ""
 
 			# HTML ERROR HANDLING --- TRY / EXCEPT BLOCK --------------------------
@@ -108,14 +138,14 @@ while currentDepth < targetDepth:
 				childHTML = opener.open(childURL)
 			except urllib.error.HTTPError as err:
 				# --> Handle child HTTP error page data here.
-				print(err)
+				#print(err)
 				isDead = 1
 				childTitle = str(err)
 				pass
 
 			except urllib.error.URLError:
 				# --> Handle URL error page data here.
-				print("Incorrect Domain or Server Down.")
+				#print("Incorrect Domain or Server Down.")
 				isDead = 1
 				childTitle = "Incorrect Domain/Server Down"
 				pass
@@ -131,13 +161,11 @@ while currentDepth < targetDepth:
 					pass
 				except urllib.error.HTTPError as finalErr:
 					# --> Handle child HTTP error page data here.
-					#print(err)
 					isDead = 1
 					childTitle = str(err)
 					pass
 				except urllib.error.URLError:
 					# --> Handle URL error page data here.
-					#print("Incorrect Domain or Server Down.")
 					isDead = 1
 					childTitle = "Incorrect Domain/Server Down"
 					pass
@@ -158,55 +186,62 @@ while currentDepth < targetDepth:
 			# END OF HTML ERROR HANDLING ------------------------------------------
 
 			# COLLECT CHILD PAGE DATA:
-			childData['id'] = nextID; nextID += 1
-			childData['depth'] = currentDepth + 1
-			childData['title'] = childTitle
+			childNode['id'] = nextID; nextID += 1
+			childNode['depth'] = currentDepth + 1
+			childNode['title'] = childTitle
 
 					
-			childData['url'] = childURL
-			childData['dead'] = isDead
-			childData['found'] = hasQuery
-			childData['links'] = 0
-			childData['children'] = []
+			childNode['url'] = childURL
+			childNode['dead'] = isDead
+			childNode['found'] = hasQuery
+			childNode['links'] = 0
+			childNode['children'] = []
 
 			# APPEND CHILD ID TO PARENT DATASET
-			data['children'].append(copy.deepcopy(childData['id']))
+			data['results'][currentID]['children'].append(copy.deepcopy(childNode['id']))
 
 			# APPEND CHILD TO CHILDREN DATASET:
-			childrenData.append(copy.deepcopy(childData))
+			childrenNodes.append(copy.deepcopy(childNode))
 
 			# IF CHILD IS LIVE AND VALID HTML, ADD TO LINK POOL:
-			if childData['dead'] == 0 and childType == "text/html": linkPool.append(copy.deepcopy(childData))
+			if childNode['dead'] == 0 and childType == "text/html": linkPool.append(copy.deepcopy(childNode))
 
-		# 4. RECORD ALL TIER DATA TO FILE AS JSON
+		# 4. SELECT NEW LINK FROM LIST
 
-		jsonTier = {}
-		jsonTier['node'] = data
-		jsonTier['leaves'] = childrenData
-
-		jsonDump['results'].append(copy.deepcopy(jsonTier))
-
-#		OUTPUT TESTING
-#		jsonData = json.dumps(data)
-#		jsonDump += jsonData
-#		jsonDump += "\n"
-#		jsonData = json.dumps(childrenData)
-#		jsonDump += jsonData
-#		jsonDump += "\n"
-
-#		print(data)								# Python Dictionary Format
-#		print("\n")								# Python Dictionary Format
-#		for each in childrenData: print(each)	# Python Dictionary Format
-
-		# 5. SELECT NEW LINK FROM LIST, INC DEPTH, SET UP FOR NEXT ITERATION
-		if len(linkPool) < 1:
+		if len(linkPool) < 1:	# <-- There are no links to select. Assign data and break.
 			print("0 Available links, Parrot flying home!")
-			break
-		else:
-			currentURL = linkPool[1]['url'] # <-- Should be random assignment
-			currentID = linkPool[1]['id']	# <-- Should be random assignment
-			isDead = 0
-			hasQuery = 0
-			currentDepth += 1
 
-print(json.dumps(jsonDump))
+			for each in childrenNodes:
+				data['results'].append(copy.deepcopy(each))
+				break
+
+		else:
+			nextParent = linkPool[1] # <-- Should be random assignment
+
+		# 5. RECORD ALL TIER DATA TO FILE AS JSON
+
+
+		# APPEND CHILD NODES TO DATASET
+		currentWidth = 1	# <-- Account for parent node already in dataset.
+		for each in childrenNodes:
+			data['results'].append(copy.deepcopy(each))
+			currentWidth += 1
+
+		if currentWidth > maxWidth: maxWidth = currentWidth
+
+		# Swap first child ID/position with new parent.
+		data['results'][(nextParent['id'])]['id'], data['results'][(childrenNodes[0]['id'])]['id'] = data['results'][(childrenNodes[0]['id'])]['id'], data['results'][(nextParent['id'])]['id']
+		data['results'][(nextParent['id'])], data['results'][(childrenNodes[0]['id'])] = data['results'][(childrenNodes[0]['id'])], data['results'][(nextParent['id'])]
+
+		# 6. SET UP FOR NEXT ITERATION
+		currentURL = data['results'][(childrenNodes[0]['id'])]['url']
+		currentID = childrenNodes[0]['id']
+
+		isDead = 0
+		hasQuery = 0
+		currentDepth += 1
+
+data['dimensions']['height'] = currentDepth
+data['dimensions']['width'] = maxWidth
+
+print(json.dumps(data))
