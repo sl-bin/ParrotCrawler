@@ -7,11 +7,13 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import { HomeComponent } from './home/home.component';
 import { WaitingComponent } from './waiting/waiting.component';
 import { ResultsComponent } from './results/results.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { NotfoundComponent } from './notfound/notfound.component';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
@@ -20,15 +22,16 @@ import { NotfoundComponent } from './notfound/notfound.component';
     WaitingComponent,
     ResultsComponent,
     WelcomeComponent,
-    NotfoundComponent
+    NotfoundComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
-    ReactiveFormsModule,
     FormsModule,
-    HttpClientModule
+    ReactiveFormsModule,
+    HttpClientModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { tap, first } from 'rxjs/operators';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { ParrotSearch } from '../parrot-search';
 import { ParrotSearchService } from '../parrot-search.service';
@@ -19,7 +20,7 @@ export class HomeComponent implements OnInit {
   loading = false;
   success = false;
 
-  constructor(private fb: FormBuilder, private searchService: ParrotSearchService) { }
+  constructor(private fb: FormBuilder, private searchService: ParrotSearchService, private router: Router) { }
 
   ngOnInit() {
     this.homeForm = this.fb.group({
@@ -62,8 +63,10 @@ export class HomeComponent implements OnInit {
     try {
       await this.searchService.postSearch( formValue as ParrotSearch);
       this.success = true;
+      this.router.navigate(['/waiting']);
     } catch(err) {
       console.log(err);
+      this.router.navigate(['/error']);
     }
 
     this.loading = false;

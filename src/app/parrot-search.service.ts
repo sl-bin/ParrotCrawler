@@ -24,7 +24,7 @@ export class ParrotSearchService {
       'Content-Type': 'application/json'
     });
 
-    console.log('Here we are in Angular, and the data sent to node is: ' + search);
+    console.log('Here we are in Angular, and the data sent to node is: ' + JSON.stringify(search) + '\n');
     //and make the post request
     return this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions);
   }
