@@ -4,6 +4,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { HomeComponent } from './home/home.component';
 import { WaitingComponent } from './waiting/waiting.component';
 import { ResultsComponent } from './results/results.component';
+import { ErrorComponent } from './error/error.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 
 const routes: Routes = [
@@ -31,6 +32,11 @@ const routes: Routes = [
     path: 'results',
     component: ResultsComponent,
     data: { state: 'results'}
+  },
+  {
+    path: 'error',
+    component: ErrorComponent,
+    data: { state: 'error'}
   },
   {
     path: '**',
