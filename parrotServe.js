@@ -3,22 +3,28 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+var Client = require('node-rest-client').Client;
 
 
-//---------  App Requirements ----------//
+//---------  App Setup and Globals ----------//
 app.use(bodyParser.json());
 app.use(cors());
+//URL to post search results to
+const returnURL = "https://dev.oscato.com/vlwt7it";
 
 
-//------------  App Routes ------------//
+//------------  Server Routes ------------//
+//listen on port 8000 for post requests
+app.listen(8000, () => {
+  console.log('ParrotServe started on port http://localhost:8000!');
+});
+
+
 //recieve the POST search request from the frontend
 app.route('/api/search/').post((req,res) => {
   var searchJSON = req.body;
 
-  callbackCount = 0;
-  var crawlResults;
-
-  //trace statements for testing that JSON received is correct
+  /*trace statements for testing that JSON received is correct
   var searchString = JSON.stringify(searchJSON);
   console.log("Node: POST recieved with values: " + searchString);
   var startURL = searchJSON.url;
@@ -29,26 +35,22 @@ app.route('/api/search/').post((req,res) => {
   console.log("nDepth: " + nDepth);
   console.log("searchPhrase: " + phrase);
   console.log("searchType: " + type);
+  */
 
   //call the parrot crawl function
-  pyParrotCrawl(searchJSON, res);
+  pyParrotCrawl(searchJSON);
 
   //send that the response was received
-  res.sendStatus(200);
+  res.sendStatus(200).end();
 });
 
 
-//listen on port 8000 for requests
-app.listen(8000, () => {
-  console.log('ParrotServe started on port http://localhost:8000!');
-});
 
-
-//------------  Python-Shell Function Call ------------//
+//------------  Python-Shell Call Function ------------//
 //function to call python-shell when search is recieved
 //Takes JSON-encoded search terms: URL, depth of search, optional search phrase, and search type
 //Returns web crawler results as string
-function pyParrotCrawl(searchTerms, response) {
+function pyParrotCrawl(searchTerms) {
 
   //parse search terms out into individual variables
   var startURL = searchTerms.url;
@@ -74,34 +76,45 @@ function pyParrotCrawl(searchTerms, response) {
   var PythonShell = require('python-shell');
   var options = {
       mode: 'text',
-      //we will need to change this depending on where python is installed
+      //we will need to change this depending on where python interpreter is installed
       pythonPath: '/Library/Frameworks/Python.framework/Versions/3.6/bin/python3',
       pythonOptions: ['-u'],
-      //can change depending on the directory of the script
-      //scriptPath: './',
+      //can change depending on the directory the scripts are held in
+      scriptPath: './crawler/',
       args: [startURL, nDepth , phrase]
   };
 
   console.log("Node: Calling crawler");
   //call crawl script and pass it the search terms
-  PythonShell.run(scriptToRun, options, function(err, results) {
+  PythonShell.run(scriptToRun, options, function(err, searchRes) {
     if(err) {
       console.log(err);
       throw err;
     }
     else {
-      crawlResults = results;
-      complete(response);
+      sendResults(searchRes);
     }
   });
 }
 
 
-//----------  Callback that will do things with the crawl results ----------//
-function complete(response){
-  callbackCount++
-  if(callbackCount > 0)
-  {
-    console.log("The crawler results are " + crawlResults);
-  }
+//------------  POST results function ------------//
+function sendResults(sRes) {
+
+  var client = new Client();
+
+  // set content-type header and data as json in args parameter
+  var args = {
+      headers: { "Content-Type": "application/json" },
+      data: sRes
+  };
+
+  client.post(returnURL, args, function (data, response) {
+      // parsed response body as js object
+      console.log(data);
+      // raw response
+      console.log(response);
+      //sent data
+      console.log("Search results sent were: " + sRes);
+  });
 }
