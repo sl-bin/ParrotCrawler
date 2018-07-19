@@ -1,6 +1,7 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 import { ParrotSearch } from './parrot-search'
 
 // the http headers that define the content type
@@ -13,20 +14,35 @@ const httpOptions = {
 export class ParrotSearchService {
 
   // node route URL to accept search POST request
-  private nodeURL = "http://localhost:8000/api/search";
+  private nodeURL = "http://localhost:4220/api/search";
 
   constructor(private http: HttpClient) { }
 
+  // from: https://angular.io/guide/http
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error.message);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      console.error(
+        `Backend returned code ${error.status}, ` +
+        `body was: ${error.error}`);
+    }
+    // return an observable with a user-facing error message
+    return throwError(
+      'An Error occurred. Please try again.');
+  };
+
   // method to recieve search input from form and POST to given URL
    postSearch(search: ParrotSearch): Observable<ParrotSearch> {
-    //set the content type to be posted
-    const headers = new Headers({
-      'Content-Type': 'application/json'
-    });
 
-    console.log('Here we are in Angular, and the data sent to node is: ' + JSON.stringify(search) + '\n');
+    console.log('Here we are in Angular, and the data sent to node is: ' + search);
     //and make the post request
-    return this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions);
+    return this.http.post<ParrotSearch>(this.nodeURL, search, { httpOptions, responseType: 'text' }).pipe(
+      catchError(this.handleError)
+    );
   }
 
 }

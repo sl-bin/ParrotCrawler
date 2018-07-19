@@ -9,6 +9,7 @@ import { ParrotSearchService } from '../parrot-search.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
+  providers: [ ParrotSearchService ],
   styleUrls: ['./home.component.scss']
 })
 
@@ -55,20 +56,32 @@ export class HomeComponent implements OnInit {
   };
 
   // submission handler
-  async onSubmit() {
+  onSubmit() {
     this.loading = true;
 
     const formValue = this.homeForm.value;
 
+    // for debugging purposes
+    // this.searchService.postSearch( formValue as ParrotSearch).subscribe();
+    // this.success = true;
+    // this.router.navigate(['/waiting']);
+
+    // this elaborate try catch is for error handling
     try {
-      await this.searchService.postSearch( formValue as ParrotSearch);
-      this.success = true;
-      this.router.navigate(['/waiting']);
+      this.searchService.postSearch( formValue as ParrotSearch ).subscribe(
+        () => {
+          this.success = true;
+          this.router.navigate(['/waiting']);
+        },
+        (err) => {
+          console.log(err);
+          this.router.navigate(['/error']);
+        }
+      );
     } catch(err) {
       console.log(err);
       this.router.navigate(['/error']);
     }
-
     this.loading = false;
   };
 }
