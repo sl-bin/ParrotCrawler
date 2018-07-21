@@ -46,7 +46,7 @@ data['input']['type'] = "DFSrand"
 data['input']['search'] = queryParam
 
 data['dimensions'] = {}
-data['dimensions']['height'] = 0
+data['dimensions']['height'] = 1
 data['dimensions']['width'] = 0
 
 data['results'] = []
