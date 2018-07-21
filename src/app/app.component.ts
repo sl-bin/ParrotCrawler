@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import * as _ from 'jquery';
+import { Component, OnInit } from '@angular/core';
 import {trigger, animate, style, group, query, transition} from '@angular/animations';
+
 
 @Component({
   selector: 'app-root',
@@ -74,4 +74,7 @@ export class AppComponent {
   getState(outlet) {
     return outlet.activatedRouteData.state;
   }
+
+  // ready: ParrotReturn;
+
 }

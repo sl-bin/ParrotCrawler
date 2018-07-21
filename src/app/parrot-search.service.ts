@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-import { ParrotSearch } from './parrot-search'
+import { ParrotSearch } from './parrot-search';
 
 // the http headers that define the content type
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  params: new HttpParams(),
+  responseType: 'text' as 'json'
 };
 
 
@@ -15,6 +17,9 @@ export class ParrotSearchService {
 
   // node route URL to accept search POST request
   private nodeURL = "http://localhost:4220/api/search";
+
+  private dataRet = new BehaviorSubject('null message');
+  searchData = this.dataRet.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -38,11 +43,12 @@ export class ParrotSearchService {
   // method to recieve search input from form and POST to given URL
    postSearch(search: ParrotSearch): Observable<ParrotSearch> {
 
-    console.log('Here we are in Angular, and the data sent to node is: ' + search);
+    console.log('Here we are in Angular, and the data sent to node is: ' + JSON.stringify(search));
     //and make the post request
-    return this.http.post<ParrotSearch>(this.nodeURL, search, { httpOptions, responseType: 'text' }).pipe(
+    return this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions).pipe(
       catchError(this.handleError)
+    // this.dataRet = this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions).pipe(
+    //   catchError(this.handleError)
     );
   }
-
 }

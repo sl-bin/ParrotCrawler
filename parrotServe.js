@@ -6,12 +6,10 @@ const cors = require('cors');
 var Client = require('node-rest-client').Client;
 
 
+
 //---------  App Setup and Globals ----------//
 app.use(bodyParser.json());
 app.use(cors());
-//URL to post search results to
-const returnURL = "https://dev.oscato.com/0ad0yts";
-
 
 //------------  Server Routes ------------//
 //listen on port 8000 for post requests
@@ -36,11 +34,9 @@ app.route('/api/search').post((req,res) => {
   // console.log("searchPhrase: " + phrase);
   // console.log("searchType: " + type);
 
-  //call the parrot crawl function
   try{
-    pyParrotCrawl(searchJSON);
-    //send that the response was received
-    res.sendStatus(200).end();
+    // call the parrot crawl function
+    pyParrotCrawl(res, searchJSON);
   } catch(err){
     //send that the response was not received
     res.sendStatus(500).end();
@@ -53,13 +49,12 @@ app.route('/api/search').post((req,res) => {
 //function to call python-shell when search is received
 //Takes JSON-encoded search terms: URL, depth of search, optional search phrase, and search type
 //Returns web crawler results as string
-function pyParrotCrawl(searchTerms) {
+function pyParrotCrawl(res, searchTerms) {
   //parse search terms out into individual variables
   var startURL = searchTerms.url;
   var nDepth = searchTerms.n;
   var phrase = searchTerms.searchPhrase;
   var type = searchTerms.searchType;
-
 
   // trace statements for testing that JSON reached pyParrotCrawl successfully
   // console.log("Node: POST received with values: " + JSON.stringify(searchTerms));
@@ -101,29 +96,13 @@ function pyParrotCrawl(searchTerms) {
       throw err;
     }
     else {
-      sendResults(searchRes);
+      sendResults(res, searchRes);
     }
   });
 }
 
-
-//------------  POST results function ------------//
-function sendResults(sRes) {
-
-  var client = new Client();
-
-  // set content-type header and data as json in args parameter
-  var args = {
-      headers: { "Content-Type": "application/json" },
-      data: sRes
-  };
-
-  client.post(returnURL, args, function (data, response) {
-      // parsed response body as js object
-      console.log(data);
-      // raw response
-      console.log(response);
-      //sent data
-      console.log("Search results sent were: " + sRes);
-  });
+//------------  Send results function ------------//
+function sendResults(res, sRes) {
+  console.log(sRes);
+  res.send(sRes).end();
 }
