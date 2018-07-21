@@ -16,6 +16,8 @@ import { ParrotSearchService } from '../parrot-search.service';
 export class HomeComponent implements OnInit {
 
   homeForm: FormGroup;
+  loaded: Boolean = false;
+  succes: Boolean = false;
 
   // TODO: edit regex to allow for http and www to be left off
   // from https://gist.github.com/dperini/729294
@@ -74,6 +76,9 @@ export class HomeComponent implements OnInit {
         Validators.required
       ]]
     });
+
+    this.searchService.success = false;
+    this.searchService.loaded = false;
   }
 
   // get methods for passing homeForm members around
@@ -103,11 +108,19 @@ export class HomeComponent implements OnInit {
     // this elaborate try catch is for error handling
     try {
       await this.searchService.postSearch( formValue as ParrotSearch ).subscribe(
-        (res) => {
-          console.log(res);
+        (ret) => {
+          this.searchService.success = true;
+          console.log(ret);
+        },
+        (err) => {
+          console.log(err);
+          this.router.navigate(['/error']);
+        },
+        () => {
+          this.searchService.loaded = true;
         }
       );
-       this.router.navigate(['/waiting']);
+      this.router.navigate(['/waiting']);
     } catch(err) {
       console.log(err);
       this.router.navigate(['/error']);

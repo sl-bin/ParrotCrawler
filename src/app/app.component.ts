@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {trigger, animate, style, group, query, transition} from '@angular/animations';
 
 
@@ -74,7 +74,4 @@ export class AppComponent {
   getState(outlet) {
     return outlet.activatedRouteData.state;
   }
-
-  // ready: ParrotReturn;
-
 }
