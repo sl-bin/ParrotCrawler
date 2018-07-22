@@ -4,7 +4,7 @@ import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
 import { ParrotSearch } from './parrot-search';
-import { ParrotReturn } from './parrot-return';
+// import { ParrotReturn } from './parrot-return';
 
 // the http headers that define the content type
 const httpOptions = {
@@ -20,14 +20,12 @@ export class ParrotSearchService {
   // node route URL to accept search POST request
   private nodeURL = "http://localhost:4220/api/search";
 
-  dataRet: ParrotReturn;
-  private testLoaded = new BehaviorSubject('default message');
-  loaded = this.testLoaded.asObservable();
-  private testSuccess = new BehaviorSubject('default message');
-  success = this.testSuccess.asObservable();
-
-  loaded: Boolean;
-  success: Boolean;
+  // private dataSource = new BehaviorSubject("null");
+  // data = this.dataSource.asObservable();
+  private loadedSource = new BehaviorSubject(false);
+  loaded = this.loadedSource.asObservable();
+  private successSource = new BehaviorSubject(false);
+  success = this.successSource.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -48,6 +46,18 @@ export class ParrotSearchService {
       'An Error occurred. Please try again.');
   };
 
+  // for updating loaded value from componetnets
+  updateLoaded(boolVal){
+      this.loadedSource.next(boolVal);
+      // console.log("loadedData made it back: " + this.loadedSource.getValue());
+  }
+
+  // for updating success value from components
+  updateSuccess(boolVal){
+      this.successSource.next(boolVal);
+      // console.log("successData made it back: " + this.successSource.getValue());
+  }
+
   // method to recieve search input from form and POST to given URL
    postSearch(search: ParrotSearch): Observable<ParrotSearch> {
 
@@ -55,8 +65,8 @@ export class ParrotSearchService {
     //and make the post request
     return this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions).pipe(
       catchError(this.handleError)
-    // this.dataRet = this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions).pipe(
-    //   catchError(this.handleError)
     );
   }
+
+
 }

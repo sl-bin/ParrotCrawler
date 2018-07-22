@@ -9,15 +9,14 @@ import { ParrotSearchService } from '../parrot-search.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  providers: [ ParrotSearchService ],
   styleUrls: ['./home.component.scss']
 })
 
 export class HomeComponent implements OnInit {
 
   homeForm: FormGroup;
-  loaded: Boolean = false;
-  succes: Boolean = false;
+  // loaded: Boolean = false;
+  // success: Boolean = false;
 
   // TODO: edit regex to allow for http and www to be left off
   // from https://gist.github.com/dperini/729294
@@ -61,6 +60,9 @@ export class HomeComponent implements OnInit {
   constructor(private fb: FormBuilder, private searchService: ParrotSearchService, private router: Router) { }
 
   ngOnInit() {
+    // this.searchService.success.subscribe(success => this.success = success);
+    // this.searchService.loaded.subscribe(loaded => this.loaded = loaded);
+
     this.homeForm = this.fb.group({
       url: ['', [
         Validators.required,
@@ -77,8 +79,8 @@ export class HomeComponent implements OnInit {
       ]]
     });
 
-    this.searchService.success = false;
-    this.searchService.loaded = false;
+    this.searchService.updateSuccess(false);
+    this.searchService.updateLoaded(false);
   }
 
   // get methods for passing homeForm members around
@@ -96,8 +98,6 @@ export class HomeComponent implements OnInit {
 
   // submission handler
   async onSubmit() {
-    this.loading = true;
-
     const formValue = this.homeForm.value;
 
     // for debugging purposes
@@ -105,19 +105,18 @@ export class HomeComponent implements OnInit {
     // this.success = true;
     // this.router.navigate(['/waiting']);
 
-    // this elaborate try catch is for error handling
+    // this try catch is for error handling
     try {
       await this.searchService.postSearch( formValue as ParrotSearch ).subscribe(
         (ret) => {
-          this.searchService.success = true;
           console.log(ret);
+          this.searchService.updateSuccess(true);
+          this.searchService.updateLoaded(true);
         },
         (err) => {
           console.log(err);
+          this.searchService.updateLoaded(true);
           this.router.navigate(['/error']);
-        },
-        () => {
-          this.searchService.loaded = true;
         }
       );
       this.router.navigate(['/waiting']);

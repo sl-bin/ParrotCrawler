@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ParrotSearch } from '../parrot-search';
-import { ParroReturn } from '../parrot-return';
+// import { ParrotSearch } from '../parrot-search';
+// import { ParroReturn } from '../parrot-return';
 import { ParrotSearchService } from '../parrot-search.service';
 
 @Component({
@@ -14,18 +14,23 @@ export class WaitingComponent implements OnInit {
   wText: string = "Waiting for results";
   count: number = 0;
   btnStyle = "btnNoDisplay";
-  // ready: Boolean;
+  loaded: Boolean;
+  success: Boolean;
+  stillWaiting;
+
+
 
   constructor(private searchService: ParrotSearchService) { }
 
-  stillWaiting() {
-    this.searchService.loaded.subscribe(loaded => this.loaded = loaded);
-    this.searchService.success.subscribe(success => this.success = success);
+  ngOnInit() {
+    this.searchService.success.subscribe((success) => {this.success = success});
+    this.searchService.loaded.subscribe((loaded) => {this.loaded = loaded});
 
-    setInterval(() => {
-      if(!this.searchService.loaded && !this.searchService.success){
-        console.log(this.searchService.loaded);
-        console.log(this.searchService.success);
+    this.stillWaiting = setInterval(() => {
+      if(!this.loaded && !this.success){
+        // for testing
+        console.log(this.loaded);
+        console.log(this.success);
 
         if(this.count%4 != 0){
           this.wText += ".";
@@ -34,44 +39,18 @@ export class WaitingComponent implements OnInit {
           this.wText = "Waiting for results";
           this.count++;
         }
+
+        // TODO add error rederection here
       } else {
+        // for testing
+        console.log(this.loaded);
+        console.log(this.success);
+
         this.wText = "";
         this.btnStyle = "btn";
         clearInterval(this.stillWaiting);
       }
     }, 1000);
-  };
 
-  ngOnInit() {
-    this.stillWaiting();
   }
-    // this.search.searchData.subscribe((ret) => {
-    //   console.log(ret);
-    // },
-    // (err) => {
-    //   console.log(err);
-    //   this.router.navigate(['/error']);
-    // },
-    // () => {
-    //   this.ready = true;
-    // })
-
-    // setInterval(() => {
-    //   if(this.searchService.loaded && his.searchService.success){
-    //     this.wText = "";
-    //     this.btnStyle = "btn";
-    //   }
-    //   else{
-    //     if(this.count < 13){
-    //       if(this.count%4 != 0){
-    //         this.wText += ".";
-    //         this.count++;
-    //       }
-    //       else{
-    //         this.wText = "Waiting for results";
-    //         this.count++;
-    //       }
-    //     }
-    //   }
-    // }, 1000);
 }
