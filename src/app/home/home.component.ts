@@ -109,7 +109,8 @@ export class HomeComponent implements OnInit {
     try {
       await this.searchService.postSearch( formValue as ParrotSearch ).subscribe(
         (ret) => {
-          console.log(ret);
+          // console.log(ret);
+          this.searchService.updateData(ret);
           this.searchService.updateSuccess(true);
           this.searchService.updateLoaded(true);
         },

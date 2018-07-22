@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-// import { ParrotSearch } from '../parrot-search';
-// import { ParroReturn } from '../parrot-return';
 import { ParrotSearchService } from '../parrot-search.service';
 
 @Component({
@@ -29,8 +27,8 @@ export class WaitingComponent implements OnInit {
     this.stillWaiting = setInterval(() => {
       if(!this.loaded && !this.success){
         // for testing
-        console.log(this.loaded);
-        console.log(this.success);
+        // console.log(this.loaded);
+        // console.log(this.success);
 
         if(this.count%4 != 0){
           this.wText += ".";
@@ -43,8 +41,8 @@ export class WaitingComponent implements OnInit {
         // TODO add error rederection here
       } else {
         // for testing
-        console.log(this.loaded);
-        console.log(this.success);
+        // console.log(this.loaded);
+        // console.log(this.success);
 
         this.wText = "";
         this.btnStyle = "btn";

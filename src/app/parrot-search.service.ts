@@ -20,8 +20,8 @@ export class ParrotSearchService {
   // node route URL to accept search POST request
   private nodeURL = "http://localhost:4220/api/search";
 
-  // private dataSource = new BehaviorSubject("null");
-  // data = this.dataSource.asObservable();
+  private dataSource = new BehaviorSubject("null");
+  data = this.dataSource.asObservable();
   private loadedSource = new BehaviorSubject(false);
   loaded = this.loadedSource.asObservable();
   private successSource = new BehaviorSubject(false);
@@ -55,6 +55,12 @@ export class ParrotSearchService {
   // for updating success value from components
   updateSuccess(boolVal){
       this.successSource.next(boolVal);
+      // console.log("successData made it back: " + this.successSource.getValue());
+  }
+
+  // for updating success value from components
+  updateData(strVal){
+      this.dataSource.next(strVal);
       // console.log("successData made it back: " + this.successSource.getValue());
   }
 
