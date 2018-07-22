@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
-import * as _ from 'jquery';
 import {trigger, animate, style, group, query, transition} from '@angular/animations';
+
+import { ParrotSearch } from './parrot-search';
+import { ParrotSearchService } from './parrot-search.service';
+
 
 @Component({
   selector: 'app-root',
@@ -66,6 +69,7 @@ import {trigger, animate, style, group, query, transition} from '@angular/animat
       ])
     ])
    ],
+  providers: [ ParrotSearchService ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

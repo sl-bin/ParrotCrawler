@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { tap, first } from 'rxjs/operators';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
@@ -15,19 +15,58 @@ import { ParrotSearchService } from '../parrot-search.service';
 export class HomeComponent implements OnInit {
 
   homeForm: FormGroup;
+  // loaded: Boolean = false;
+  // success: Boolean = false;
 
-  // states for asynchronous form use
-  loading = false;
-  success = false;
+  // TODO: edit regex to allow for http and www to be left off
+  // from https://gist.github.com/dperini/729294
+  regex = new RegExp(
+    "^" +
+      // protocol identifier
+      "(?:(?:https?|ftp)://)" +
+      // user:pass authentication
+      "(?:\\S+(?::\\S*)?@)?" +
+      "(?:" +
+        // IP address exclusion
+        // private & local networks
+        "(?!(?:10|127)(?:\\.\\d{1,3}){3})" +
+        "(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})" +
+        "(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})" +
+        // IP address dotted notation octets
+        // excludes loopback network 0.0.0.0
+        // excludes reserved space >= 224.0.0.0
+        // excludes network & broacast addresses
+        // (first & last IP address of each class)
+        "(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])" +
+        "(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}" +
+        "(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))" +
+      "|" +
+        // host name
+        "(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)" +
+        // domain name
+        "(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*" +
+        // TLD identifier
+        "(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))" +
+        // TLD may end with dot
+        "\\.?" +
+      ")" +
+      // port number
+      "(?::\\d{2,5})?" +
+      // resource path
+      "(?:[/?#]\\S*)?" +
+    "$", "i"
+  );
 
   constructor(private fb: FormBuilder, private searchService: ParrotSearchService, private router: Router) { }
 
   ngOnInit() {
+    // this.searchService.success.subscribe(success => this.success = success);
+    // this.searchService.loaded.subscribe(loaded => this.loaded = loaded);
+
     this.homeForm = this.fb.group({
       url: ['', [
-        Validators.required
-        // TODO: add url validation
-        // Validators.pattern("^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$")
+        Validators.required,
+        Validators.pattern(this.regex)
       ]],
       n: [1, [
         Validators.required,
@@ -39,6 +78,9 @@ export class HomeComponent implements OnInit {
         Validators.required
       ]]
     });
+
+    this.searchService.updateSuccess(false);
+    this.searchService.updateLoaded(false);
   }
 
   // get methods for passing homeForm members around
@@ -56,19 +98,32 @@ export class HomeComponent implements OnInit {
 
   // submission handler
   async onSubmit() {
-    this.loading = true;
-
     const formValue = this.homeForm.value;
 
+    // for debugging purposes
+    // this.searchService.postSearch( formValue as ParrotSearch).subscribe();
+    // this.success = true;
+    // this.router.navigate(['/waiting']);
+
+    // this try catch is for error handling
     try {
-      await this.searchService.postSearch( formValue as ParrotSearch);
-      this.success = true;
+      await this.searchService.postSearch( formValue as ParrotSearch ).subscribe(
+        (ret) => {
+          // console.log(ret);
+          this.searchService.updateData(ret);
+          this.searchService.updateSuccess(true);
+          this.searchService.updateLoaded(true);
+        },
+        (err) => {
+          console.log(err);
+          this.searchService.updateLoaded(true);
+          this.router.navigate(['/error']);
+        }
+      );
       this.router.navigate(['/waiting']);
     } catch(err) {
       console.log(err);
       this.router.navigate(['/error']);
     }
-
-    this.loading = false;
   };
 }

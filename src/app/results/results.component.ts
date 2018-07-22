@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { ParrotSearch } from '../parrot-search';
+import { ParrotSearchService } from '../parrot-search.service';
+
 @Component({
   selector: 'app-results',
   templateUrl: './results.component.html',
@@ -7,9 +10,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ResultsComponent implements OnInit {
 
-  constructor() { }
+  data: string;
+
+  constructor(private searchService: ParrotSearchService) { }
 
   ngOnInit() {
+    this.searchService.data.subscribe((success) => {this.data = success});
   }
 
 }
