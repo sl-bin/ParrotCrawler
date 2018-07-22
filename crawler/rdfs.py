@@ -14,7 +14,7 @@ import copy
 
 # VALIDATE ARGS
 if len(sys.argv) < 3:
-	print("\tUsage: dfs.py [starting URL] [depth] [query (optional)]")
+	print("\tUsage: rdfs.py [starting URL] [depth] [query (optional)]")
 	sys.exit(2)
 
 URLParam = str(sys.argv[1])
