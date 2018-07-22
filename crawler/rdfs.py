@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 import json
 import copy
 
+
 # VALIDATE ARGS
 if len(sys.argv) < 3:
 	print("\tUsage: rdfs.py [starting URL] [depth] [query (optional)]")
@@ -45,7 +46,7 @@ data['input']['type'] = "DFSrand"
 data['input']['search'] = queryParam
 
 data['dimensions'] = {}
-data['dimensions']['height'] = 0
+data['dimensions']['height'] = 1
 data['dimensions']['width'] = 0
 
 data['results'] = []
@@ -92,7 +93,7 @@ while currentDepth < targetDepth:
 		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
 		# Page was successfully opened --> convert to bs4 object.
-		currentPage = BeautifulSoup(currentHTML.read(), "html5lib")
+		currentPage = BeautifulSoup(currentHTML.read(), "html.parser")
 
 		# 2. COLLECT PAGE DATA:
 
@@ -122,7 +123,7 @@ while currentDepth < targetDepth:
 
 		#	if item['href'][0] == "/":		# Append href value to parent URL, if necessary
 		#		childURL = str(urllib.parse.urljoin(currentURL, item['href']))
-
+				
 			else:
 			#	childURL = item['href']
 				childURL = str(urllib.parse.urljoin(currentURL, item['href']))
@@ -172,14 +173,14 @@ while currentDepth < targetDepth:
 					# If our final attempt to correct the URL succeeded, import the page.
 					childRes = childHTML.info()
 					childType = childRes.get_content_type()
-					childPage = BeautifulSoup(childHTML.read(), "html5lib")
+					childPage = BeautifulSoup(childHTML.read(), "html.parser")
 					if childPage.title is None: childTitle = "No Title"
 					else: childTitle = childPage.title.getText()
 			else:
 				childRes = childHTML.info()
 				childType = childRes.get_content_type()
 
-				childPage = BeautifulSoup(childHTML.read(), "html5lib")
+				childPage = BeautifulSoup(childHTML.read(), "html.parser")
 				if childPage.title is None: childTitle = "No Title"
 				else: childTitle = childPage.title.getText()
 			# END OF HTML ERROR HANDLING ------------------------------------------
@@ -189,7 +190,7 @@ while currentDepth < targetDepth:
 			childNode['depth'] = currentDepth + 1
 			childNode['title'] = childTitle
 
-
+					
 			childNode['url'] = childURL
 			childNode['dead'] = isDead
 			childNode['found'] = hasQuery
