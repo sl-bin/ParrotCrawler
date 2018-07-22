@@ -91,14 +91,19 @@ function pyParrotCrawl(res, searchTerms) {
 
   console.log("Node: Calling crawler");
   //call crawl script and pass it the search terms
-  PythonShell.run(scriptToRun, options, function(err, searchRes) {
-    if(err) {
-      throw err;
-    }
-    else {
-      sendResults(res, searchRes);
-    }
-  });
+  try{
+    PythonShell.run(scriptToRun, options, function(err, searchRes) {
+      if(err) {
+        throw err;
+      }
+      else {
+        sendResults(res, searchRes);
+      }
+    });
+  } catch {
+    console.log(err);
+    res.sendStatus(500).end();
+  }
 }
 
 //------------  Send results function ------------//
