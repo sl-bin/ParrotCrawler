@@ -18,7 +18,7 @@ const httpOptions = {
 export class ParrotSearchService {
 
   // node route URL to accept search POST request
-  private nodeURL = "http://localhost:4220/api/search";
+  private nodeURL = "http://parrotcrawl.webfactional.com/api";
 
   private dataSource = new BehaviorSubject("null");
   data = this.dataSource.asObservable();

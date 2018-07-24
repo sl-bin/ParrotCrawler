@@ -12,27 +12,27 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //------------  Server Routes ------------//
-//listen on port 8000 for post requests
-app.listen(4220, () => {
-  console.log('ParrotServe started on port http://localhost:4220!');
+//listen for post requests
+app.listen('12296', () => {
+  console.log('ParrotServe started!');
 });
 
 
 //recieve the POST search request from the frontend
-app.route('/api/search').post((req,res) => {
+app.route('/').post((req,res) => {
   var searchJSON = req.body;
 
   // trace statements for testing that JSON received is correct
-  // var searchString = JSON.stringify(searchJSON);
-  // console.log("Node: POST received with values: " + searchString);
-  // var startURL = searchJSON.url;
-  // var nDepth = searchJSON.n;
-  // var phrase = searchJSON.searchPhrase;
-  // var type = searchJSON.searchType;
-  // console.log("startURL: " + startURL);
-  // console.log("nDepth: " + nDepth);
-  // console.log("searchPhrase: " + phrase);
-  // console.log("searchType: " + type);
+  var searchString = JSON.stringify(searchJSON);
+  console.log("Node: POST received with values: " + searchString);
+  var startURL = searchJSON.url;
+  var nDepth = searchJSON.n;
+  var phrase = searchJSON.searchPhrase;
+  var type = searchJSON.searchType;
+  console.log("startURL: " + startURL);
+  console.log("nDepth: " + nDepth);
+  console.log("searchPhrase: " + phrase);
+  console.log("searchType: " + type);
 
   try{
     // call the parrot crawl function
@@ -82,7 +82,7 @@ function pyParrotCrawl(res, searchTerms) {
   var options = {
       mode: 'text',
       //we will need to change this depending on where python interpreter is installed
-      pythonPath: '/usr/local/bin/python3.7',
+      pythonPath: 'python3',
       pythonOptions: ['-u'],
       //can change depending on the directory the scripts are held in
       scriptPath: './crawler/',
@@ -91,19 +91,14 @@ function pyParrotCrawl(res, searchTerms) {
 
   console.log("Node: Calling crawler");
   //call crawl script and pass it the search terms
-  try{
-    PythonShell.run(scriptToRun, options, function(err, searchRes) {
-      if(err) {
-        throw err;
-      }
-      else {
-        sendResults(res, searchRes);
-      }
-    });
-  } catch {
-    console.log(err);
-    res.sendStatus(500).end();
-  }
+  PythonShell.run(scriptToRun, options, function(err, searchRes) {
+     if(err) {
+       throw err;
+     }
+     else {
+       sendResults(res, searchRes);
+     }
+   });
 }
 
 //------------  Send results function ------------//

@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # DFS Webcrawler Implementation ------------------------------------------------
 #
 #	To execute, use the following argument format:
@@ -93,7 +94,7 @@ while currentDepth < targetDepth:
 		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
 		# Page was successfully opened --> convert to bs4 object.
-		currentPage = BeautifulSoup(currentHTML.read(), "html.parser")
+		currentPage = BeautifulSoup(currentHTML.read(), "html5lib")
 
 		# 2. COLLECT PAGE DATA:
 
@@ -173,14 +174,14 @@ while currentDepth < targetDepth:
 					# If our final attempt to correct the URL succeeded, import the page.
 					childRes = childHTML.info()
 					childType = childRes.get_content_type()
-					childPage = BeautifulSoup(childHTML.read(), "html.parser")
+					childPage = BeautifulSoup(childHTML.read(), "html5lib")
 					if childPage.title is None: childTitle = "No Title"
 					else: childTitle = childPage.title.getText()
 			else:
 				childRes = childHTML.info()
 				childType = childRes.get_content_type()
 
-				childPage = BeautifulSoup(childHTML.read(), "html.parser")
+				childPage = BeautifulSoup(childHTML.read(), "html5lib")
 				if childPage.title is None: childTitle = "No Title"
 				else: childTitle = childPage.title.getText()
 			# END OF HTML ERROR HANDLING ------------------------------------------

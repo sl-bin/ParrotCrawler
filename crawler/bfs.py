@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import sys
 import urllib.request
 from bs4 import BeautifulSoup
@@ -94,7 +95,7 @@ while len(PagesToCrawl) > 0 and PagesToCrawl[0][1] <= targetDepth:
 		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
 		# Page was successfully opened --> convert to bs4 object.
-		currentPage = BeautifulSoup(currentHTML.read(), "html.parser")
+		currentPage = BeautifulSoup(currentHTML.read(), "html5lib")
 		if currentPage.title is None: currentTitle = "No Title"
 		else: currentTitle = currentPage.title.getText()
 
@@ -141,5 +142,5 @@ while len(PagesToCrawl) > 0 and PagesToCrawl[0][1] <= targetDepth:
 data['dimensions']['height'] = currentDepth + 1
 data['dimensions']['width'] = maxWidth
 
-print("Hello from before json dump!")
+# print("Hello from before json dump!")
 print(json.dumps(data))
