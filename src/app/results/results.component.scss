@@ -1,0 +1,143 @@
+/* sets up look of header/navbar */
+nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  border-bottom: solid 2px #222;
+  padding-right: 20vh;
+
+  .navRight {
+    float: right;
+  }
+
+  .navLeft {
+    float: left;
+  }
+}
+
+/* styles the buttons on the nav */
+.navItem {
+  font-size: 35px;
+  float: right;
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  border-left: solid 4px #222;
+  border-right: solid 4px #222;
+  outline: none;
+}
+
+.navItem:hover {
+  color: #333;
+  background-color: #AAA;
+}
+
+/* note how badly these classes/selectors are named :) */
+
+/* styles the div that contains the zoom buttons and the border */
+.zooms {
+  margin: 40px;
+  position: fixed;
+  top: 75vh;
+  right: 2vw;
+  border: solid 2px white;
+  border-radius: 120px;
+}
+
+/* styles the zoom in button (makes it a half circle) */
+.zoomIn {
+  background: #111;
+  background: -webkit-linear-gradient(#111, #3F3F3F); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#111, #3F3F3F); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#111, #3F3F3F); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#111, #3F3F3F); /* Standard syntax */
+  display: inline-block;
+  border-bottom-left-radius: 120px;
+  border-top-left-radius: 120px;
+  height: 120px;
+  width: 60px;
+  margin: 2px;
+}
+
+.zoomIn:active {
+  background: -webkit-linear-gradient(#3F3F3F, white); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#3F3F3F, white); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#3F3F3F, white); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#3F3F3F, white); /* Standard syntax */
+  display: inline-block;
+}
+
+/* styles the zoom out button (make it a half circle) */
+.zoomOut {
+  background: #111;
+  background: -webkit-linear-gradient(#111, #3F3F3F); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#111, #3F3F3F); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#111, #3F3F3F); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#111, #3F3F3F); /* Standard syntax */
+  display: inline-block;
+  border-bottom-right-radius: 120px;
+  border-top-right-radius: 120px;
+  height: 120px;
+  width: 60px;
+  margin: 2px;
+}
+
+.zoomOut:active {
+  background: -webkit-linear-gradient(#3F3F3F, white); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#3F3F3F, white); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#3F3F3F, white); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#3F3F3F, white); /* Standard syntax */
+  display: inline-block;
+}
+
+/* a class that controls the + and - text within the buttons
+adds text stroke and cneters mostly*/
+.zoom {
+  text-align: center;
+  font-size: 90px;
+  color: white;
+  -webkit-text-stroke-width: 4px;
+  -webkit-text-stroke-color: #121212;
+}
+
+/* centers the plus sign
+(this is a bad way to do it and was only for the mockup)
+the probelm with this is that it will not display the
+same for all browsers but vertical alignment is tough
+no matter how you do it*/
+.plus {
+  position: relative;
+  top: -8px;
+  outline: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+.plus:active {
+  color: #121212;
+}
+
+/* centers the minus sign
+(like above this is a bad way to do it and was only for the mockup)
+the probelm with this is that it will not display the
+same for all browsers but vertical alignment is tough
+no matter how you do it*/
+.minus {
+  position: relative;
+  top: -16px;
+  outline: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+.minus:active {
+  color: #121212;
+}

@@ -1,0 +1,42 @@
+###ignore all
+*
+
+###unignore subdirectories
+!*/
+
+###unignore items with extentions
+!*.*
+!makefile
+
+##ignore OS generated files
+.DS_Store
+*.dSYM
+
+#ignore gcov files
+*.gcov
+*.gcda
+*.gcno
+*.out
+
+# ignore log files and databases
+*.log
+*.sql
+*.sqlite
+
+# ignore compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# ignore packaged files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
