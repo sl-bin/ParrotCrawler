@@ -17,8 +17,14 @@ const httpOptions = {
 @Injectable({ providedIn: 'root' })
 export class ParrotSearchService {
 
+  //*vvvvvvvvvvvv*THIS MUST BE CHANGED FOR PROD VERSION*vvvvvvvvvvvv*//
+
+  // change to "http://parrotcrawl.webfactional.com/api"
+
   // node route URL to accept search POST request
-  private nodeURL = "http://parrotcrawl.webfactional.com/api";
+  private nodeURL = "http://localhost:12296/";
+
+  //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR PROD VERSION*^^^^^^^^^^^^*//
 
   private dataSource = new BehaviorSubject("null");
   data = this.dataSource.asObservable();
