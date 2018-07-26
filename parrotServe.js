@@ -80,7 +80,7 @@ function pyParrotCrawl(res, searchTerms) {
   //set up pyshell for a run
   var PythonShell = require('python-shell');
   var options = {
-      mode: 'text',
+      mode: 'json',
       //we will need to change this depending on where python interpreter is installed
       pythonPath: 'python3',
       pythonOptions: ['-u'],
