@@ -43,7 +43,7 @@ data = {}
 data['input'] = {}
 data['input']['url'] = currentURL
 data['input']['n'] = targetDepth
-data['input']['type'] = "DFSrand"
+data['input']['type'] = "rdfs"
 data['input']['search'] = queryParam
 
 data['dimensions'] = {}

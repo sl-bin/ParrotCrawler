@@ -36,7 +36,7 @@ data = {}
 data['input'] = {}
 data['input']['url'] = currentURL
 data['input']['n'] = targetDepth
-data['input']['type'] = "DFSrand"
+data['input']['type'] = "bfs"
 data['input']['search'] = queryParam
 
 data['dimensions'] = {}
@@ -111,7 +111,7 @@ while len(PagesToCrawl) > 0 and PagesToCrawl[0][1] <= targetDepth:
 	data['results'][currentID]['dead'] = isDead
 
 	# --> If we are at target depth OR page is dead, we don't want to collect child URL data.
-	if isDead != 1 or currentDepth != targetDepth:
+	if isDead != 1 and currentDepth < targetDepth:
 		links = currentPage.find_all("a", href=True)
 		data['results'][currentID]['links'] = len(links)
 
