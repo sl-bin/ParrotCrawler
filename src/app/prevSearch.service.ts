@@ -3,7 +3,7 @@
 //and injects them into a drop-down on the search form page
 
 import { Inject, Injectable } from '@angular/core';
-import { LOCAL_STORAGE, StorageService } from '../../node_modules/angular-webstorage-service';;
+import { LOCAL_STORAGE, StorageService } from '../../node_modules/angular-web_storage-service';;
 import { ParrotSearch } from './parrot-search';
 
 
@@ -37,5 +37,6 @@ export class LocalStorageService {
       this.data[i] = this.storage.get(String(i));
       console.log(i + ": " + this.data[i]);
     }
+
   }
 }

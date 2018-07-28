@@ -14,8 +14,7 @@ import { ResultsComponent } from './results/results.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { ErrorComponent } from './error/error.component';
-
-import { StorageServiceModule } from '../../node_modules/angular-webstorage-service';
+import { StorageServiceModule } from '../../node_modules/angular-web_storage-service';
 
 
 @NgModule({
