@@ -12,6 +12,38 @@ from bs4 import BeautifulSoup
 import json
 import copy
 
+import re
+import string
+
+
+def relevant_text(tag):
+	return	tag.name == "title" or\
+			tag.name == "p" or\
+			tag.name == "div" or\
+			tag.name == "span" or\
+			tag.name == "h1" or\
+			tag.name == "h2" or\
+			tag.name == "h3" or\
+			tag.name == "h4" or\
+			tag.name == "h5" or\
+			tag.name == "h6"
+
+def querySearch(page, query):
+	betterText = ""
+	for each in page.find_all(relevant_text):
+		betterText += each.get_text()
+
+	# Can be deleted after testing/verification of return text.
+	#newText = betterText.replace("\n", " ")
+	#print(newText)
+
+	result = betterText.find(query)
+	if result >= 0: hasQuery = 1
+	else: hasQuery = 0
+
+	return hasQuery
+
+#----------------------------------------------------------------------
 
 # VALIDATE ARGS
 if len(sys.argv) < 3:
@@ -75,15 +107,11 @@ while currentDepth < targetDepth:
 	try:
 		currentHTML = opener.open(currentURL)
 	except urllib.error.HTTPError as err:
-		# --> Handle HTTP error page data here.
-		# If this error hits, it should be the starting page.
 		data['results'][currentID]['title'] = "Parent site invalid."
 		data['results'][currentID]['dead'] = 1
 		sys.exit(2)
 
 	except urllib.error.URLError:
-		# --> Handle URL error page data here.
-		# If this error hits, it should be the starting page.
 		data['results'][currentID]['title'] = "Parent site invalid."
 		data['results'][currentID]['dead'] = 1
 		sys.exit(2)
@@ -98,7 +126,8 @@ while currentDepth < targetDepth:
 
 		# 2. COLLECT PAGE DATA:
 
-		# --> Search for user query here <--#
+		# Search for Query Term
+		if queryParam: hasQuery = querySearch(currentPage, queryParam)
 
 		# Scrape links from page:
 		links = currentPage.find_all("a", href=True)
@@ -138,15 +167,11 @@ while currentDepth < targetDepth:
 			try:
 				childHTML = opener.open(childURL)
 			except urllib.error.HTTPError as err:
-				# --> Handle child HTTP error page data here.
-				#print(err)
 				isDead = 1
 				childTitle = str(err)
 				pass
 
 			except urllib.error.URLError:
-				# --> Handle URL error page data here.
-				#print("Incorrect Domain or Server Down.")
 				isDead = 1
 				childTitle = "Incorrect Domain/Server Down"
 				pass
@@ -184,6 +209,7 @@ while currentDepth < targetDepth:
 				childPage = BeautifulSoup(childHTML.read(), "html5lib")
 				if childPage.title is None: childTitle = "No Title"
 				else: childTitle = childPage.title.getText()
+				if queryParam: hasQuery = querySearch(childPage, queryParam)
 			# END OF HTML ERROR HANDLING ------------------------------------------
 
 			# COLLECT CHILD PAGE DATA:
