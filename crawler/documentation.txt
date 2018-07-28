@@ -3,7 +3,7 @@ RDFS CRAWLER -------------------------------------------------------------------
 INPUT
 -->     Each crawler script utilizes command line arguments in order to fetch data.
 -->     Calling a script without arguments will provide usage instructions.
-            ie. >> dfs.py
+            ie. >> rdfs.py
                 >> Usage: rdfs.py [starting URL] [depth] [query term (optional)]
 
 OUTPUT
