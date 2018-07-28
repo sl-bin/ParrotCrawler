@@ -23,16 +23,16 @@ app.route('/').post((req,res) => {
   var searchJSON = req.body;
 
   // trace statements for testing that JSON received is correct
-  var searchString = JSON.stringify(searchJSON);
-  console.log("Node: POST received with values: " + searchString);
-  var startURL = searchJSON.url;
-  var nDepth = searchJSON.n;
-  var phrase = searchJSON.searchPhrase;
-  var type = searchJSON.searchType;
-  console.log("startURL: " + startURL);
-  console.log("nDepth: " + nDepth);
-  console.log("searchPhrase: " + phrase);
-  console.log("searchType: " + type);
+  // var searchString = JSON.stringify(searchJSON);
+  // console.log("Node: POST received with values: " + searchString);
+  // var startURL = searchJSON.url;
+  // var nDepth = searchJSON.n;
+  // var phrase = searchJSON.searchPhrase;
+  // var type = searchJSON.searchType;
+  // console.log("startURL: " + startURL);
+  // console.log("nDepth: " + nDepth);
+  // console.log("searchPhrase: " + phrase);
+  // console.log("searchType: " + type);
 
   try{
     // call the parrot crawl function
@@ -96,13 +96,13 @@ function pyParrotCrawl(res, searchTerms) {
        throw err;
      }
      else {
-       sendResults(res, searchRes);
+       sendResults(res, searchRes[0]);
      }
    });
 }
 
 //------------  Send results function ------------//
 function sendResults(res, sRes) {
-  console.log(sRes);
+  console.log(JSON.stringify(sRes));
   res.send(sRes).end();
 }

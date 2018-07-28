@@ -4,7 +4,7 @@ import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
 import { ParrotSearch } from './parrot-search';
-// import { ParrotReturn } from './parrot-return';
+import { ParrotReturn } from './parrot-return';
 
 // the http headers that define the content type
 const httpOptions = {
@@ -73,7 +73,7 @@ export class ParrotSearchService {
   // method to recieve search input from form and POST to given URL
    postSearch(search: ParrotSearch): Observable<ParrotSearch> {
 
-    console.log('Here we are in Angular, and the data sent to node is: ' + JSON.stringify(search));
+    // console.log('Here we are in Angular, and the data sent to node is: ' + JSON.stringify(search));
     //and make the post request
     return this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions).pipe(
       catchError(this.handleError)

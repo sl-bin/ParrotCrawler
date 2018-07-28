@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
+import * as $ from 'jquery';
+
 import { ParrotSearch } from '../parrot-search';
+import { ParrotReturn } from '../parrot-return';
 import { ParrotSearchService } from '../parrot-search.service';
 
 @Component({
@@ -10,12 +13,20 @@ import { ParrotSearchService } from '../parrot-search.service';
 })
 export class ResultsComponent implements OnInit {
 
-  data: string;
+  data: ParrotReturn;
 
   constructor(private searchService: ParrotSearchService) { }
 
   ngOnInit() {
-    this.searchService.data.subscribe((success) => {this.data = success});
+    this.searchService.data.subscribe((success) => {this.data = JSON.parse(success)});
+    // console.log(this.data);
+    this.buildPage();
   }
+
+  buildPage() {
+    $( '.girdDisplay' ).text("TEST\nTEST\nTEST\nTEST\nTEST\nTEST\nTEST");
+  }
+
+
 
 }

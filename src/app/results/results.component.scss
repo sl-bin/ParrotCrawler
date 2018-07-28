@@ -141,3 +141,37 @@ no matter how you do it*/
 .minus:active {
   color: #121212;
 }
+
+.input {
+  top: 0;
+  right: 0;
+  border: 6px solid #222;
+  min-width: 20%;
+  max-width: 20%;
+  min-height: 10%;
+  background-color: #333;
+  padding: 4px;
+  text-align: center;
+}
+
+.gridDisplay {
+  top: 0;
+  width: 100%;
+  font-size: 3em;
+}
+
+// .topNode {
+//
+// }
+//
+// .node {
+//
+// }
+//
+// .broken {
+//
+// }
+//
+// .found {
+//
+// }
