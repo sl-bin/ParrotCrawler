@@ -15,6 +15,9 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { ErrorComponent } from './error/error.component';
 
+import { StorageServiceModule } from '../../node_modules/angular-webstorage-service';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,7 +34,8 @@ import { ErrorComponent } from './error/error.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    StorageServiceModule
   ],
   providers: [],
   bootstrap: [AppComponent]
