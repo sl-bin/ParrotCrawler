@@ -24,7 +24,7 @@ export class ResultsComponent implements OnInit {
   }
 
   buildPage() {
-    $( '.girdDisplay' ).text("TEST\nTEST\nTEST\nTEST\nTEST\nTEST\nTEST");
+    $( '.gridDisplay' ).text(JSON.stringify(this.data.results));
   }
 
 
