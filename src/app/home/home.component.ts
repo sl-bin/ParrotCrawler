@@ -5,6 +5,7 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { ParrotSearch } from '../parrot-search';
 import { ParrotSearchService } from '../parrot-search.service';
+import { LocalStorageService } from '../prevSearch.service';
 
 @Component({
   selector: 'app-home',
@@ -57,7 +58,7 @@ export class HomeComponent implements OnInit {
     "$", "i"
   );
 
-  constructor(private fb: FormBuilder, private searchService: ParrotSearchService, private router: Router) { }
+  constructor(private fb: FormBuilder, private searchService: ParrotSearchService, private searchStorage: LocalStorageService, private router: Router) { }
 
   ngOnInit() {
     // this.searchService.success.subscribe(success => this.success = success);
@@ -78,6 +79,9 @@ export class HomeComponent implements OnInit {
         Validators.required
       ]]
     });
+
+    //get the searches from localStorage
+    this.searchStorage.getFromLocal();
 
     this.searchService.updateSuccess(false);
     this.searchService.updateLoaded(false);
@@ -104,6 +108,9 @@ export class HomeComponent implements OnInit {
     // this.searchService.postSearch( formValue as ParrotSearch).subscribe();
     // this.success = true;
     // this.router.navigate(['/waiting']);
+
+    //save the search in localStorage
+    this.searchStorage.saveInLocal( formValue as ParrotSearch );
 
     // this try catch is for error handling
     try {
