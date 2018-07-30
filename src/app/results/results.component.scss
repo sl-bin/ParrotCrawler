@@ -143,8 +143,9 @@ no matter how you do it*/
 }
 
 .input {
-  top: 0;
-  right: 0;
+  z-index: 99;
+  position: fixed;
+  margin: 0;
   border: 6px solid #222;
   min-width: 20%;
   max-width: 20%;
@@ -154,29 +155,43 @@ no matter how you do it*/
   text-align: center;
 }
 
-.gridDisplay {
-  font-size: 2vw !important;
-  top: 0;
-  width: 100%;
-  max-width: 100%;
-  height: 105%;
-  max-height: 105%;
-  font-size: 3em;
-  overflow: scroll;
+.hidden {
+  display: none;
 }
 
-// .topNode {
-//
-// }
-//
-// .node {
-//
-// }
-//
-// .broken {
-//
-// }
-//
-// .found {
-//
-// }
+.gridDisplay {
+  display: grid;
+  font-size: 15px;
+  margin-top: 50px;
+  height: 100%;
+  width: 100%;
+  -webkit-transform: scale(1);
+  transform: scale(1);
+  text-align: center;
+}
+
+.gridNode {
+  overflow: auto;
+  border-radius: 10px;
+  margin: 0 2px;
+}
+
+.normalNode {
+  background-color: #7faef9;
+  border: 6px solid #3c6bb7;
+  border-radius: 10px;
+}
+
+.topNode {
+  background-color: #7faef9;
+  border: 6px solid #3c6bb7;
+  border-radius: 10px;
+}
+
+.broken {
+
+}
+
+.found {
+
+}
