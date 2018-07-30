@@ -72,11 +72,46 @@ export class ResultsComponent implements OnInit {
         );
       }
 
-      
+
 
     }
 
     $( ".gridDisplay" ).css("grid-template-rows","repeat(" + String((data.dimensions.height*2)+1) + ", 150px 75px)");
     $( ".gridDisplay" ).css("grid-template-columns","repeat(" + String(data.dimensions.width+2) + ", 300px)");
   }
+
+  zoomIn() {
+    switch($(".gridDisplay").attr("class")) {
+      case "gridDisplay out1": $(".gridDisplay").removeClass("out1").addClass("out2");
+      break;
+      case "gridDisplay out2": $(".gridDisplay").removeClass("out2").addClass("out3");
+      break;
+      case "gridDisplay out3": $(".gridDisplay").removeClass("out3").addClass("noZoom");
+      break;
+      case "gridDisplay noZoom": $(".gridDisplay").removeClass("noZoom").addClass("in1");
+      break;
+      case "gridDisplay in1": $(".gridDisplay").removeClass("in1").addClass("in2");
+      break;
+      case "gridDisplay in2":
+      break;
+    }
+  }
+
+  zoomOut() {
+    switch($(".gridDisplay").attr("class")) {
+      case "gridDisplay out1":
+      break;
+      case "gridDisplay out2": $(".gridDisplay").removeClass("out2").addClass("out1");
+      break;
+      case "gridDisplay out3": $(".gridDisplay").removeClass("out3").addClass("out2");
+      break;
+      case "gridDisplay noZoom": $(".gridDisplay").removeClass("noZoom").addClass("out3");
+      break;
+      case "gridDisplay in1": $(".gridDisplay").removeClass("in1").addClass("noZoom");
+      break;
+      case "gridDisplay in2": $(".gridDisplay").removeClass("in2").addClass("in1");
+      break;
+    }
+  }
+
 }

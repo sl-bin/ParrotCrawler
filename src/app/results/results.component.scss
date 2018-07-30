@@ -17,6 +17,10 @@ nav {
   }
 }
 
+// .viewWindow {
+//   height: 90vh;
+// }
+
 /* styles the buttons on the nav */
 .navItem {
   font-size: 35px;
@@ -162,12 +166,45 @@ no matter how you do it*/
 .gridDisplay {
   display: grid;
   font-size: 15px;
-  margin-top: 50px;
   height: 100%;
   width: 100%;
+  text-align: center;
+}
+
+.out1 {
+  -webkit-transform: scale(.12);
+  transform: scale(.12);
+  margin-top: -100px;
+}
+
+.out2 {
+  -webkit-transform: scale(.25);
+  transform: scale(.25);
+  margin-top: -50px;
+}
+
+.out3 {
+  -webkit-transform: scale(.5);
+  transform: scale(.5);
+  margin-top: 0px;
+}
+
+.noZoom {
   -webkit-transform: scale(1);
   transform: scale(1);
-  text-align: center;
+  margin-top: 50px;
+}
+
+.in1 {
+  -webkit-transform: scale(1.5);
+  transform: scale(1.5);
+  margin-top: 200px;
+}
+
+.in2 {
+  -webkit-transform: scale(2);
+  transform: scale(2);
+  margin-top: 400px;
 }
 
 .gridNode {

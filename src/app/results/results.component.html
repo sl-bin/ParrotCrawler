@@ -14,11 +14,10 @@
     <h4>{{ data.input.type }}</h4>
     <h4>{{ data.input.search }}</h4>
   </div>
-  <!-- <h1>{{ data }}</h1> -->
-  <div class="gridDisplay"></div>
+  <div class="gridDisplay noZoom"></div>
   <div class="zooms">
-    <div class="zoomIn"><h1 class="zoom plus">+</h1></div>
-    <div class="zoomOut"><h1 class="zoom minus">-</h1></div>
+    <div class="zoomIn" (click)="zoomIn()"><h1 class="zoom plus">+</h1></div>
+    <div class="zoomOut" (click)="zoomOut()"><h1 class="zoom minus">-</h1></div>
   </div>
 </div>
 
