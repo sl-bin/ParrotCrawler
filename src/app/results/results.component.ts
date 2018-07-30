@@ -68,7 +68,7 @@ export class ResultsComponent implements OnInit {
         );
       } else {
         $("#node" + String(Math.floor(((data.dimensions.width+2)*2)+1 + i))).append(
-          v
+          "<p>links: "+ data.results[data.results[0].children[i-1]].links + "</p>"
         );
       }
 
