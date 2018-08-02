@@ -63,6 +63,7 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 nextID = 1
 currentID = 0
 currentURL = URLParam
+currentWidth = 0
 currentDepth = 0
 targetDepth = depthParam
 isDead = 0
@@ -153,7 +154,7 @@ while currentDepth < targetDepth:
 
 		#	if item['href'][0] == "/":		# Append href value to parent URL, if necessary
 		#		childURL = str(urllib.parse.urljoin(currentURL, item['href']))
-				
+
 			else:
 			#	childURL = item['href']
 				childURL = str(urllib.parse.urljoin(currentURL, item['href']))
@@ -217,7 +218,7 @@ while currentDepth < targetDepth:
 			childNode['depth'] = currentDepth + 1
 			childNode['title'] = childTitle
 
-					
+
 			childNode['url'] = childURL
 			childNode['dead'] = isDead
 			childNode['found'] = hasQuery
@@ -272,7 +273,7 @@ for each in data['results']:
 	if each['links'] > 0:
 		data['dimensions']['width'] += each['links'] - 1
 
-data['dimensions']['height'] = currentDepth
-data['dimensions']['width'] = maxWidth
+data['dimensions']['height'] = currentDepth + 1
+# data['dimensions']['width'] = maxWidth
 
 print(json.dumps(data))
