@@ -99,7 +99,7 @@ while len(PagesToCrawl) > 0 and PagesToCrawl[0][1] <= targetDepth:
 		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
 		# Page was successfully opened --> convert to bs4 object.
-		currentPage = BeautifulSoup(currentHTML.read(), "html5lib")
+		currentPage = BeautifulSoup(currentHTML.read(), "lxml")
 		if currentPage.title is None: currentTitle = "No Title"
 		else: currentTitle = currentPage.title.getText()
 
