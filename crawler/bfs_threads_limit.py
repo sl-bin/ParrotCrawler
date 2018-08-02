@@ -134,8 +134,9 @@ def crawl(newPage):
 				currentWidth += 1
 				parentNode['links'] += 1
 
-		with maxWidth_lock:
-			if currentWidth > maxWidth: maxWidth = currentWidth
+#		if currentWidth < 1: currentWidth = 1	# Min width must be 1
+#		with maxWidth_lock:
+#			if currentWidth > maxWidth: maxWidth = currentWidth
 
 	# APPEND NODE DATA TO RESULT SET
 	with data_lock:
@@ -180,7 +181,7 @@ data['input']['search'] = queryParam
 
 data['dimensions'] = {}
 data['dimensions']['height'] = 1
-data['dimensions']['width'] = 0
+data['dimensions']['width'] = 1
 
 data['results'] = []
 
@@ -210,7 +211,10 @@ PagesToCrawl.join()
 
 # Append Final Info to Data Set
 data['dimensions']['height'] = data['results'][-1]['depth'] + 1
-data['dimensions']['width'] = maxWidth
+
+for each in data['results']:
+	if each['links'] > 0:
+		data['dimensions']['width'] += each['links'] - 1
 
 data['results'].sort(key=getID)
 

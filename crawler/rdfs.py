@@ -80,7 +80,7 @@ data['input']['search'] = queryParam
 
 data['dimensions'] = {}
 data['dimensions']['height'] = 1
-data['dimensions']['width'] = 0
+data['dimensions']['width'] = 1
 
 data['results'] = []
 
@@ -249,12 +249,12 @@ while currentDepth < targetDepth:
 
 
 		# APPEND CHILD NODES TO DATASET
-		currentWidth = 1	# <-- Account for parent node already in dataset.
+	#	currentWidth = 1	# <-- Account for parent node already in dataset.
 		for each in childrenNodes:
 			data['results'].append(copy.deepcopy(each))
 			currentWidth += 1
 
-		if currentWidth > maxWidth: maxWidth = currentWidth
+	#	if currentWidth > maxWidth: maxWidth = currentWidth
 
 		# Swap first child ID/position with new parent.
 		data['results'][(nextParent['id'])]['id'], data['results'][(childrenNodes[0]['id'])]['id'] = data['results'][(childrenNodes[0]['id'])]['id'], data['results'][(nextParent['id'])]['id']
@@ -267,6 +267,10 @@ while currentDepth < targetDepth:
 		isDead = 0
 		hasQuery = 0
 		currentDepth += 1
+
+for each in data['results']:
+	if each['links'] > 0:
+		data['dimensions']['width'] += each['links'] - 1
 
 data['dimensions']['height'] = currentDepth
 data['dimensions']['width'] = maxWidth
