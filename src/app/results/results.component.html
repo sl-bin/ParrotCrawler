@@ -11,7 +11,7 @@
   <div class="input">
     <h4>{{ data.input.url }}</h4>
     <h4>N = {{ data.input.n }}</h4>
-    <h4>{{ data.input.type }}</h4>
+    <h4>{{ data.input.type | uppercase }}</h4>
     <h4>{{ data.input.search }}</h4>
   </div>
   <div class="gridDisplay noZoom"></div>
@@ -22,3 +22,4 @@
 </div>
 
 <div class="gridNode hidden"></div>
+<div class="lineGridNode hidden"></div>

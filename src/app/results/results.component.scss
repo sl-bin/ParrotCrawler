@@ -167,6 +167,13 @@ no matter how you do it*/
   text-align: center;
 }
 
+.lineGrid {
+  display: grid;
+  grid-template-rows: 37px 37px;
+  grid-template-columns: 150px 150px;
+  margin: 0;
+}
+
 .out1 {
   -webkit-transform: scale(.12);
   transform: scale(.12);
@@ -204,9 +211,14 @@ no matter how you do it*/
 }
 
 .gridNode {
-  overflow: auto;
+  overflow: hidden;
   border-radius: 10px;
   margin: 0 2px;
+}
+
+.lineGridNodes {
+  overflow: hidden;
+  margin: 0;
 }
 
 .normalNode {
@@ -221,10 +233,30 @@ no matter how you do it*/
   border-radius: 10px;
 }
 
-.broken {
-
+.deadNode {
+  background-color: #7faef9;
+  border: 6px solid #bf202d;
+  border-radius: 10px;
 }
 
-.found {
+.foundNode {
+  background-color: #7faef9;
+  border: 6px solid #388741;
+  border-radius: 10px;
+}
 
+.borderRight {
+  border-right: 1px solid white;
+}
+
+.borderLeft {
+  border-left: 1px solid white;
+}
+
+.borderTop {
+  border-top: 1px solid white;
+}
+
+.borderBottom {
+  border-bottom: 1px solid white;
 }
