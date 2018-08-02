@@ -157,19 +157,19 @@ export class ResultsComponent implements OnInit {
     // call the helper function to build the rest of the tree
     buildHelper(data, 0);
 
-    // temp calculate width
-    var tempWidth: number = 1;
-    for(var i: number=0; i < data.results.length; i++) {
-      if(data.results[i].links > 0) {
-        tempWidth += (data.results[i].links - 1);
-      }
-    }
+    // // temp calculate width
+    // var tempWidth: number = 1;
+    // for(var i: number=0; i < data.results.length; i++) {
+    //   if(data.results[i].links > 0) {
+    //     tempWidth += (data.results[i].links - 1);
+    //   }
+    // }
 
     // set grid dimensions
     $( ".gridDisplay" ).css("grid-template-rows" ,"repeat(" + String((data.dimensions.height*2)+1) + ", 150px 75px)");
-    // $( ".gridDisplay" ).css("grid-template-columns","repeat(" + String(data.dimensions.width+2) + ", 300px)");
+    $( ".gridDisplay" ).css("grid-template-columns","repeat(" + String(data.dimensions.width+2) + ", 300px)");
 
-    $( ".gridDisplay" ).css("grid-template-columns","repeat(" + String(tempWidth + 2) + ", 300px)");
+    // $( ".gridDisplay" ).css("grid-template-columns","repeat(" + String(tempWidth + 2) + ", 300px)");
   }
 
   zoomIn() {
