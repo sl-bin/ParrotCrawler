@@ -27,11 +27,16 @@ body {
   background: #3F3F3F;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
 /* sets the look of the view window
 (this will be where Angular works its magic) */
 .viewWindow {
+  position: relative;
   min-height: 1px;
-  height: 80vh;
+  height: 85vh;
   min-width: 1px;
   width: 96%;
   background: -webkit-linear-gradient(#111, #3F3F3F); /* For Safari 5.1 to 6.0 */
@@ -39,6 +44,7 @@ body {
   background: -moz-linear-gradient(#111, #3F3F3F); /* For Firefox 3.6 to 15 */
   background: linear-gradient(#111, #3F3F3F); /* Standard syntax */
   margin: 2%;
+  overflow: scroll;
 }
 
 .btnDiv {

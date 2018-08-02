@@ -8,9 +8,18 @@
   </ul>
 </nav>
 <div class="viewWindow">
-  <h1>{{ data }}</h1>
+  <div class="input">
+    <h4>{{ data.input.url }}</h4>
+    <h4>N = {{ data.input.n }}</h4>
+    <h4>{{ data.input.type | uppercase }}</h4>
+    <h4>{{ data.input.search }}</h4>
+  </div>
+  <div class="gridDisplay noZoom"></div>
   <div class="zooms">
-    <div class="zoomIn"><h1 class="zoom plus">+</h1></div>
-    <div class="zoomOut"><h1 class="zoom minus">-</h1></div>
+    <div class="zoomIn" (click)="zoomIn()"><h1 class="zoom plus">+</h1></div>
+    <div class="zoomOut" (click)="zoomOut()"><h1 class="zoom minus">-</h1></div>
   </div>
 </div>
+
+<div class="gridNode hidden"></div>
+<div class="lineGridNode hidden"></div>

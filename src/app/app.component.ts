@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import {trigger, animate, style, group, query, transition} from '@angular/animations';
 
+import * as $ from 'jquery';
+
 import { ParrotSearch } from './parrot-search';
 import { ParrotSearchService } from './parrot-search.service';
 
