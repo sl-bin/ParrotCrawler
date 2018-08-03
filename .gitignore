@@ -40,3 +40,6 @@
 *.rar
 *.tar
 *.zip
+
+# ignore python cache files
+__pycache__/

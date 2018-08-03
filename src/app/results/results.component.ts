@@ -22,8 +22,8 @@ export class ResultsComponent implements OnInit {
   constructor(private searchService: ParrotSearchService) { }
 
   ngOnInit() {
-    // this.searchService.data.subscribe((success) => {this.data = JSON.parse(success)});
-    this.data = this.testString;
+    this.searchService.data.subscribe((success) => {this.data = JSON.parse(success)});
+    // this.data = this.testString;
     this.buildPage(this.data);
   }
 
@@ -38,7 +38,11 @@ export class ResultsComponent implements OnInit {
     var buildHelper = function(data: any, idx: number, offset: number) {
       for(var i: number=0; i < data.results[idx].links; i++) {
         // var for getting the correct grid depth for a given node
-        var nodePos = Math.floor(((data.dimensions.width+2) * (data.results[data.results[idx].children[i]].depth * 2)) + 1 + (offset));
+        var nodePos = Math.floor(((data.dimensions.width+2) * (data.results[data.results[idx].children[i]].depth * 2)) + 1);
+
+
+        nodePos += offset;
+
 
 
         // console.log("dem": ((data.dimensions.width+2) * (data.results[data.results[idx].children[i]].depth)));
@@ -117,12 +121,17 @@ export class ResultsComponent implements OnInit {
           );
         }
 
-        console.log("nodePos": nodePos);
-        console.log(nodePos % (data.dimensions.width+2));
+        // used for testing
+        // console.log("nodePos:" + String(nodePos + i));
+        // console.log("offset:" + String(offset));
+        // console.log(((data.dimensions.width+2) * (data.results[data.results[idx].children[i]].depth * 2)) + 1);
+        // console.log("nodePos % depth:" + String(nodePos % (data.dimensions.width+2)));
+
+        nodePos -= offset;
 
         // recursivly build next level of tree
         if(data.results[data.results[idx].children[i]].links !== 0) {
-          buildHelper(data, data.results[idx].children[i], ((nodePos - offset) % (data.dimensions.width+2)));
+          buildHelper(data, data.results[idx].children[i], (nodePos - (((data.dimensions.width+2) * (data.results[data.results[idx].children[i]].depth * 2)) + 1)) + i);
         }
       }
     }
@@ -130,6 +139,7 @@ export class ResultsComponent implements OnInit {
     // clone the blank div into the viewWindow to make the grid
     for(var i: number=0; i < (data.dimensions.height*2)*(data.dimensions.width+2); i++) {
       $(gDiv).clone().appendTo(".gridDisplay").removeClass("hidden").attr("id", "node" + String(i));
+      // .text("node" + String(i))
     }
 
     for(var i: number=1; i <= (data.dimensions.height * 2); i += 2) {
