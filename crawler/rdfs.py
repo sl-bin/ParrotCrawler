@@ -12,6 +12,38 @@ from bs4 import BeautifulSoup
 import json
 import copy
 
+import re
+import string
+
+
+def relevant_text(tag):
+	return	tag.name == "title" or\
+			tag.name == "p" or\
+			tag.name == "div" or\
+			tag.name == "span" or\
+			tag.name == "h1" or\
+			tag.name == "h2" or\
+			tag.name == "h3" or\
+			tag.name == "h4" or\
+			tag.name == "h5" or\
+			tag.name == "h6"
+
+def querySearch(page, query):
+	betterText = ""
+	for each in page.find_all(relevant_text):
+		betterText += each.get_text()
+
+	# Can be deleted after testing/verification of return text.
+	#newText = betterText.replace("\n", " ")
+	#print(newText)
+
+	result = betterText.find(query)
+	if result >= 0: hasQuery = 1
+	else: hasQuery = 0
+
+	return hasQuery
+
+#----------------------------------------------------------------------
 
 # VALIDATE ARGS
 if len(sys.argv) < 3:
@@ -31,6 +63,7 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 nextID = 1
 currentID = 0
 currentURL = URLParam
+currentWidth = 0
 currentDepth = 0
 targetDepth = depthParam
 isDead = 0
@@ -48,7 +81,7 @@ data['input']['search'] = queryParam
 
 data['dimensions'] = {}
 data['dimensions']['height'] = 1
-data['dimensions']['width'] = 0
+data['dimensions']['width'] = 1
 
 data['results'] = []
 
@@ -75,15 +108,11 @@ while currentDepth < targetDepth:
 	try:
 		currentHTML = opener.open(currentURL)
 	except urllib.error.HTTPError as err:
-		# --> Handle HTTP error page data here.
-		# If this error hits, it should be the starting page.
 		data['results'][currentID]['title'] = "Parent site invalid."
 		data['results'][currentID]['dead'] = 1
 		sys.exit(2)
 
 	except urllib.error.URLError:
-		# --> Handle URL error page data here.
-		# If this error hits, it should be the starting page.
 		data['results'][currentID]['title'] = "Parent site invalid."
 		data['results'][currentID]['dead'] = 1
 		sys.exit(2)
@@ -98,7 +127,8 @@ while currentDepth < targetDepth:
 
 		# 2. COLLECT PAGE DATA:
 
-		# --> Search for user query here <--#
+		# Search for Query Term
+		if queryParam: hasQuery = querySearch(currentPage, queryParam)
 
 		# Scrape links from page:
 		links = currentPage.find_all("a", href=True)
@@ -124,7 +154,7 @@ while currentDepth < targetDepth:
 
 		#	if item['href'][0] == "/":		# Append href value to parent URL, if necessary
 		#		childURL = str(urllib.parse.urljoin(currentURL, item['href']))
-				
+
 			else:
 			#	childURL = item['href']
 				childURL = str(urllib.parse.urljoin(currentURL, item['href']))
@@ -138,15 +168,11 @@ while currentDepth < targetDepth:
 			try:
 				childHTML = opener.open(childURL)
 			except urllib.error.HTTPError as err:
-				# --> Handle child HTTP error page data here.
-				#print(err)
 				isDead = 1
 				childTitle = str(err)
 				pass
 
 			except urllib.error.URLError:
-				# --> Handle URL error page data here.
-				#print("Incorrect Domain or Server Down.")
 				isDead = 1
 				childTitle = "Incorrect Domain/Server Down"
 				pass
@@ -184,6 +210,7 @@ while currentDepth < targetDepth:
 				childPage = BeautifulSoup(childHTML.read(), "html5lib")
 				if childPage.title is None: childTitle = "No Title"
 				else: childTitle = childPage.title.getText()
+				if queryParam: hasQuery = querySearch(childPage, queryParam)
 			# END OF HTML ERROR HANDLING ------------------------------------------
 
 			# COLLECT CHILD PAGE DATA:
@@ -191,7 +218,7 @@ while currentDepth < targetDepth:
 			childNode['depth'] = currentDepth + 1
 			childNode['title'] = childTitle
 
-					
+
 			childNode['url'] = childURL
 			childNode['dead'] = isDead
 			childNode['found'] = hasQuery
@@ -223,12 +250,12 @@ while currentDepth < targetDepth:
 
 
 		# APPEND CHILD NODES TO DATASET
-		currentWidth = 1	# <-- Account for parent node already in dataset.
+	#	currentWidth = 1	# <-- Account for parent node already in dataset.
 		for each in childrenNodes:
 			data['results'].append(copy.deepcopy(each))
 			currentWidth += 1
 
-		if currentWidth > maxWidth: maxWidth = currentWidth
+	#	if currentWidth > maxWidth: maxWidth = currentWidth
 
 		# Swap first child ID/position with new parent.
 		data['results'][(nextParent['id'])]['id'], data['results'][(childrenNodes[0]['id'])]['id'] = data['results'][(childrenNodes[0]['id'])]['id'], data['results'][(nextParent['id'])]['id']
@@ -242,7 +269,11 @@ while currentDepth < targetDepth:
 		hasQuery = 0
 		currentDepth += 1
 
-data['dimensions']['height'] = currentDepth
-data['dimensions']['width'] = maxWidth
+for each in data['results']:
+	if each['links'] > 0:
+		data['dimensions']['width'] += each['links'] - 1
+
+data['dimensions']['height'] = currentDepth + 1
+# data['dimensions']['width'] = maxWidth
 
 print(json.dumps(data))

@@ -72,7 +72,7 @@ export class HomeComponent implements OnInit {
       n: [1, [
         Validators.required,
         Validators.min(1),
-        Validators.max(12)
+        Validators.max(4)
       ]],
       searchPhrase: '',
       searchType: ['', [
