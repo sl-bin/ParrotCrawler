@@ -249,6 +249,6 @@ data['results'].sort(key=getID)
 print(json.dumps(data))
 
 time1 = time.time()
-print("Total time: ", time1-time0)
+#print("Total time: ", time1-time0)
 
 #-----------------------------------------------------------------------------
