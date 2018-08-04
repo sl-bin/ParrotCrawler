@@ -24,8 +24,8 @@ export class ResultsComponent implements OnInit {
   constructor(private searchService: ParrotSearchService) { }
 
   ngOnInit() {
-    // this.searchService.data.subscribe((success) => {this.data = JSON.parse(success)});
-    this.data = this.testString;
+    this.searchService.data.subscribe((success) => {this.data = JSON.parse(success)});
+    // this.data = this.testString;
     this.buildPage(this.data);
     this.hover();
   }
