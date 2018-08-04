@@ -60,16 +60,13 @@ def getID(item):
 
 def worker():
 	while True:
-		try:
-			newPage = PagesToCrawl.get()
-		except Empty:
-			print("My queue is empty!")
-			break
-		else:
-			crawl(newPage)
-			PagesToCrawl.task_done()
-	print("Thread leaving!")
+		newPage = PagesToCrawl.get()
+		crawl(newPage)
+		PagesToCrawl.task_done()
 
+def terminator():
+	PagesToCrawl.join()
+	exit()
 
 # CRAWLER FUNCTION	----------------------------------------------------
 #	Thread Work  	----------------------------------------------------
@@ -187,7 +184,7 @@ print("URL Limit is: {}".format(URLsPerPageLimit))	# Max number of child links t
 # Set URL Opener - assign valid user-agent to prevent bot detection
 opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-#opener.addheaders = [('User-agent', 'badparrot-bot (http://parrotcrawl.webfactional.com')]
+#opener.addheaders = [('User-agent', 'rudeparrot-bot (http://parrotcrawl.webfactional.com')]
 
 # THREAD LOCKS
 nextID_lock = threading.Lock()
@@ -219,8 +216,14 @@ time0 = time.time()
 PagesToCrawl = Queue()
 PagesToCrawl.put( (0, 0, URLParam) )
 
+# Set Up/Start Threads
+
+# Terminator Thread - Watches work queue, takes locking system call
+terminator = threading.Thread(target=terminator)
+terminator.daemon = True
+
+# Worker Thread Pool
 threads = []
-# Start Threads Here
 for x in range(num_threads):
 	t = threading.Thread(target=worker)
 	t.daemon = True
@@ -228,8 +231,10 @@ for x in range(num_threads):
 	t.start()
 
 # Block until all threads have finished crawling URLs in queue
-PagesToCrawl.join()
+terminator.start()
 
+while terminator.is_alive():
+	time.sleep(2)
 
 # Append Final Info to Data Set
 data['dimensions']['height'] = data['results'][-1]['depth'] + 1
