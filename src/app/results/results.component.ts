@@ -24,8 +24,8 @@ export class ResultsComponent implements OnInit {
   constructor(private searchService: ParrotSearchService) { }
 
   ngOnInit() {
-    // this.searchService.data.subscribe((success) => {this.data = JSON.parse(success)});
-    this.data = this.testString;
+    this.searchService.data.subscribe((success) => {this.data = JSON.parse(success)});
+    // this.data = this.testString;
     this.buildPage(this.data);
     this.hover();
   }
@@ -53,7 +53,7 @@ export class ResultsComponent implements OnInit {
                 if(data.results[data.results[data.results[idx].children[j]].children[k]].links > 0) {
                   for(var l: number=0; l < data.results[data.results[data.results[idx].children[j]].children[k]].links; l++){
                     if(data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]].links > 0) {
-                      for(var m: number=0; m < data.results[data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]].links; m++){
+                      for(var m: number=0; m < data.results[data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]]].links; m++){
                         count++;
                       }
                     } else {
@@ -200,7 +200,6 @@ export class ResultsComponent implements OnInit {
 
   hover() {
     $( ".normalNode" ).hover( function() {
-      // console.log($(".gridDisplay").attr("class"));
       switch($(".gridDisplay").attr("class")) {
         case "gridDisplay out1": $( this ).addClass("in4 topZ");
         break;
@@ -221,7 +220,7 @@ export class ResultsComponent implements OnInit {
       $( this ).removeClass("in3");
       $( this ).removeClass("in4");
       $( this ).removeClass("topZ");
-    }
+    })
   }
 
   zoomIn() {
