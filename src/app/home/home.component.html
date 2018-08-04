@@ -38,10 +38,19 @@
 	  </label>
           <br/>
         </p>
-
         <div class="required" [hidden]="searchType.valid || searchType.untouched">
           A Search Type is Required
         </div>
+
+        <br>
+        <label>Previous Searches:
+          <select formControlName="prevSearchDrop">
+            <option [ngValue]="prevSearch" *ngFor="let prevSearch of prevSearches">
+              {{prevSearch.url}}
+            </option>
+          </select>
+        </label>
+
         <div class="btnDiv">
           <input  type="submit" class="btn" value="Start Crawling" [disabled]="homeForm.invalid"/>
         </div>

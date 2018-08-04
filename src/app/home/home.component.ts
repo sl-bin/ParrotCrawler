@@ -60,9 +60,15 @@ export class HomeComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private searchService: ParrotSearchService, private searchStorage: LocalStorageService, private router: Router) { }
 
+  //array to hold previous searches for displaying
+  prevSearches =[]
+
   ngOnInit() {
     // this.searchService.success.subscribe(success => this.success = success);
     // this.searchService.loaded.subscribe(loaded => this.loaded = loaded);
+
+    //get the searches from localStorage
+    this.prevSearches = this.searchStorage.getFromLocal();
 
     this.homeForm = this.fb.group({
       url: ['', [
@@ -77,11 +83,9 @@ export class HomeComponent implements OnInit {
       searchPhrase: '',
       searchType: ['', [
         Validators.required
-      ]]
+      ]],
+      prevSearchDrop:[]
     });
-
-    //get the searches from localStorage
-    this.searchStorage.getFromLocal();
 
     this.searchService.updateSuccess(false);
     this.searchService.updateLoaded(false);

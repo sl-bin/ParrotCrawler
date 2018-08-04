@@ -15,7 +15,6 @@ export class LocalStorageService {
     //if this is the first entry in localStorage
     //set the number of values stored in localStorage as key number 0
     if(!this.storage.get("0")){
-      console.log("Initializing localStorage");
       this.storage.set("0", "0");
     }
   }
@@ -28,27 +27,23 @@ export class LocalStorageService {
     var keyCount = parseInt(this.storage.get("0"));
     keyCount++;
 
-    console.log("Saving search to localStorage: " + searchString);
     this.storage.set("0", String(keyCount));
     this.storage.set(String(keyCount), searchString);
   }
 
 
   //get function that gets all the searches in localStorage
-  public getFromLocal():ParrotSearch[] {
-    console.log("Retrieving values from localStorage: ");
-
+  public getFromLocal(): ParrotSearch[] {
     var searchArray: ParrotSearch[] = [];
     //get the number of search results from localStorage
-    var numSearches = parseInt(this.storage.get("0"));
+    var keyCount = parseInt(this.storage.get("0"));
 
     //loop through the localStorage and save each search in the array
-    for(var i = 0; i <= numSearches; i++) {
+    for(var i = 0; i <= keyCount; i++) {
       let searchJSON = JSON.parse( this.storage.get(String(i)) );
       searchArray.push(searchJSON);
-      console.log( i + ": " + this.storage.get(String(i)) );
     }
-    
+
     return searchArray;
   }
 }
