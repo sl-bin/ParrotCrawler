@@ -179,7 +179,7 @@ if len(sys.argv) < 4: queryParam = None
 else: queryParam = str(sys.argv[3])
 
 URLsPerPageLimit = getPageLimit(targetDepth, maxSearchTime, pageLoadSpeed)
-print("URL Limit is: {}".format(URLsPerPageLimit))	# Max number of child links to be collected from any parent
+# print("URL Limit is: {}".format(URLsPerPageLimit))	# Max number of child links to be collected from any parent
 
 # Set URL Opener - assign valid user-agent to prevent bot detection
 opener = urllib.request.build_opener()

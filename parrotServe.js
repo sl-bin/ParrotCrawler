@@ -67,7 +67,7 @@ function pyParrotCrawl(res, searchTerms) {
   var scriptToRun;
   switch(type) {
     case "BFS":
-      scriptToRun = "bfs_threads_limit.py";
+      scriptToRun = "bfs.py";
       break;
     case "RDFS":
       scriptToRun = "rdfs.py";
