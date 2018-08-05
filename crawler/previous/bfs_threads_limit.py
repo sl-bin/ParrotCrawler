@@ -7,14 +7,52 @@ from queue import Queue
 import http
 import sys
 import urllib.request
+#import urllib.robotparser
 from bs4 import BeautifulSoup
 import json
 import copy
+import re
+import string
 
 num_threads = 20
-widthLimit = 20 # Max number of child links to be collected from any parent
+maxSearchTime = 280 # Seconds
+pageLoadSpeed = 0.184815	# Average page load speed (seconds)
 
-# Sort List Helper
+# URLs Per Page Limit Function -----------------------------------------
+def getPageLimit(targetDepth, maxSearchTime, pageLoadSpeed):
+	return int(( maxSearchTime / pageLoadSpeed - 1 )**(1 / targetDepth)) # Integer to return floor calculation
+
+# Query Functions ------------------------------------------------------
+def relevant_text(tag):
+	return	tag.name == "title" or\
+			tag.name == "p" or\
+			tag.name == "div" or\
+			tag.name == "span" or\
+			tag.name == "h1" or\
+			tag.name == "h2" or\
+			tag.name == "h3" or\
+			tag.name == "h4" or\
+			tag.name == "h5" or\
+			tag.name == "h6"
+
+def querySearch(page, query):
+	betterText = ""
+	for each in page.find_all(relevant_text):
+		betterText += each.get_text()
+
+	# Can be deleted after testing/verification of return text.
+	#newText = betterText.replace("\n", " ")
+	#print(newText)
+
+	result = betterText.find(query)
+	if result >= 0: hasQuery = 1
+	else: hasQuery = 0
+
+	return hasQuery
+
+
+
+# Sort List Helper -----------------------------------------------------
 def getID(item):
 	return item['id']
 
@@ -37,12 +75,9 @@ def worker():
 #	Thread Work  	----------------------------------------------------
 def crawl(newPage):
 
-	global nextID, maxWidth
+	global nextID
 
-#	while len(PagesToCrawl) > 0 and PagesToCrawl[0][1] <= targetDepth:
-
-		# 1. POP FRONT OF QUEUE AS NEXT PAGE TO VISIT, SET UP NODE DATA
-#		newPage = PagesToCrawl.get()
+		# 1. SET UP NODE DATA
 
 		# Set local thread variables
 	currentID = newPage[0]
@@ -68,12 +103,6 @@ def crawl(newPage):
 	try:
 		currentHTML = opener.open(currentURL)
 
-#	except (KeyboardInterrupt, SystemExit):
-#		raise
-#	except:
-#		currentTitle = "Invalid Page/Timeout"
-#		isDead = 1
-
 	except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
 		# --> Handle HTTP error page data here.
 		currentTitle = "Invalid Page/Timeout."
@@ -87,16 +116,15 @@ def crawl(newPage):
 		currentRes = currentHTML.info()
 		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
-		# Page was successfully opened --> convert to bs4 object.
+		# Page was successfully opened --> convert to bs4 object and collect data.
 		currentPage = BeautifulSoup(currentHTML.read(), "lxml")
 		if currentPage.title is None: currentTitle = "No Title"
 		else: currentTitle = currentPage.title.getText()
+		if queryParam: hasQuery = querySearch(currentPage, queryParam)
 
 	# END OF HTML ERROR HANDLING ---------------------------------------------
 
-	# 3. COLLECT NODE DATA, INCLUDING CHILD URLS
-
-	# --> Search for user query here <--#
+	# 3. ASSIGN PARENT NODE DATA, INCLUDING CHILD URLS
 
 	parentNode['title'] = currentTitle
 	parentNode['url'] = currentURL	# <-- Update URL in case of redirect
@@ -106,15 +134,14 @@ def crawl(newPage):
 	# --> If we are at target depth OR page is dead, we don't want to collect child URL data.
 	if isDead != 1 and currentDepth < targetDepth:
 		links = currentPage.find_all("a", href=True)
-		#parentNode['links'] = len(links)
 
 		currentWidth = 0
 		for link in links:
-			if currentWidth < widthLimit:
+			if currentWidth < URLsPerPageLimit:
 				# Check URL:
 				if link['href'] == '' or link['href'][0] == "#":
-			#		parentNode['links'] -= 1
 					continue
+
 				else:
 					childURL = str(urllib.parse.urljoin(currentURL, link['href']))
 
@@ -134,9 +161,6 @@ def crawl(newPage):
 				currentWidth += 1
 				parentNode['links'] += 1
 
-#		if currentWidth < 1: currentWidth = 1	# Min width must be 1
-#		with maxWidth_lock:
-#			if currentWidth > maxWidth: maxWidth = currentWidth
 
 	# APPEND NODE DATA TO RESULT SET
 	with data_lock:
@@ -157,18 +181,20 @@ targetDepth = int(sys.argv[2])
 if len(sys.argv) < 4: queryParam = None
 else: queryParam = str(sys.argv[3])
 
+URLsPerPageLimit = getPageLimit(targetDepth, maxSearchTime, pageLoadSpeed)
+print("URL Limit is: {}".format(URLsPerPageLimit))	# Max number of child links to be collected from any parent
 
 # Set URL Opener - assign valid user-agent to prevent bot detection
 opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+#opener.addheaders = [('User-agent', 'badparrot-bot (http://parrotcrawl.webfactional.com')]
 
 # THREAD LOCKS
 nextID_lock = threading.Lock()
-maxWidth_lock = threading.Lock()
 data_lock = threading.Lock()
 
+# INTER-THREAD VARIABLE
 nextID = 1
-maxWidth = 0
 
 # Set up dataset:
 data = {}
@@ -204,10 +230,6 @@ for x in range(num_threads):
 # Block until all threads have finished crawling URLs in queue
 PagesToCrawl.join()
 
-#for thread in threads:
-#	thread.join(300)
-#print("All threads have joined.")
-
 
 # Append Final Info to Data Set
 data['dimensions']['height'] = data['results'][-1]['depth'] + 1
@@ -222,6 +244,6 @@ data['results'].sort(key=getID)
 print(json.dumps(data))
 
 time1 = time.time()
-# print("Total time: ", time1-time0)
+print("Total time: ", time1-time0)
 
 #-----------------------------------------------------------------------------
