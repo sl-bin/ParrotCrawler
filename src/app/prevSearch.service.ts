@@ -3,7 +3,7 @@
 //and injects them into a drop-down on the search form page
 
 import { Inject, Injectable } from '@angular/core';
-import { LOCAL_STORAGE, StorageService } from 'angular-web_storage-service';
+import { LOCAL_STORAGE, StorageService } from 'angular-webstorage-service';
 import { ParrotSearch } from './parrot-search';
 
 
