@@ -16,9 +16,6 @@ import { LocalStorageService } from '../prevSearch.service';
 export class HomeComponent implements OnInit {
 
   homeForm: FormGroup;
-  // loaded: Boolean = false;
-  // success: Boolean = false;
-
 
   // TODO: edit regex to allow for http and www to be left off
   // from https://gist.github.com/dperini/729294
@@ -113,7 +110,7 @@ export class HomeComponent implements OnInit {
 
   //if there are no previous searches, don't display the select menu
   prevDisplay() {
-    if(this.prevSearches.length > 0) {
+    if(this.prevSearches.length > 1) {
       $( ".pastSearchDiv" ).removeClass( "hidden");
     }
   };
@@ -122,12 +119,12 @@ export class HomeComponent implements OnInit {
 
   //injects previous search menu selection into form fields
   onSelect(selectedSearch: ParrotSearch): void {
-    this.url.setValue(JSON.stringify(selectedSearch.url));
-    this.n.setValue(JSON.stringify(selectedSearch.n));
+    this.url.setValue(selectedSearch.url);
+    this.n.setValue(selectedSearch.n);
     this.searchType.setValue(selectedSearch.searchType);
 
     if(selectedSearch.searchPhrase != "") {
-      this.searchPhrase.setValue(JSON.stringify(selectedSearch.searchPhrase));
+      this.searchPhrase.setValue(selectedSearch.searchPhrase);
     }
     else if(selectedSearch.searchPhrase == "") {
       this.searchPhrase.setValue(null);
