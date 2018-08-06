@@ -7,6 +7,7 @@
 ###unignore items with extentions
 !*.*
 !makefile
+!LICENSE
 
 ##ignore OS generated files
 .DS_Store
