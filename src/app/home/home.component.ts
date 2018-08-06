@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
   // loaded: Boolean = false;
   // success: Boolean = false;
 
+
   // TODO: edit regex to allow for http and www to be left off
   // from https://gist.github.com/dperini/729294
   regex = new RegExp(
@@ -62,6 +63,7 @@ export class HomeComponent implements OnInit {
 
   //array to hold previous searches for displaying
   prevSearches =[]
+  selectedPrevSearch: ParrotSearch;
 
   ngOnInit() {
     // this.searchService.success.subscribe(success => this.success = success);
@@ -69,11 +71,10 @@ export class HomeComponent implements OnInit {
 
     //get the searches from localStorage
     this.prevSearches = this.searchStorage.getFromLocal();
-
-    if(this.prevSearches/length < 1){
+    var prevCheck = true;
+    if(this.prevSearches.length < 1){
       this.prevCheck = false;
     }
-
     this.prevDisplay();
 
     this.homeForm = this.fb.group({
@@ -111,12 +112,13 @@ export class HomeComponent implements OnInit {
   };
 
   prevDisplay() {
-    if(this.prevSearch.length > 0) {
+    if(this.prevSearches.length > 0) {
       $( ".pastSearchDiv" ).removeClass( "hidden");
     }
-
-
   };
+
+  onSelect
+
 
   // submission handler
   async onSubmit() {
