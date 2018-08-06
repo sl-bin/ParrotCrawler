@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
   // loaded: Boolean = false;
   // success: Boolean = false;
 
+
   // TODO: edit regex to allow for http and www to be left off
   // from https://gist.github.com/dperini/729294
   regex = new RegExp(
@@ -102,17 +103,37 @@ export class HomeComponent implements OnInit {
     return this.homeForm.get('n');
   };
 
+  get searchPhrase() {
+    return this.homeForm.get('searchPhrase');
+  };
+
   get searchType() {
     return this.homeForm.get('searchType');
   };
 
+  //if there are no previous searches, don't display the select menu
   prevDisplay() {
     if(this.prevSearches.length > 0) {
       $( ".pastSearchDiv" ).removeClass( "hidden");
     }
-
-
   };
+
+
+
+  //injects previous search menu selection into form fields
+  onSelect(selectedSearch: ParrotSearch): void {
+    this.url.setValue(JSON.stringify(selectedSearch.url));
+    this.n.setValue(JSON.stringify(selectedSearch.n));
+    this.searchType.setValue(selectedSearch.searchType);
+
+    if(selectedSearch.searchPhrase != "") {
+      this.searchPhrase.setValue(JSON.stringify(selectedSearch.searchPhrase));
+    }
+    else if(selectedSearch.searchPhrase == "") {
+      this.searchPhrase.setValue(null);
+    }
+  }
+
 
   // submission handler
   async onSubmit() {

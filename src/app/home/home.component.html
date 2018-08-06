@@ -20,7 +20,7 @@
       </fieldset>
       <fieldset>
         <label>Optional Search Phrase:
-          <input type="text" name="searchPhrase" formControlName="searchPhrase">
+          <input type="text" formControlName="searchPhrase">
         </label>
       </fieldset>
       <fieldset class="fade">
@@ -43,9 +43,9 @@
         </div>
 
         <br>
-        <div class="pastSearchDiv hidden">
+      <div class="pastSearchDiv hidden">
         <label>Previous Searches:
-          <select class = "pastSearches" formControlName="prevSearchDrop">
+          <select class = "pastSearches" formControlName="prevSearchDrop" (ngModelChange)="onSelect($event)">
             <option [ngValue]="prevSearch" *ngFor="let prevSearch of prevSearches">
               {{ prevSearch.url }}
             </option>
