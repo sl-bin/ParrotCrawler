@@ -1,4 +1,8 @@
 /* sets up look of header/navbar */
+.viewWindow {
+  height: 89vh;
+}
+
 nav {
   list-style-type: none;
   margin: 0;
@@ -153,11 +157,7 @@ no matter how you do it*/
   background-color: #333;
   padding: 4px;
   text-align: center;
-  // overflow-wrap: break-word;
-}
-
-.hidden {
-  display: none;
+  // overflow: hidden;
 }
 
 .gridDisplay {
@@ -166,7 +166,17 @@ no matter how you do it*/
   height: 100%;
   width: 100%;
   text-align: center;
+  // cursor: move;
+  // cursor: grab;
+  // cursor: -moz-grab;
+  // cursor: -webkit-grab;
 }
+
+// .girDisplay:active {
+//   cursor: grabbing;
+//   cursor: -moz-grabbing;
+//   cursor: -webkit-grabbing;
+// }
 
 .lineGrid {
   display: grid;
@@ -179,48 +189,56 @@ no matter how you do it*/
   -webkit-transform: scale(.12);
   transform: scale(.12);
   margin-top: -100px;
+  margin-left: 0;
 }
 
 .out2 {
   -webkit-transform: scale(.25);
   transform: scale(.25);
   margin-top: -50px;
+  margin-left: 0;
 }
 
 .out3 {
   -webkit-transform: scale(.5);
   transform: scale(.5);
   margin-top: 0px;
+  margin-left: 0;
 }
 
 .noZoom {
   -webkit-transform: scale(1);
   transform: scale(1);
   margin-top: 50px;
+  margin-left: 0;
 }
 
 .in1 {
   -webkit-transform: scale(1.5);
   transform: scale(1.5);
   margin-top: 200px;
+  margin-left: 0;
 }
 
 .in2 {
   -webkit-transform: scale(2);
   transform: scale(2);
   margin-top: 400px;
+  margin-left: 0;
 }
 
 .in3 {
   -webkit-transform: scale(3);
   transform: scale(3);
   margin-top: 400px;
+  margin-left: 0;
 }
 
 .in4 {
   -webkit-transform: scale(4);
   transform: scale(4);
   margin-top: 400px;
+  margin-left: 0;
 }
 
 .topZ {
@@ -232,6 +250,12 @@ no matter how you do it*/
   overflow: hidden;
   border-radius: 10px;
   margin: 0 2px;
+  -moz-text-fill-color: white;
+  -webkit-text-fill-color: white;
+  -moz-text-stroke-color: #111;
+  -webkit-text-stroke-color: #111;
+  -moz-text-stroke-width: .5px;
+  -webkit-text-stroke-width: .5px;
 }
 
 .lineGridNodes {
@@ -245,10 +269,54 @@ no matter how you do it*/
   border-radius: 10px;
 }
 
+.linkNode {
+  color: white;
+  text-decoration: none;
+  -moz-text-fill-color: white;
+  -webkit-text-fill-color: white;
+  -moz-text-stroke-color: #111;
+  -webkit-text-stroke-color: #111;
+  -moz-text-stroke-width: .5px;
+  -webkit-text-stroke-width: .5px;
+}
+
+.normalNode .linkNode:hover, .topNode .linkNode:hover {
+  color: #3c6bb7;
+  text-decoration: none;
+  -moz-text-fill-color: #3c6bb7;
+  -webkit-text-fill-color: #3c6bb7;
+  -moz-text-stroke-color: #111;
+  -webkit-text-stroke-color: #111;
+  -moz-text-stroke-width: .5px;
+  -webkit-text-stroke-width: .5px;
+}
+
+.foundNode .linkNode:hover, .topFound .linkNode:hover {
+  color: #199e1d;
+  text-decoration: none;
+  -moz-text-fill-color: #199e1d;
+  -webkit-text-fill-color: #199e1d;
+  -moz-text-stroke-color: #111;
+  -webkit-text-stroke-color: #111;
+  -moz-text-stroke-width: .5px;
+  -webkit-text-stroke-width: .5px;
+}
+
+.static:hover {
+  color: white;
+  text-decoration: none;
+}
+
 .topNode {
   background-color: #7faef9;
   border: 6px solid #3c6bb7;
   border-radius: 10px;
+  transform: scale(1.25);
+}
+
+.topFound {
+  background-color: #73e280;
+  border: 6px solid #199e1d;
 }
 
 .deadNode {
@@ -258,8 +326,8 @@ no matter how you do it*/
 }
 
 .foundNode {
-  background-color: #7faef9;
-  border: 6px solid #73e280;
+  background-color: #73e280;
+  border: 6px solid #199e1d;
   border-radius: 10px;
 }
 

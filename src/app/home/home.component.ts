@@ -70,6 +70,12 @@ export class HomeComponent implements OnInit {
     //get the searches from localStorage
     this.prevSearches = this.searchStorage.getFromLocal();
 
+    if(this.prevSearches/length < 1){
+      this.prevCheck = false;
+    }
+
+    this.prevDisplay();
+
     this.homeForm = this.fb.group({
       url: ['', [
         Validators.required,
@@ -102,6 +108,14 @@ export class HomeComponent implements OnInit {
 
   get searchType() {
     return this.homeForm.get('searchType');
+  };
+
+  prevDisplay() {
+    if(this.prevSearch.length > 0) {
+      $( ".pastSearchDiv" ).removeClass( "hidden");
+    }
+
+
   };
 
   // submission handler
