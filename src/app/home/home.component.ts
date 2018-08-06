@@ -70,10 +70,6 @@ export class HomeComponent implements OnInit {
     //get the searches from localStorage
     this.prevSearches = this.searchStorage.getFromLocal();
 
-    if(this.prevSearches/length < 1){
-      this.prevCheck = false;
-    }
-
     this.prevDisplay();
 
     this.homeForm = this.fb.group({
@@ -111,7 +107,7 @@ export class HomeComponent implements OnInit {
   };
 
   prevDisplay() {
-    if(this.prevSearch.length > 0) {
+    if(this.prevSearches.length > 0) {
       $( ".pastSearchDiv" ).removeClass( "hidden");
     }
 
