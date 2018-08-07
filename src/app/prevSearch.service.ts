@@ -21,8 +21,11 @@ export class LocalStorageService {
 
 
   //save function that accepts ParrotSearch objects to save to localstorage
-  public saveInLocal(searchJSON: ParrotSearch): void {
-    //save the search at the next index in the array
+  public saveInLocal(searchJSON): void {
+    //get rid of the prevSearchDrop attribute
+    delete searchJSON.prevSearchDrop;
+
+    //save the search at the next index in the localStorage Array
     var searchString = JSON.stringify(searchJSON);
     var keyCount = parseInt(this.storage.get("0"));
     keyCount++;
