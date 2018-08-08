@@ -1,6 +1,6 @@
 {
-  "name": "parrot-crawler",
-  "version": "0.7.0",
+  "name": "parrot-crawl",
+  "version": "0.8.0",
   "scripts": {
     "ng": "ng",
     "forever": "forever"
