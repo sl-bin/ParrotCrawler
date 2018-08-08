@@ -43,11 +43,3 @@
 
 # ignore python cache files
 __pycache__/
-
-# ignore default host directories
-bin/
-lib/
-run/
-bin/*
-lib/*
-run/*
