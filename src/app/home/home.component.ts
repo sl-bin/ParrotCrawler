@@ -127,7 +127,7 @@ export class HomeComponent implements OnInit {
       this.searchPhrase.setValue(selectedSearch.searchPhrase);
     }
     else if(selectedSearch.searchPhrase == "") {
-      this.searchPhrase.setValue(null);
+      this.searchPhrase.setValue("");
     }
   }
 
