@@ -1,7 +1,7 @@
 //--------  Server Requirements ---------//
 const express = require('express');
 const path  = require('path');
-const VIEWS = path.join(__dirname);
+const VIEWS = path.join(__dirname, 'dist/ParrotCrawler');
 const app = express();
 
 
