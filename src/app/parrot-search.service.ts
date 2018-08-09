@@ -77,7 +77,7 @@ export class ParrotSearchService {
     //and make the post request
     return this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions).pipe(
       catchError(this.handleError)
-    );
+    ).timeout(600000, new Error('request timeout'));
   }
 
 

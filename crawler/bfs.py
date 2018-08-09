@@ -107,14 +107,17 @@ def crawl(newPage):
 	except http.client.HTTPException:
 		currentTitle = "HTTP Exception"
 		isDead = 1
+	except http.client.IncompleteRead as e:
+		currentHTML = e.partial
 
 	else:
 		currentURL = currentHTML.geturl()	# Update our URL in case a redirect was followed.
 		currentRes = currentHTML.info()
 		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
+	if isDead != 1:
 		# Page was successfully opened --> convert to bs4 object and collect data.
-		currentPage = BeautifulSoup(currentHTML.read(), "lxml")
+		currentPage = BeautifulSoup(currentHTML.read().decode('utf-8', 'ignore'), "lxml")
 		if currentPage.title is None: currentTitle = "No Title"
 		else: currentTitle = currentPage.title.getText()
 		if queryParam: hasQuery = querySearch(currentPage, queryParam)
