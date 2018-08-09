@@ -20,7 +20,7 @@ app.listen('12296', () => {
 
 //recieve the POST search request from the frontend
 app.route('/').post((req,res) => {
-  req.setTimeout(0);
+  req.setTimeout(600000);
   var searchJSON = req.body;
 
   // trace statements for testing that JSON received is correct
