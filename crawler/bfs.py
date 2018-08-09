@@ -117,7 +117,7 @@ def crawl(newPage):
 
 	if isDead != 1:
 		# Page was successfully opened --> convert to bs4 object and collect data.
-		currentPage = BeautifulSoup(currentHTML.read(), "lxml")
+		currentPage = BeautifulSoup(currentHTML.read().decode('utf-8', 'ignore'), "lxml")
 		if currentPage.title is None: currentTitle = "No Title"
 		else: currentTitle = currentPage.title.getText()
 		if queryParam: hasQuery = querySearch(currentPage, queryParam)
