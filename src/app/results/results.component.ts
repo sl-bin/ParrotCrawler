@@ -34,6 +34,10 @@ export class ResultsComponent implements OnInit {
     var gDiv = $( ".gridNode" );
     var lDiv = $( ".lineGridNode" );
 
+    // local vars for setting grid deminsions
+    var rowCount: string = "";
+    var colCount: string = "";
+
     // recursive helper function that loops through the data boject and places nodes
     var buildHelper = function(data: any, idx: number, offset: number) {
       for(var i: number=0; i < data.results[idx].links; i++) {
@@ -182,7 +186,7 @@ export class ResultsComponent implements OnInit {
     for(var i: number=0; i < (data.dimensions.height*2)*(data.dimensions.width+2); i++) {
       $(gDiv).clone().appendTo(".gridDisplay").removeClass("hidden").attr("id", "node" + String(i));
       // used for testing. Add to above statement to see node numbers in rendered page
-      // .text("node" + String(i))
+      // .append("<p>node" + String(i) + "</p>").css("border", "1px solid white")
     }
 
     // add the subgrid to every other row of gridNodes
@@ -229,9 +233,20 @@ export class ResultsComponent implements OnInit {
     // call the helper function to build the rest of the tree
     buildHelper(data, 0, 0);
 
+
+    // this sets the grid templates
+    // this method is used instead of repeat() because Microsoft Edge
+    // does not accept repeat()
+    for(var i: number=1; i <= (data.dimensions.height*2)+1; i++) {
+      rowCount += "150px 75px ";
+    }
+    for(var i: number=1; i <= data.dimensions.width+2; i++) {
+      colCount += "300px ";
+    }
+
     // set grid dimensions
-    $( ".gridDisplay" ).css("grid-template-rows" ,"repeat(" + String((data.dimensions.height*2)+1) + ", 150px 75px)");
-    $( ".gridDisplay" ).css("grid-template-columns","repeat(" + String(data.dimensions.width+2) + ", 300px)");
+    $( ".gridDisplay" ).css("grid-template-rows", rowCount);
+    $( ".gridDisplay" ).css("grid-template-columns", colCount);
   }
 
   // handles hovering over text
