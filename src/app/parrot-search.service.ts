@@ -8,10 +8,12 @@ import { ParrotReturn } from './parrot-return';
 
 // the http headers that define the content type
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  headers: new HttpHeaders().set("Content-Type", "application/json").append("Connection", "Keep-Alive").append("Keep-Alive", "timeout=600, max=1"),
   params: new HttpParams(),
   responseType: 'text' as 'json'
 };
+
+// { "Content-Type": "application/json", "Connection": "Keep-Alive", "Keep-Alive": "timeout=600, max=1" }
 
 
 @Injectable({ providedIn: 'root' })
@@ -40,9 +42,6 @@ export class ParrotSearchService {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error.message);
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
