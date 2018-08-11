@@ -8307,7 +8307,7 @@ export class ResultsComponent implements OnInit {
     var buildHelper = function(data: any, idx: number, offset: number) {
       for(var i: number=0; i < data.results[idx].links; i++) {
         // var for getting the correct grid depth for a given node
-        var nodePos = Math.floor(((data.dimensions.width+2) * (data.results[data.results[idx].children[i]].depth * 2)));
+        var nodePos = Math.floor(((data.dimensions.width) * (data.results[data.results[idx].children[i]].depth * 2)));
         // var for counting gridNodes to draw lines in (also helps offset)
         var count: number=0;
 
@@ -8353,34 +8353,34 @@ export class ResultsComponent implements OnInit {
           nodePos += count - i;
 
           // draw the lines between the parent node and this node
-          for(var j: number=count; j > 1; j--) {
+          for(var j: number=count-1; j > 0; j--) {
             // connects parent node (works for highest levels)
-            if(j === count){
-              $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j - 1) + " .topRight").addClass("borderBottom");
-              $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j - 1) + " .bottomRight").addClass("borderTop");
+            if(j === count-1){
+              $("#node" + String((nodePos + i) - (data.dimensions.width) - j - 1) + " .topRight").addClass("borderBottom");
+              $("#node" + String((nodePos + i) - (data.dimensions.width) - j - 1) + " .bottomRight").addClass("borderTop");
             }
 
             // adds a horizontal line to the nodes it is looping over
-            $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j) + " .topRight").addClass("borderBottom");
-            $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j) + " .topLeft").addClass("borderBottom");
-            $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j) + " .bottomRight").addClass("borderTop");
-            $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j) + " .bottomLeft").addClass("borderTop");
+            $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .topRight").addClass("borderBottom");
+            $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .topLeft").addClass("borderBottom");
+            $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .bottomRight").addClass("borderTop");
+            $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .bottomLeft").addClass("borderTop");
           }
 
           // adds a connecting lines from drawn line down to thi node
-          $("#node" + String((nodePos + i) - (data.dimensions.width+2)) + " .topLeft").addClass("borderBottom");
-          $("#node" + String((nodePos + i) - (data.dimensions.width+2)) + " .bottomRight").addClass("borderLeft");
-          $("#node" + String((nodePos + i) - (data.dimensions.width+2)) + " .bottomLeft").addClass("borderTop borderRight");
+          $("#node" + String((nodePos + i) - (data.dimensions.width)) + " .topLeft").addClass("borderBottom");
+          $("#node" + String((nodePos + i) - (data.dimensions.width)) + " .bottomRight").addClass("borderLeft");
+          $("#node" + String((nodePos + i) - (data.dimensions.width)) + " .bottomLeft").addClass("borderTop borderRight");
 
           // connects parent node (works for lowest levels)
-          $("#node" + String((nodePos + i) - (data.dimensions.width+2) - 1) + " .topRight").addClass("borderBottom");
-          $("#node" + String((nodePos + i) - (data.dimensions.width+2) - 1) + " .bottomRight").addClass("borderTop");
+          $("#node" + String((nodePos + i) - (data.dimensions.width) - 1) + " .topRight").addClass("borderBottom");
+          $("#node" + String((nodePos + i) - (data.dimensions.width) - 1) + " .bottomRight").addClass("borderTop");
         } else {
           // draws the vertical line from the parent node to the first child
-          $("#node" + String(nodePos - (data.dimensions.width+2)) + " .topRight").addClass("borderLeft");
-          $("#node" + String(nodePos - (data.dimensions.width+2)) + " .topLeft").addClass("borderRight");
-          $("#node" + String(nodePos - (data.dimensions.width+2)) + " .bottomRight").addClass("borderLeft");
-          $("#node" + String(nodePos - (data.dimensions.width+2)) + " .bottomLeft").addClass("borderRight");
+          $("#node" + String(nodePos - (data.dimensions.width)) + " .topRight").addClass("borderLeft");
+          $("#node" + String(nodePos - (data.dimensions.width)) + " .topLeft").addClass("borderRight");
+          $("#node" + String(nodePos - (data.dimensions.width)) + " .bottomRight").addClass("borderLeft");
+          $("#node" + String(nodePos - (data.dimensions.width)) + " .bottomLeft").addClass("borderRight");
         }
 
         // create the node by adding a class and a link for the url and title
@@ -8442,13 +8442,13 @@ export class ResultsComponent implements OnInit {
 
         // recursivly build next level of tree
         if(data.results[data.results[idx].children[i]].links !== 0) {
-          buildHelper(data, data.results[idx].children[i], (nodePos - (((data.dimensions.width+2) * (data.results[data.results[idx].children[i]].depth * 2)))) + i);
+          buildHelper(data, data.results[idx].children[i], (nodePos - (((data.dimensions.width) * (data.results[data.results[idx].children[i]].depth * 2)))) + i);
         }
       }
     }
 
     // clone the blank div into the viewWindow to make the grid
-    for(var i: number=0; i < (data.dimensions.height*2)*(data.dimensions.width+2); i++) {
+    for(var i: number=0; i < (data.dimensions.height*2)*(data.dimensions.width); i++) {
       $(gDiv).clone().appendTo(".gridDisplay").removeClass("hidden").attr("id", "node" + String(i));
       // used for testing. Add to above statement to see node numbers in rendered page
       // .text("node" + String(i))
@@ -8457,8 +8457,8 @@ export class ResultsComponent implements OnInit {
     // add the subgrid to every other row of gridNodes
     // used for drawing lines
     for(var i: number=1; i <= (data.dimensions.height * 2); i += 2) {
-      for(var j: number=0; j < (data.dimensions.width+2); j++) {
-        var currentNode: string = String(Math.floor(((data.dimensions.width+2) * i) + j));
+      for(var j: number=0; j < (data.dimensions.width); j++) {
+        var currentNode: string = String(Math.floor(((data.dimensions.width) * i) + j));
         $("#node" + currentNode).removeClass("gridNode").addClass("lineGrid");
         $(lDiv).clone().appendTo("#node" + currentNode).removeClass("hidden").addClass("topLeft");
         $(lDiv).clone().appendTo("#node" + currentNode).removeClass("hidden").addClass("topRight");
@@ -8504,7 +8504,7 @@ export class ResultsComponent implements OnInit {
     for(var i: number=1; i <= (data.dimensions.height*2)+1; i++) {
       rowCount += "150px 75px ";
     }
-    for(var i: number=1; i <= data.dimensions.width+2; i++) {
+    for(var i: number=1; i <= data.dimensions.width; i++) {
       colCount += "300px ";
     }
 
