@@ -8298,6 +8298,7 @@ export class ResultsComponent implements OnInit {
     // local vars that store blank (non-dynamic) divs
     var gDiv = $( ".gridNode" );
     var lDiv = $( ".lineGridNode" );
+    var spacer = $( ".spacer" );
 
     // local vars for setting grid deminsions
     var rowCount: string = "";
@@ -8501,7 +8502,7 @@ export class ResultsComponent implements OnInit {
 
     // this sets the grid templates
     // this method is used instead of repeat()
-    for(var i: number=1; i <= (data.dimensions.height*2)+1; i++) {
+    for(var i: number=1; i <= (data.dimensions.height; i++) {
       rowCount += "150px 75px ";
     }
     for(var i: number=1; i <= data.dimensions.width; i++) {
@@ -8511,7 +8512,11 @@ export class ResultsComponent implements OnInit {
     // set grid dimensions
     $( ".gridDisplay" ).css("grid-template-rows", rowCount);
     $( ".gridDisplay" ).css("grid-template-columns", colCount);
+    $( ".container" ).css( "width", String(300 * data.dimensions.width) + "px");
+    $( ".container" ).css( "hieght", String(225 * data.dimensions.height) + "px");
   }
+
+
 
   // handles hovering over text
   hover() {
@@ -8538,6 +8543,9 @@ export class ResultsComponent implements OnInit {
       $( this ).removeClass("topZ");
     })
   }
+
+
+  // TODO:FIX ZOOMS
 
   // handles zoom in button
   zoomIn() {

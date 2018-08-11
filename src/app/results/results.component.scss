@@ -153,7 +153,7 @@ no matter how you do it*/
   border: 6px solid #222;
   min-width: 20%;
   max-width: 20%;
-  min-height: 10%;
+  min-height: 100px;
   background-color: #333;
   padding: 4px;
   text-align: center;
@@ -170,6 +170,11 @@ no matter how you do it*/
   // cursor: grab;
   // cursor: -moz-grab;
   // cursor: -webkit-grab;
+}
+
+.container {
+  margin: 0;
+  padding: 100px 300px;
 }
 
 // .girDisplay:active {
