@@ -8315,26 +8315,33 @@ export class ResultsComponent implements OnInit {
         // add offset from parrent node
         nodePos += offset;
 
+
+
         // if this is not the first element in this loop of the recursion compare
         // at left siblings and find corrent spacing for this node
-        if(i > 0){
+        if(i > 0) {
 
-        // this is an iteritive way of looking down into the lower levels and counting how
-        // many nodes there should be (on all levels) between the left edge and this node
-        // How this actually works is by going down until a node with no links is found and then
-        // adding one to the count. In this way the number of nodes needed for spacing can be counted
-        // NOTE: this could be converted to a recursive function and I might do that later.
-        // currently it is n^5 which is aweful and converting it to a recursive version of the same
-        // sytle of counting loops would be even slower due to function calls, so I am still debating
-        // if I should make this recursive
-          for(var j: number=0; j < i; j++) {
-            if(data.results[data.results[idx].children[j]].links > 0) {
-              for(var k: number=0; k < data.results[data.results[idx].children[j]].links; k++) {
-                if(data.results[data.results[data.results[idx].children[j]].children[k]].links > 0) {
-                  for(var l: number=0; l < data.results[data.results[data.results[idx].children[j]].children[k]].links; l++){
-                    if(data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]].links > 0) {
-                      for(var m: number=0; m < data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]].links; m++){
-                        count++;
+          if(data.input.type === "bfs") {
+            // this is an iteritive way of looking down into the lower levels and counting how
+            // many nodes there should be (on all levels) between the left edge and this node
+            // How this actually works is by going down until a node with no links is found and then
+            // adding one to the count. In this way the number of nodes needed for spacing can be counted
+            // NOTE: this could be converted to a recursive function and I might do that later.
+            // currently it is n^5 which is aweful and converting it to a recursive version of the same
+            // sytle of counting loops would be even slower due to function calls, so I am still debating
+            // if I should make this recursive
+              for(var j: number=0; j < i; j++) {
+                if(data.results[data.results[idx].children[j]].links > 0) {
+                  for(var k: number=0; k < data.results[data.results[idx].children[j]].links; k++) {
+                    if(data.results[data.results[data.results[idx].children[j]].children[k]].links > 0) {
+                      for(var l: number=0; l < data.results[data.results[data.results[idx].children[j]].children[k]].links; l++){
+                        if(data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]].links > 0) {
+                          for(var m: number=0; m < data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]].links; m++){
+                            count++;
+                          }
+                        } else {
+                          count++;
+                        }
                       }
                     } else {
                       count++;
@@ -8344,28 +8351,25 @@ export class ResultsComponent implements OnInit {
                   count++;
                 }
               }
-            } else {
-              count++;
-            }
-          }
 
 
-          // adjust for parent links
-          nodePos += count - i;
+              // adjust for parent links
+              nodePos += count - i;
 
-          // draw the lines between the parent node and this node
-          for(var j: number=count-1; j > 0; j--) {
-            // connects parent node (works for highest levels)
-            if(j === count-1){
-              $("#node" + String((nodePos + i) - (data.dimensions.width) - j - 1) + " .topRight").addClass("borderBottom");
-              $("#node" + String((nodePos + i) - (data.dimensions.width) - j - 1) + " .bottomRight").addClass("borderTop");
-            }
+              // draw the lines between the parent node and this node
+              for(var j: number=count-1; j > 0; j--) {
+                // connects parent node (works for highest levels)
+                if(j === count-1){
+                  $("#node" + String((nodePos + i) - (data.dimensions.width) - j - 1) + " .topRight").addClass("borderBottom");
+                  $("#node" + String((nodePos + i) - (data.dimensions.width) - j - 1) + " .bottomRight").addClass("borderTop");
+                }
 
-            // adds a horizontal line to the nodes it is looping over
-            $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .topRight").addClass("borderBottom");
-            $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .topLeft").addClass("borderBottom");
-            $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .bottomRight").addClass("borderTop");
-            $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .bottomLeft").addClass("borderTop");
+                // adds a horizontal line to the nodes it is looping over
+                $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .topRight").addClass("borderBottom");
+                $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .topLeft").addClass("borderBottom");
+                $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .bottomRight").addClass("borderTop");
+                $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .bottomLeft").addClass("borderTop");
+              }
           }
 
           // adds a connecting lines from drawn line down to thi node
@@ -8502,7 +8506,7 @@ export class ResultsComponent implements OnInit {
 
     // this sets the grid templates
     // this method is used instead of repeat()
-    for(var i: number=1; i <= (data.dimensions.height; i++) {
+    for(var i: number=1; i <= data.dimensions.height; i++) {
       rowCount += "150px 75px ";
     }
     for(var i: number=1; i <= data.dimensions.width; i++) {

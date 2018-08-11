@@ -32,11 +32,6 @@
           <label>
               <input type="radio" name="searchType" value="RDFS" formControlName="searchType"/>Random Depth First Search</label>
           <br/>
-          <label>
-              <input type="radio" class="disable" name="searchType" value="TDFS" formControlName="searchType" [disabled]/>
-		<span class="disable">True Depth First Search</span>
-	  </label>
-          <br/>
         </p>
         <div class="required" [hidden]="searchType.valid || searchType.untouched">
           A Search Type is Required
