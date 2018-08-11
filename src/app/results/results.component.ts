@@ -8370,6 +8370,8 @@ export class ResultsComponent implements OnInit {
                 $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .bottomRight").addClass("borderTop");
                 $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .bottomLeft").addClass("borderTop");
               }
+          } else {
+            
           }
 
           // adds a connecting lines from drawn line down to thi node
