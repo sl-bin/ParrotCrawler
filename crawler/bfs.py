@@ -7,7 +7,6 @@ from queue import Queue
 import http
 import sys
 import urllib.request
-#import urllib.robotparser
 from bs4 import BeautifulSoup
 import json
 import copy
@@ -64,7 +63,7 @@ def worker():
 		crawl(newPage)
 		PagesToCrawl.task_done()
 
-def terminator():
+def manager():
 	PagesToCrawl.join()
 	exit()
 
@@ -96,6 +95,7 @@ def crawl(newPage):
 	# 2. VISIT PAGE
 
 	# HTML ERROR HANDLING -----------------------------------------------------
+	currentHTML = None
 
 	try:
 		currentHTML = opener.open(currentURL)
@@ -115,7 +115,6 @@ def crawl(newPage):
 		currentRes = currentHTML.info()
 		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
-	if isDead != 1:
 		# Page was successfully opened --> convert to bs4 object and collect data.
 		currentPage = BeautifulSoup(currentHTML.read().decode('utf-8', 'ignore'), "lxml")
 		if currentPage.title is None: currentTitle = "No Title"
@@ -161,6 +160,9 @@ def crawl(newPage):
 				currentWidth += 1
 				parentNode['links'] += 1
 
+		currentPage.decompose()
+	if currentHTML != None: currentHTML.close()
+
 
 	# APPEND NODE DATA TO RESULT SET
 	with data_lock:
@@ -172,16 +174,20 @@ def crawl(newPage):
 
 
 # VALIDATE ARGS ------------------------------------------------------
-if len(sys.argv) < 3:
-	print("\tUsage: bfs.py [starting URL] [depth] [query (optional)]")
+if len(sys.argv) < 4:
+	print("\tUsage: bfs.py [starting URL] [depth] [page-limit] [(query)]")
+	print("\t***Set [page-limit] to 0 to default to standard formula.***")
 	sys.exit(2)
 
 URLParam = str(sys.argv[1])
 targetDepth = int(sys.argv[2])
-if len(sys.argv) < 4: queryParam = None
-else: queryParam = str(sys.argv[3])
+pageLimit = int(sys.argv[3])
+if len(sys.argv) < 5: queryParam = None
+else: queryParam = str(sys.argv[4])
 
-URLsPerPageLimit = getPageLimit(targetDepth, maxSearchTime, pageLoadSpeed)
+if pageLimit == 0:
+	URLsPerPageLimit = getPageLimit(targetDepth, maxSearchTime, pageLoadSpeed)
+else: URLsPerPageLimit = pageLimit
 # print("URL Limit is: {}".format(URLsPerPageLimit))	# Max number of child links to be collected from any parent
 
 # Set URL Opener - assign valid user-agent to prevent bot detection
@@ -221,8 +227,8 @@ PagesToCrawl.put( (0, 0, URLParam) )
 
 # Set Up/Start Threads
 
-# Terminator Thread - Watches work queue, takes locking system call
-terminator = threading.Thread(target=terminator)
+# Manager Thread - Watches work queue, takes locking system call
+terminator = threading.Thread(target=manager)
 terminator.daemon = True
 
 # Worker Thread Pool

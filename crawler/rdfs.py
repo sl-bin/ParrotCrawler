@@ -1,21 +1,26 @@
 #!/usr/bin/python3
-# DFS Webcrawler Implementation ------------------------------------------------
-#
-#	To execute, use the following argument format:
-#		dfs.py [ URL of starting page ] [ depth constraint ] [ user query term ]
-#		Example:	dfs.py http://cultofthepartyparrot.com 2 basket
-#-------------------------------------------------------------------------------
-
+import time
+import threading
+from queue import Empty
+from queue import Queue
+import random
+import http
 import sys
 import urllib.request
 from bs4 import BeautifulSoup
 import json
 import copy
-
 import re
 import string
 
+numThreads = 20
+random.seed
 
+# Sort List Helper -----------------------------------------------------
+def getID(item):
+	return item['id']
+
+# Query Functions ------------------------------------------------------
 def relevant_text(tag):
 	return	tag.name == "title" or\
 			tag.name == "p" or\
@@ -43,39 +48,132 @@ def querySearch(page, query):
 
 	return hasQuery
 
-#----------------------------------------------------------------------
+	# THREADING WORK FUNCTIONS  ---------------------------------------------
 
-# VALIDATE ARGS
-if len(sys.argv) < 3:
-	print("\tUsage: rdfs.py [starting URL] [depth] [query (optional)]")
+def worker():
+	global linkPool
+
+	while terminator.is_alive():
+		HTML = None
+		page = None
+		newTask = PagesToCrawl.get()		# Get next work task.
+		node = createNodeFromTuple(newTask)	# Create new node.
+		HTML = openURLAsHTML(node)			# Open URL.
+		if node['dead'] == 0:				# If URL is live...
+			page = BeautifulSoup(HTML.read().decode('utf-8', 'ignore'), "lxml")	# ...scrape data.
+			scrapeNodeData(node, page)
+
+		# If the page is live and gave a valid text/html response, it should be an option for the next parent.
+		if node['dead'] == 0 and HTML.info().get_content_type() == "text/html":
+			with pool_lock: linkPool.append(copy.deepcopy(newTask))
+
+		# Garbage Collection
+		if HTML != None: HTML.close()
+		if page != None: page.decompose()
+
+		# With lock in place, append result to temporary data set.
+		with tier_lock:
+			tierResults.append(copy.deepcopy(node))
+
+
+		PagesToCrawl.task_done()	# Tell manager that task is complete.
+	sys.exit()
+
+def manager():
+	PagesToCrawl.join()
+	sys.exit()
+
+
+def scrapeNodeData(node, page):
+	if page.title is None: node['title'] = "No Title"	# Assign Title
+	else: node['title'] = page.title.getText()
+	if queryParam: node['found'] = querySearch(page, queryParam)	# Assign Query
+
+
+# Creates and returns a new node entry from tuple data.
+def createNodeFromTuple(newEntry):
+	node = {}
+	node['id'] = newEntry[0]
+	node['depth'] = newEntry[1]
+	node['title'] = ""
+	node['url'] = newEntry[2]
+	node['dead'] = 0
+	node['found'] = 0
+	node['links'] = 0
+	node['children'] = []
+	return node
+
+
+# Attempts to open URL as an HTML page, returning HTML result.
+def openURLAsHTML(node):
+	try:
+		HTML = opener.open(node['url'])
+
+	except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
+		# --> Handle HTTP error page data here.
+		node['title'] = "Invalid Page/Timeout."
+		node['dead'] = 1
+		return None
+	
+	except http.client.HTTPException:
+		node['title'] = "HTTP Exception"
+		node['dead'] = 1
+		return None
+	
+	except http.client.IncompleteRead as e:
+		HTML = e.partial
+
+	else:
+		if HTML.info().get_content_type() != "text/html":
+			node['title'] = "Non-HTML Link"
+			node['dead'] = 1
+
+		node['url'] = HTML.geturl()		# Update our URL in case of redirect.
+		return HTML
+
+def appendFinalDimensions(data, greatestWidth):
+	data['dimensions']['height'] = data['results'][-1]['depth'] + 1
+
+	data['dimensions']['width'] = greatestWidth
+
+#	for each in data['results']:
+#		if each['links'] > 0:
+#			data['dimensions']['width'] += each['links'] - 1
+
+# MAIN ---------------------------------------------------------------
+
+
+# VALIDATE ARGS ------------------------------------------------------
+if len(sys.argv) < 4:
+	print("\tUsage: bfs.py [starting URL] [depth] [page-limit] [(query)]")
+	print("\t***Set [page-limit] to 0 for no limit.***")
 	sys.exit(2)
 
 URLParam = str(sys.argv[1])
 depthParam = int(sys.argv[2])
+pageLimit = int(sys.argv[3])
 if len(sys.argv) < 4: queryParam = None
 else: queryParam = str(sys.argv[3])
+
+if pageLimit == 0: pageLimit = float('Infinity')
 
 # Set URL Opener - assign valid user-agent to prevent bot detection
 opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
-# Assign starting values
-nextID = 1
-currentID = 0
-currentURL = URLParam
-currentWidth = 0
-currentDepth = 0
-targetDepth = depthParam
-isDead = 0
-hasQuery = 0
-maxWidth = 0
+# THREAD LOCK
+tier_lock = threading.Lock()
+pool_lock = threading.Lock()
+
+nextID = 1	# For unique ID assignment
+greatestWidth = 1
 
 # Set up dataset:
 data = {}
 
 data['input'] = {}
-data['input']['url'] = currentURL
-data['input']['n'] = targetDepth
+data['input']['url'] = URLParam
+data['input']['n'] = depthParam
 data['input']['type'] = "rdfs"
 data['input']['search'] = queryParam
 
@@ -85,195 +183,134 @@ data['dimensions']['width'] = 1
 
 data['results'] = []
 
-# Place Starting page entry into dataset:
-parentnode = {}
-parentnode['id'] = currentID
-parentnode['depth'] = currentDepth
-parentnode['title'] = ""
-parentnode['url'] = currentURL
-parentnode['dead'] = 0
-parentnode['found'] = 0
-parentnode['links'] = 0
-parentnode['children'] = []
+# BEGIN CRAWLER --------------------------------------------------------------
 
-data['results'].append(copy.deepcopy(parentnode))
+#time0 = time.time()		#DEBUG:	TIMING
 
-# Begin Crawl
+# Assign starting URL as a Queue tuple
+currentParentTuple = (0, 0, URLParam)		# URLs to crawl are tuples: (id, depth, "url")
+parentNode = createNodeFromTuple(currentParentTuple)
+parentHTML = openURLAsHTML(parentNode)
+if parentNode['dead'] == 1:
+	#-------> User-Given Page is Dead: Append and Exit <--------
+	data['results'].append(copy.deepcopy(parentNode))
+	appendFinalDimensions(data, greatestWidth)
+	print(json.dumps(data))
+	sys.exit()
 
-while currentDepth < targetDepth:
+# Scrape initial node data
+parentPage = BeautifulSoup(parentHTML.read().decode('utf-8', 'ignore'), "lxml")		# Create Page
+scrapeNodeData(parentNode, parentPage)
 
-	# 1. LOAD PARENT PAGE
+# Append initial node to data set
+data['results'].append(copy.deepcopy(parentNode))
 
-	# HTML ERROR HANDLING --- TRY / EXCEPT BLOCK --------------------------
-	try:
-		currentHTML = opener.open(currentURL)
-	except urllib.error.HTTPError as err:
-		data['results'][currentID]['title'] = "Parent site invalid."
-		data['results'][currentID]['dead'] = 1
-		sys.exit(2)
+# While the depth constraint has not yet been satisfied...
+while currentParentTuple[1] < depthParam:
 
-	except urllib.error.URLError:
-		data['results'][currentID]['title'] = "Parent site invalid."
-		data['results'][currentID]['dead'] = 1
-		sys.exit(2)
+	parentID = currentParentTuple[0]
+	parentURL = currentParentTuple[2]
 
-	else:
-		currentURL = currentHTML.geturl()	# Update our URL in case a redirect was followed.
-		currentRes = currentHTML.info()
-		currentType = currentRes.get_content_type() # We only want to open text/html files.
+	# 1. SCRAPE CHILDREN --------------------------------------------------------
+	links = parentPage.find_all("a", href=True)
 
-		# Page was successfully opened --> convert to bs4 object.
-		currentPage = BeautifulSoup(currentHTML.read(), "html5lib")
+	PagesToCrawl = Queue()
 
-		# 2. COLLECT PAGE DATA:
-
-		# Search for Query Term
-		if queryParam: hasQuery = querySearch(currentPage, queryParam)
-
-		# Scrape links from page:
-		links = currentPage.find_all("a", href=True)
-
-		data['results'][currentID]['title'] = currentPage.title.getText()
-		data['results'][currentID]['url'] = currentURL	# <-- Update URL
-		data['results'][currentID]['found'] = hasQuery
-		data['results'][currentID]['links'] = len(links)
-
-		# 3. PARSE SCRAPED/CHILD LINKS
-		linkPool = []
-		childrenNodes = []
-
-		for item in links:
-
-			isDead = 0
-			hasQuery = 0
-
-			# Make sure Child URL is properly formatted.
-			if item['href'] == '' or item['href'][0] == "#":
-				data['results'][currentID]['links'] -= 1
+	# 2. ADD VALID CHILD LINKS TO THREADING QUEUE -------------------------------
+	amountOfWork = 0
+	for link in links:
+		if amountOfWork < pageLimit:
+			# Validate URL:
+			if link['href'] == '' or link['href'][0] == "#":
 				continue
-
-		#	if item['href'][0] == "/":		# Append href value to parent URL, if necessary
-		#		childURL = str(urllib.parse.urljoin(currentURL, item['href']))
-
 			else:
-			#	childURL = item['href']
-				childURL = str(urllib.parse.urljoin(currentURL, item['href']))
+				childURL = str(urllib.parse.urljoin(parentURL, link['href']))
+			if childURL == parentURL: continue
 
-			# OPEN CHILD URL
+			# Assign to Queue
+			PagesToCrawl.put( (nextID, data['results'][parentID]['depth'] + 1, childURL) ) 
+			data['results'][parentID]['links'] += 1
+			# Add to parent's children
+			data['results'][parentID]['children'].append(copy.deepcopy(nextID))
+			nextID += 1		# Increment ID after assignment
+			amountOfWork += 1
 
-			childNode = {}
-			childTitle = ""
+	if amountOfWork > greatestWidth: greatestWidth = amountOfWork
 
-			# HTML ERROR HANDLING --- TRY / EXCEPT BLOCK --------------------------
-			try:
-				childHTML = opener.open(childURL)
-			except urllib.error.HTTPError as err:
-				isDead = 1
-				childTitle = str(err)
-				pass
+	# 3. SCATTER/GATHER CHILDREN URLS - MULTI-THREADING
+	#------ Threading -----------------------------------------------------------
 
-			except urllib.error.URLError:
-				isDead = 1
-				childTitle = "Incorrect Domain/Server Down"
-				pass
+	linkPool = []		# Holds only the VALID child urls in tuple form for 'next parent' selection
+	tierResults = []	# Holds all scraped node data on a single depth tier
 
-			# If Value Error in URL is received, try one final concatenation:
-			except ValueError as err:
-				try:
-					childURL = str(urllib.parse.urljoin(currentURL, childURL))
-					childHTML = opener.open(childURL)
-				except ValueError as finalErr:
-					isDead = 1
-					childTitle = "Value Error: Improper/Unknown URL Format."
-					pass
-				except urllib.error.HTTPError as finalErr:
-					# --> Handle child HTTP error page data here.
-					isDead = 1
-					childTitle = str(err)
-					pass
-				except urllib.error.URLError:
-					# --> Handle URL error page data here.
-					isDead = 1
-					childTitle = "Incorrect Domain/Server Down"
-					pass
-				else:
-					# If our final attempt to correct the URL succeeded, import the page.
-					childRes = childHTML.info()
-					childType = childRes.get_content_type()
-					childPage = BeautifulSoup(childHTML.read(), "html5lib")
-					if childPage.title is None: childTitle = "No Title"
-					else: childTitle = childPage.title.getText()
-			else:
-				childRes = childHTML.info()
-				childType = childRes.get_content_type()
+	# Terminator/Manager Thread - Watches work queue, takes locking system call
+	terminator = threading.Thread(target=manager)
+	terminator.daemon = True
+	terminator.start()
 
-				childPage = BeautifulSoup(childHTML.read(), "html5lib")
-				if childPage.title is None: childTitle = "No Title"
-				else: childTitle = childPage.title.getText()
-				if queryParam: hasQuery = querySearch(childPage, queryParam)
-			# END OF HTML ERROR HANDLING ------------------------------------------
+	# Worker Thread Pool - Loads/Scrapes pages from URLS in work queue
+	threads = []
+	for x in range(numThreads):
+		t = threading.Thread(target=worker)
+		t.daemon = True
+		threads.append(t)
+		t.start()
 
-			# COLLECT CHILD PAGE DATA:
-			childNode['id'] = nextID; nextID += 1
-			childNode['depth'] = currentDepth + 1
-			childNode['title'] = childTitle
+	# Block until all threads have finished crawling URLs in queue
+	while terminator.is_alive():
+		time.sleep(2)
 
 
-			childNode['url'] = childURL
-			childNode['dead'] = isDead
-			childNode['found'] = hasQuery
-			childNode['links'] = 0
-			childNode['children'] = []
+	# 5. ORGANIZE RESULTS -------------------------------------------------------
 
-			# APPEND CHILD ID TO PARENT DATASET
-			data['results'][currentID]['children'].append(copy.deepcopy(childNode['id']))
+#	print("linkPool length = " + str(len(linkPool)))	#DEBUG
 
-			# APPEND CHILD TO CHILDREN DATASET:
-			childrenNodes.append(copy.deepcopy(childNode))
+	# SORT TIER RESULTS
+	tierResults.sort(key=getID)
 
-			# IF CHILD IS LIVE AND VALID HTML, ADD TO LINK POOL:
-			if childNode['dead'] == 0 and childType == "text/html": linkPool.append(copy.deepcopy(childNode))
+	# Select node to be next parent
+	if len(linkPool) < 1:	# If there are no links to select...
+		break				# Break crawl loop: we are done.
 
-		# 4. SELECT NEW LINK FROM LIST
+	# Otherwise, there are links to select...
+	r = random.randint(0, len(linkPool)-1)
+	nextParent = linkPool[r] 	# Select a random, valid link to follow.
 
-		if len(linkPool) < 1:	# <-- There are no links to select. Assign data and break.
-			print("0 Available links, Parrot flying home!")
+	# APPEND TIER TO DATA RESULTS
+	for item in tierResults:
+		data['results'].append(copy.deepcopy(item))
 
-			for each in childrenNodes:
-				data['results'].append(copy.deepcopy(each))
-				break
+	# SWAP FIRST TIER ENTRY WITH NEW PARENT FOR FRONT-END PARSING
+	swapID1 = tierResults[0]['id']
+#	print("ID 1 = " + str(swapID1))		#DEBUG
+	swapID2 = nextParent[0]
+#	print("ID 2 = " + str(swapID2))		#DEBUG
 
-		else:
-			nextParent = linkPool[1] # <-- Should be random assignment
+	data['results'][swapID1]['id'], data['results'][swapID2]['id'] = data['results'][swapID2]['id'], data['results'][swapID1]['id']
+	data['results'][swapID1], data['results'][swapID2] = data['results'][swapID2], data['results'][swapID1]
 
-		# 5. RECORD ALL TIER DATA TO FILE AS JSON
+	# 6. SET UP FOR NEXT ITERATION
+	currentParentTuple = (swapID1, data['results'][swapID1]['depth'], data['results'][swapID1]['url'])
+
+#	print('Next parent will be...')		#DEBUG
+#	print(currentParentTuple)			#DEBUG
+#	print("\n")							#DEBUG
+
+	if parentHTML != None: parentHTML.close()	# Garbage Collection
+	parentPage.decompose()						# Garbage Collection
+
+	parentHTML = openURLAsHTML(data['results'][currentParentTuple[0]])
+	if parentHTML == None: break
+	parentPage = BeautifulSoup(parentHTML.read().decode('utf-8', 'ignore'), "lxml")
 
 
-		# APPEND CHILD NODES TO DATASET
-	#	currentWidth = 1	# <-- Account for parent node already in dataset.
-		for each in childrenNodes:
-			data['results'].append(copy.deepcopy(each))
-			currentWidth += 1
+# APPEND FINAL INFO TO DATA SET ----------------------------------------------
+appendFinalDimensions(data, greatestWidth)
 
-	#	if currentWidth > maxWidth: maxWidth = currentWidth
-
-		# Swap first child ID/position with new parent.
-		data['results'][(nextParent['id'])]['id'], data['results'][(childrenNodes[0]['id'])]['id'] = data['results'][(childrenNodes[0]['id'])]['id'], data['results'][(nextParent['id'])]['id']
-		data['results'][(nextParent['id'])], data['results'][(childrenNodes[0]['id'])] = data['results'][(childrenNodes[0]['id'])], data['results'][(nextParent['id'])]
-
-		# 6. SET UP FOR NEXT ITERATION
-		currentURL = data['results'][(childrenNodes[0]['id'])]['url']
-		currentID = childrenNodes[0]['id']
-
-		isDead = 0
-		hasQuery = 0
-		currentDepth += 1
-
-for each in data['results']:
-	if each['links'] > 0:
-		data['dimensions']['width'] += each['links'] - 1
-
-data['dimensions']['height'] = currentDepth + 1
-# data['dimensions']['width'] = maxWidth
-
+# Output Data Set
 print(json.dumps(data))
+
+#time1 = time.time()				#DEBUG:	TIMING
+#print("Total time: ", time1-time0)	#DEBUG:	TIMING
+
+#-----------------------------------------------------------------------------
