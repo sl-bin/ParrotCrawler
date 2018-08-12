@@ -4,10 +4,10 @@
       <legend><span class="legend">Enter Web Crawler Criteria:</span></legend>
       <fieldset>
         <label>Starting URL :
-          <input type="text" formControlName="url">
+          <input type="text" placeholder="http://" formControlName="url">
         </label>
         <div class="required" [hidden]="url.valid || url.untouched">
-          A Valid URL is Required
+          A Valid URL is Required ( Including http:// )
         </div>
       </fieldset>
       <fieldset>
