@@ -46,7 +46,6 @@ export class LocalStorageService {
       this.storage.set("0", String(keyCount));
       this.storage.set(String(keyCount), searchString);
     }
-
   }
 
 
