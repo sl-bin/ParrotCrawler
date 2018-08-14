@@ -10,14 +10,15 @@ nav {
   overflow: hidden;
   background-color: #333;
   border-bottom: solid 2px #222;
-  padding-right: 20vh;
 
   .navRight {
     float: right;
+    padding-right: 2%;
   }
 
   .navLeft {
     float: left;
+    padding-left: 2%;
   }
 }
 
@@ -174,7 +175,7 @@ no matter how you do it*/
 
 .container {
   margin: 0;
-  padding: 100px 300px;
+  padding: 225px 300px;
 }
 
 // .girDisplay:active {
@@ -193,57 +194,76 @@ no matter how you do it*/
 .out1 {
   -webkit-transform: scale(.12);
   transform: scale(.12);
-  margin-top: -100px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
 }
 
 .out2 {
   -webkit-transform: scale(.25);
   transform: scale(.25);
-  margin-top: -50px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
 }
 
 .out3 {
   -webkit-transform: scale(.5);
   transform: scale(.5);
-  margin-top: 0px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
+
 }
 
 .noZoom {
   -webkit-transform: scale(1);
   transform: scale(1);
-  margin-top: 50px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
 }
 
 .in1 {
   -webkit-transform: scale(1.5);
   transform: scale(1.5);
-  margin-top: 200px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
 }
 
 .in2 {
   -webkit-transform: scale(2);
   transform: scale(2);
-  margin-top: 400px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
 }
 
-.in3 {
+.inNode1 {
+  -webkit-transform: scale(1.5);
+  transform: scale(1.5);
+}
+
+.inNode2 {
+  -webkit-transform: scale(2);
+  transform: scale(2);
+}
+
+.inNode3 {
   -webkit-transform: scale(3);
   transform: scale(3);
-  margin-top: 400px;
-  margin-left: 0;
 }
 
-.in4 {
+.inNode4 {
   -webkit-transform: scale(4);
   transform: scale(4);
-  margin-top: 400px;
-  margin-left: 0;
 }
 
 .topZ {

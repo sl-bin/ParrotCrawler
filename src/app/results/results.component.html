@@ -1,7 +1,8 @@
 <nav>
   <ul class="navLeft">
-    <li class="navItem">Jump Left</li>
-    <li class="navItem">Jump Right</li>
+    <li class="navItem" (click)="jumpRight()">Right</li>
+    <li class="navItem" (click)="jumpCenter()" >Center</li>
+    <li class="navItem" (click)="jumpLeft()" >Left</li>
   </ul>
   <ul class="navRight">
     <li class="navItem" routerLink="/home">New Search</li>
