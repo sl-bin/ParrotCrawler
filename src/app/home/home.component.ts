@@ -5,7 +5,7 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { ParrotSearch } from '../parrot-search';
 import { ParrotSearchService } from '../parrot-search.service';
-import { LocalStorageService } from '../prevSearch.service';
+import { LocalStorageService } from '../prev-search.service';
 
 @Component({
   selector: 'app-home',
