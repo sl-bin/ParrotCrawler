@@ -90,10 +90,6 @@ export class HomeComponent implements OnInit {
     this.searchService.updateLoaded(false);
   }
 
-  ngOnChange() {
-
-  }
-
   // used by validators to compare n and searchType
   conditionalTypeCheck(n: string, searchType: string) {
     return (group: FormGroup) => {
