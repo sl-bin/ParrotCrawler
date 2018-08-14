@@ -11,19 +11,6 @@
         </div>
       </fieldset>
       <fieldset>
-        <label>Value of <i>n</i> :
-          <input type="number" min="1" max="4" step="1" formControlName="n">
-        </label>
-        <div class="required" [hidden]="n.valid || n.untouched">
-          Must be a Number Between 1 and 4.
-        </div>
-      </fieldset>
-      <fieldset>
-        <label>Optional Search Phrase:
-          <input type="text" formControlName="searchPhrase">
-        </label>
-      </fieldset>
-      <fieldset class="fade">
         <p class="searchLabel">Select a Search Type:</p>
         <p>
           <label>
@@ -36,7 +23,22 @@
         <div class="required" [hidden]="searchType.valid || searchType.untouched">
           A Search Type is Required
         </div>
-
+      </fieldset>
+      <fieldset>
+        <label>Value of <i>n</i> :
+          <input type="number" min="1" max="12" step="1" formControlName="n">
+        </label>
+        <div class="required" [hidden]="n.valid">
+          For BFS this must be a number between 1 and 4. <br/>
+          For RDFS this must be a number between 1 and 12.
+        </div>
+      </fieldset>
+      <fieldset>
+        <label>Optional Search Phrase:
+          <input type="text" formControlName="searchPhrase">
+        </label>
+      </fieldset>
+      <fieldset class="fade">
         <br>
       <div class="pastSearchDiv hidden">
         <label>Previous Searches:
