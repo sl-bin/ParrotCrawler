@@ -53,6 +53,13 @@ form {
   input[type="radio"]:checked{
     border: 1em solid black;
   }
+
+  .pastSearches {
+    background-color: #AAA;
+    font-size: 1em;
+    overflow: hidden;
+    width: 50%;
+  }
 }
 
 .disable {
@@ -97,11 +104,4 @@ fieldset {
 
 .pastSearchDiv {
   margin: 0;
-}
-
-.pastSearches {
-  background-color: #AAA;
-  font-size: 1em;
-  overflow: hidden;
-  width: 40%;
 }

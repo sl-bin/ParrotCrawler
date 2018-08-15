@@ -4,26 +4,13 @@
       <legend><span class="legend">Enter Web Crawler Criteria:</span></legend>
       <fieldset>
         <label>Starting URL :
-          <input type="text" formControlName="url">
+          <input type="text" placeholder="http://" formControlName="url">
         </label>
         <div class="required" [hidden]="url.valid || url.untouched">
-          A Valid URL is Required
+          A Valid URL is Required ( Including http:// )
         </div>
       </fieldset>
       <fieldset>
-        <label>Value of <i>n</i> :
-          <input type="number" min="1" max="4" step="1" formControlName="n">
-        </label>
-        <div class="required" [hidden]="n.valid || n.untouched">
-          Must be a Number Between 1 and 4.
-        </div>
-      </fieldset>
-      <fieldset>
-        <label>Optional Search Phrase:
-          <input type="text" formControlName="searchPhrase">
-        </label>
-      </fieldset>
-      <fieldset class="fade">
         <p class="searchLabel">Select a Search Type:</p>
         <p>
           <label>
@@ -32,22 +19,32 @@
           <label>
               <input type="radio" name="searchType" value="RDFS" formControlName="searchType"/>Random Depth First Search</label>
           <br/>
-          <label>
-              <input type="radio" class="disable" name="searchType" value="TDFS" formControlName="searchType" [disabled]/>
-		<span class="disable">True Depth First Search</span>
-	  </label>
-          <br/>
         </p>
         <div class="required" [hidden]="searchType.valid || searchType.untouched">
           A Search Type is Required
         </div>
-
+      </fieldset>
+      <fieldset>
+        <label>Value of <i>n</i> :
+          <input type="number" min="1" max="12" step="1" formControlName="n">
+        </label>
+        <div class="required" [hidden]="n.valid">
+          For BFS this must be a number between 1 and 4. <br/>
+          For RDFS this must be a number between 1 and 12.
+        </div>
+      </fieldset>
+      <fieldset>
+        <label>Optional Search Phrase:
+          <input type="text" formControlName="searchPhrase">
+        </label>
+      </fieldset>
+      <fieldset class="fade">
         <br>
       <div class="pastSearchDiv hidden">
         <label>Previous Searches:
           <select class = "pastSearches" formControlName="prevSearchDrop" (ngModelChange)="onSelect($event)">
-            <option [ngValue]="prevSearch" *ngFor="let prevSearch of prevSearches">
-              {{ prevSearch.url }}
+            <option [ngValue]="prevSearch" *ngFor="let prevSearch of prevSearches | slice: 1">
+              {{ prevSearch.url }} n={{ prevSearch.n }} {{ prevSearch.searchType }} "{{ prevSearch.searchPhrase }}"
             </option>
           </select>
         </label>

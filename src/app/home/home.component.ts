@@ -5,7 +5,7 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { ParrotSearch } from '../parrot-search';
 import { ParrotSearchService } from '../parrot-search.service';
-import { LocalStorageService } from '../prevSearch.service';
+import { LocalStorageService } from '../prev-search.service';
 
 @Component({
   selector: 'app-home',
@@ -75,20 +75,55 @@ export class HomeComponent implements OnInit {
         Validators.required,
         Validators.pattern(this.regex)
       ]],
-      n: [1, [
-        Validators.required,
-        Validators.min(1),
-        Validators.max(4)
-      ]],
-      searchPhrase: '',
       searchType: ['', [
         Validators.required
       ]],
+      n: [1, [
+        Validators.required,
+        Validators.min(1)
+      ]],
+      searchPhrase: '',
       prevSearchDrop:[]
-    });
+    }, { validator: this.conditionalTypeCheck("n", "searchType") });
 
     this.searchService.updateSuccess(false);
     this.searchService.updateLoaded(false);
+  }
+
+  // used by validators to compare n and searchType
+  conditionalTypeCheck(n: string, searchType: string) {
+    return (group: FormGroup) => {
+      let testN = group.controls[n];
+      let testType = group.controls[searchType];
+      let hfError = true;
+
+      // set error based on type and n values
+      if(testType.value === "BFS") {
+        if(testN.value > 4) {
+          hfError = true;
+        }
+        else {
+          hfError = false;
+        }
+      } else {
+        if(testN.value > 12) {
+          hfError = true;
+        }
+        else {
+          hfError = false;
+        }
+      }
+
+      // trace statement for testing
+      // console.log(testN.value, testType.value, hfError);
+
+      // return error or null if no error
+      if(hfError) {
+        return testN.setErrors({typeForNumber: true});
+      } else {
+        return testN.setErrors(null);
+      }
+    }
   }
 
   // get methods for passing homeForm members around

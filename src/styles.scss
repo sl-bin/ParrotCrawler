@@ -36,7 +36,7 @@ body {
 .viewWindow {
   position: relative;
   min-height: 1px;
-  height: 85vh;
+  height: 98%;
   min-width: 1px;
   width: 96%;
   background: -webkit-linear-gradient(#111, #3F3F3F); /* For Safari 5.1 to 6.0 */
@@ -45,6 +45,10 @@ body {
   background: linear-gradient(#111, #3F3F3F); /* Standard syntax */
   margin: 2%;
   overflow: scroll;
+}
+
+.centered {
+  text-align: center;
 }
 
 .btnDiv {
@@ -67,7 +71,6 @@ body {
     background-color: #111;
     color: #AAA;
   }
-
 }
 
 .hidden {

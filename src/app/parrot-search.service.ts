@@ -52,7 +52,7 @@ export class ParrotSearchService {
       'An Error occurred. Please try again.');
   };
 
-  // for updating loaded value from componetnets
+  // for updating loaded value from components
   updateLoaded(boolVal){
       this.loadedSource.next(boolVal);
       // console.log("loadedData made it back: " + this.loadedSource.getValue());

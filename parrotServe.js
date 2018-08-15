@@ -56,6 +56,7 @@ function pyParrotCrawl(res, searchTerms) {
   var nDepth = searchTerms.n;
   var phrase = searchTerms.searchPhrase;
   var type = searchTerms.searchType;
+  var width = 0;
 
   // trace statements for testing that JSON reached pyParrotCrawl successfully
   // console.log("Node: POST received with values: " + JSON.stringify(searchTerms));
@@ -73,10 +74,30 @@ function pyParrotCrawl(res, searchTerms) {
     case "RDFS":
       scriptToRun = "rdfs.py";
       break;
-    case "TDFS":
-      scriptToRun = "tdfs.py";
-      break;
+    // case "TDFS":
+    //   scriptToRun = "tdfs.py";
+    //   break;
     }
+
+  // set the correct width based on searchType and nDepth
+  if(scriptToRun === "rdfs.py") {
+    width = 1000;
+  } else {
+    switch(nDepth) {
+      case 1:
+        width = 1000;
+        break;
+      case 2:
+        width = 30;
+        break;
+      case 3:
+        width = 10;
+        break;
+      case 4:
+        width = 5;
+        break;
+      }
+  }
 
   //set up pyshell for a run
   var PythonShell = require('python-shell');
@@ -87,7 +108,7 @@ function pyParrotCrawl(res, searchTerms) {
       pythonOptions: ['-u'],
       //can change depending on the directory the scripts are held in
       scriptPath: './crawler/',
-      args: [startURL, nDepth , phrase]
+      args: [startURL, nDepth , width, phrase]
   };
 
   console.log("Node: Calling crawler");
