@@ -1,43 +1,46 @@
 //--------  Server Requirements ---------//
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const cors = require('cors');
-var Client = require('node-rest-client').Client;
-
+var express = require('express');
+var bodyParser = require('body-parser');
 
 
 //---------  App Setup and Globals ----------//
+var app = express();
 app.use(bodyParser.json());
-app.use(cors());
+
+var clientID = 0;
+var clients = {}; // <- Keep a map of attached clients
 
 //------------  Server Routes ------------//
-//listen for post requests
-app.listen('12296', () => {
-  console.log('ParrotServe started!');
+
+//listen for client connections
+app.get('/events/', function (req, res) {
+	req.socket.setTimeout(2147483647);
+	res.writeHead(200, {
+		'Content-Type': 'text/event-stream', // <- Important headers
+		'Cache-Control': 'no-cache',
+		'Connection': 'keep-alive',
+    'Access-Control-Allow-Origin' : '*'
+	});
+	res.write('\n');
+	(function (clientID) {
+		clients[clientID] = res; // <- Add this client to those we consider "attached"
+		req.on("close", function () {
+			delete clients[clientID]
+		}); // <- Remove this client when he disconnects
+	})(++clientID)
+    console.log("Client connected");
 });
 
 
 //recieve the POST search request from the frontend
-app.route('/').post((req,res) => {
-  req.setTimeout(600000);
+app.route('/post/').post((req,res) => {
   var searchJSON = req.body;
-
-  // trace statements for testing that JSON received is correct
-  // var searchString = JSON.stringify(searchJSON);
-  // console.log("Node: POST received with values: " + searchString);
-  // var startURL = searchJSON.url;
-  // var nDepth = searchJSON.n;
-  // var phrase = searchJSON.searchPhrase;
-  // var type = searchJSON.searchType;
-  // console.log("startURL: " + startURL);
-  // console.log("nDepth: " + nDepth);
-  // console.log("searchPhrase: " + phrase);
-  // console.log("searchType: " + type);
 
   try{
     // call the parrot crawl function
-    pyParrotCrawl(res, searchJSON);
+    res.sendStatus(200);
+    sendBack(searchJSON);
+    //pyParrotCrawl(res, searchJSON);
   } catch(err){
     //send that the response was not received
     res.sendStatus(500).end();
@@ -45,6 +48,18 @@ app.route('/').post((req,res) => {
 });
 
 
+function sendBack(bod) {
+  console.log(JSON.stringify(bod));
+  for (clientID in clients) {
+		clients[clientID].write("data: " + JSON.stringify(bod) + "\n\n"); // <- Push a message to a single attached client
+	};
+}
+
+
+//listen for post requests and server subscriptions
+app.listen('12296', () => {
+  console.log('ParrotServe started!');
+});
 
 //------------  Python-Shell Call Function ------------//
 //function to call python-shell when search is received
@@ -94,10 +109,12 @@ function pyParrotCrawl(res, searchTerms) {
   //call crawl script and pass it the search terms
   PythonShell.run(scriptToRun, options, function(err, searchRes) {
      if(err) {
+       client.send(err);
        throw err;
      }
      else {
-       sendResults(res, searchRes[0]);
+       client.send(searchRes);
+       //sendResults(res, searchRes[0]);
      }
    });
 }
