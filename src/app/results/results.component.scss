@@ -158,7 +158,6 @@ no matter how you do it*/
   background-color: #333;
   padding: 4px;
   text-align: center;
-  // overflow: hidden;
 }
 
 .gridDisplay {
@@ -167,22 +166,22 @@ no matter how you do it*/
   height: 100%;
   width: 100%;
   text-align: center;
-  // cursor: move;
-  // cursor: grab;
-  // cursor: -moz-grab;
-  // cursor: -webkit-grab;
 }
 
 .container {
   margin: 0;
   padding: 225px 300px;
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
 }
 
-// .girDisplay:active {
-//   cursor: grabbing;
-//   cursor: -moz-grabbing;
-//   cursor: -webkit-grabbing;
-// }
+.container:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
 
 .lineGrid {
   display: grid;

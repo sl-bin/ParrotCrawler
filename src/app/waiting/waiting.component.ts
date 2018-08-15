@@ -24,6 +24,9 @@ export class WaitingComponent implements OnInit {
     this.searchService.success.subscribe((success) => {this.success = success});
     this.searchService.loaded.subscribe((loaded) => {this.loaded = loaded});
 
+    // this is function must be declared in this way within ngOnInit
+    // in order for Angular and TyoeScript to render the timed sequence
+    // and button correctly
     this.stillWaiting = setInterval(() => {
       if(!this.loaded && !this.success){
         // for testing
@@ -37,15 +40,16 @@ export class WaitingComponent implements OnInit {
           this.wText = "Waiting for results";
           this.count++;
         }
-
-        // TODO add error rederection here
-      } else {
+      } else if(this.loaded && this.success) {
         // for testing
         // console.log(this.loaded);
         // console.log(this.success);
 
         this.wText = "";
         this.btnStyle = "btn";
+        clearInterval(this.stillWaiting);
+      } else {
+        this.wText = "";
         clearInterval(this.stillWaiting);
       }
     }, 1000);

@@ -35,7 +35,7 @@ const routes: Routes = [
   {
     path: 'results',
     component: ResultsComponent,
-    canActivate: [GuardService],
+    // canActivate: [GuardService],
     data: { state: 'results'}
   },
   {
