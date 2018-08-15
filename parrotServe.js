@@ -1,11 +1,12 @@
 //--------  Server Requirements ---------//
 var express = require('express');
 var bodyParser = require('body-parser');
-
+const cors = require('cors');
 
 //---------  App Setup and Globals ----------//
 var app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 var clientID = 0;
 var clients = {}; // <- Keep a map of attached clients
@@ -61,7 +62,7 @@ function pyParrotCrawl(searchTerms) {
   var startURL = searchTerms.url;
   var nDepth = searchTerms.n;
   var phrase = searchTerms.searchPhrase;
-	var pageLimit = searchTerms.pageLimit;
+	var pageLimit = 0;
   var type = searchTerms.searchType;
   var searchID = searchTerms.searchID;
 
@@ -105,8 +106,10 @@ function pyParrotCrawl(searchTerms) {
 
 //------------  Send results function ------------//
 function sendBack(bod) {
-  console.log(JSON.stringify(bod));
+	console.log("SSEing data back to client!");
+	console.log(JSON.stringify(bod));
+  //console.log(JSON.stringify(bod));
   for (clientID in clients) {
-		clients[clientID].write("data: " + bod + "\n\n"); // <- Push a message to a single attached client
+		clients[clientID].write("data: " + JSON.stringify(bod) + "\n\n"); // <- Push a message to a single attached client
 	};
 }
