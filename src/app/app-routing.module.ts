@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, CanActivate } from '@angular/router';
+
+import { GuardService } from './guard.service';
+
 import { WelcomeComponent } from './welcome/welcome.component';
 import { HomeComponent } from './home/home.component';
 import { WaitingComponent } from './waiting/waiting.component';
@@ -26,11 +29,13 @@ const routes: Routes = [
   {
     path: 'waiting',
     component: WaitingComponent,
+    // canActivate: [GuardService],
     data: { state: 'waiting'}
   },
   {
     path: 'results',
     component: ResultsComponent,
+    // canActivate: [GuardService],
     data: { state: 'results'}
   },
   {
