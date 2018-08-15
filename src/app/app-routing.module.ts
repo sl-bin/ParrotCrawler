@@ -29,13 +29,13 @@ const routes: Routes = [
   {
     path: 'waiting',
     component: WaitingComponent,
-    // canActivate: [GuardService],
+    canActivate: [GuardService],
     data: { state: 'waiting'}
   },
   {
     path: 'results',
     component: ResultsComponent,
-    // canActivate: [GuardService],
+    canActivate: [GuardService],
     data: { state: 'results'}
   },
   {

@@ -80,5 +80,9 @@ export class ParrotSearchService {
     );
   }
 
-
+  // var source = new EventSource(nodeURL);       //url where parrotServe.js is listening for an SSE subscribe request
+  // source.onmessage = function(event) {
+  //     //do things when an SSE message is recieved
+  //     //event.data is where the message data is held
+  // };
 }
