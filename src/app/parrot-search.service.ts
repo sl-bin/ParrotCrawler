@@ -22,7 +22,7 @@ export class ParrotSearchService {
   // change to "http://parrotcrawl.webfactional.com/api"
 
   // node route URL to accept search POST request
-  private nodeURL = "http://localhost:12296/";
+  private nodeURL = "http://localhost:12296/post/";
 
   //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR PROD VERSION*^^^^^^^^^^^^*//
 
