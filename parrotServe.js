@@ -39,21 +39,12 @@ app.route('/post/').post((req,res) => {
   try{
     // call the parrot crawl function
     res.sendStatus(200);
-    sendBack(searchJSON);
-    //pyParrotCrawl(res, searchJSON);
+    pyParrotCrawl(searchJSON);
   } catch(err){
     //send that the response was not received
     res.sendStatus(500).end();
   }
 });
-
-
-function sendBack(bod) {
-  console.log(JSON.stringify(bod));
-  for (clientID in clients) {
-		clients[clientID].write("data: " + JSON.stringify(bod) + "\n\n"); // <- Push a message to a single attached client
-	};
-}
 
 
 //listen for post requests and server subscriptions
@@ -65,19 +56,14 @@ app.listen('12296', () => {
 //function to call python-shell when search is received
 //Takes JSON-encoded search terms: URL, depth of search, optional search phrase, and search type
 //Returns web crawler results as string
-function pyParrotCrawl(res, searchTerms) {
+function pyParrotCrawl(searchTerms) {
   //parse search terms out into individual variables
   var startURL = searchTerms.url;
   var nDepth = searchTerms.n;
   var phrase = searchTerms.searchPhrase;
+	var pageLimit = searchTerms.pageLimit;
   var type = searchTerms.searchType;
-
-  // trace statements for testing that JSON reached pyParrotCrawl successfully
-  // console.log("Node: POST received with values: " + JSON.stringify(searchTerms));
-  // console.log("startURL: " + startURL);
-  // console.log("nDepth: " + nDepth);
-  // console.log("phrase: " + phrase);
-  // console.log("type: " + type);
+  var searchID = searchTerms.searchID;
 
   //choose the right script depending which search type is specified
   var scriptToRun;
@@ -102,25 +88,25 @@ function pyParrotCrawl(res, searchTerms) {
       pythonOptions: ['-u'],
       //can change depending on the directory the scripts are held in
       scriptPath: './crawler/',
-      args: [startURL, nDepth , phrase]
+      args: [startURL, nDepth, pageLimit, phrase]
   };
 
   console.log("Node: Calling crawler");
   //call crawl script and pass it the search terms
   PythonShell.run(scriptToRun, options, function(err, searchRes) {
      if(err) {
-       client.send(err);
        throw err;
      }
      else {
-       client.send(searchRes);
-       //sendResults(res, searchRes[0]);
+			 sendBack(searchRes[0]);
      }
    });
 }
 
 //------------  Send results function ------------//
-function sendResults(res, sRes) {
-  console.log(JSON.stringify(sRes));
-  res.send(sRes).end();
+function sendBack(bod) {
+  console.log(JSON.stringify(bod));
+  for (clientID in clients) {
+		clients[clientID].write("data: " + bod + "\n\n"); // <- Push a message to a single attached client
+	};
 }
