@@ -14,7 +14,7 @@ export class WaitingComponent implements OnInit {
   btnStyle = "btnNoDisplay";
   loaded: Boolean;
   success: Boolean;
-  stillWaiting;
+  stillWaiting: any;
 
 
 
