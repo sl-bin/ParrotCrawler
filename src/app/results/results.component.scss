@@ -14,17 +14,47 @@ nav {
   .navRight {
     float: right;
     padding-right: 2%;
+
+    li {
+
+      @media only screen and (max-width: 430px) {
+        font-size: 0.5em;
+      }
+      @media only screen and (min-width: 431px) {
+        font-size: 1em;
+      }
+      @media only screen and (min-width: 600px) {
+        font-size: 1.5em;
+      }
+      @media only screen and (min-width: 701px) {
+        font-size: 2em;
+      }
+    }
   }
 
   .navLeft {
     float: left;
     padding-left: 2%;
+
+    li {
+      @media only screen and (max-width: 430px) {
+        font-size: 0.5em;
+      }
+      @media only screen and (min-width: 431px) {
+        font-size: 1em;
+      }
+      @media only screen and (min-width: 600px) {
+        font-size: 1.5em;
+      }
+      @media only screen and (min-width: 701px) {
+        font-size: 2em;
+      }
+    }
   }
 }
 
 /* styles the buttons on the nav */
 .navItem {
-  font-size: 35px;
   float: right;
   display: inline-block;
   color: white;
@@ -152,12 +182,25 @@ no matter how you do it*/
   position: fixed;
   margin: 0;
   border: 6px solid #222;
-  min-width: 20%;
-  max-width: 20%;
+  min-width: 300px;
   min-height: 100px;
+  max-height: 125px;
   background-color: #333;
   padding: 4px;
   text-align: center;
+
+  @media only screen and (max-width: 600px) {
+    max-width: 300px;
+    font-size: 0.75em;
+  }
+  @media only screen and (min-width: 601px) {
+    max-width: 350px;
+    font-size: 0.9em;
+  }
+  @media only screen and (min-width: 751px) {
+    max-width: 400px;
+    font-size: 1em;
+  }
 }
 
 .gridDisplay {
@@ -271,7 +314,7 @@ no matter how you do it*/
 }
 
 .gridNode {
-  overflow: hidden;
+  word-wrap: break-word;
   border-radius: 10px;
   margin: 0 2px;
   -moz-text-fill-color: white;
