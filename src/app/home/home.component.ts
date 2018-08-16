@@ -167,38 +167,17 @@ export class HomeComponent implements OnInit {
 
 
   // submission handler
-  async onSubmit() {
-    var source = new EventSource("http://localhost:12296/events/");
+  onSubmit() {
     const formValue = this.homeForm.value;
-
-    // for debugging purposes
-    // this.searchService.postSearch( formValue as ParrotSearch).subscribe();
-    // this.success = true;
-    // this.router.navigate(['/waiting']);
 
     //save the search in localStorage
     this.searchStorage.saveInLocal( formValue as ParrotSearch );
 
-    // this try catch is for error handling
-    try {
-      await this.searchService.postSearch( formValue as ParrotSearch ).subscribe();
-      this.router.navigate(['/waiting']);
-
-      source.addEventListener('message', (event:any) => {
-        this.searchService.updateData(event.data);
-        this.searchService.updateSuccess(true);
-        this.searchService.updateLoaded(true);
-      });
-
-      source.addEventListener('error', (event:any) => {
-        this.searchService.updateData(event.data);
-        this.searchService.updateSuccess(false);
-        this.searchService.updateLoaded(true);
-        console.log(event.data);
-        this.router.navigate(['/error']);
-      });
-
-    } catch(err) {
+    try{
+      //send the message through the websocket using the search service
+      this.searchService.socketSearch( formValue as ParrotSearch );
+    }
+    catch(err) {
       console.log(err);
       this.router.navigate(['/error']);
     }
