@@ -12,6 +12,11 @@ var clientID = 0;
 var clients = {}; // <- Keep a map of attached clients
 
 //------------  Server Routes ------------//
+//listen for post requests and server subscriptions
+app.listen('12296', () => {
+  console.log('ParrotServe started!');
+});
+
 
 //listen for client connections
 app.get('/events/', function (req, res) {
@@ -48,10 +53,6 @@ app.route('/post/').post((req,res) => {
 });
 
 
-//listen for post requests and server subscriptions
-app.listen('12296', () => {
-  console.log('ParrotServe started!');
-});
 
 //------------  Python-Shell Call Function ------------//
 //function to call python-shell when search is received
