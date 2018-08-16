@@ -8,7 +8,7 @@ import { ParrotReturn } from './parrot-return';
 
 // the http headers that define the content type
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  headers: new HttpHeaders().set("Content-Type", "application/json"),
   params: new HttpParams(),
   responseType: 'text' as 'json'
 };
@@ -74,7 +74,7 @@ export class ParrotSearchService {
    postSearch(search: ParrotSearch): Observable<ParrotSearch> {
     //and make the post request
     return this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions).pipe(
-      catchError(this.handleError)
+      catchError(this.handleError).pipe(timeout(600000));
     );
   }
 }

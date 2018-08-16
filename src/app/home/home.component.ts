@@ -17,7 +17,6 @@ export class HomeComponent implements OnInit {
 
   homeForm: FormGroup;
 
-  // TODO: edit regex to allow for http and www to be left off
   // from https://gist.github.com/dperini/729294
   regex = new RegExp(
     "^" +
@@ -186,13 +185,15 @@ export class HomeComponent implements OnInit {
       this.router.navigate(['/waiting']);
 
       source.addEventListener('message', (event:any) => {
-        console.log(event.data);
         this.searchService.updateData(event.data);
         this.searchService.updateSuccess(true);
         this.searchService.updateLoaded(true);
       });
 
       source.addEventListener('error', (event:any) => {
+        this.searchService.updateData(event.data);
+        this.searchService.updateSuccess(false);
+        this.searchService.updateLoaded(true);
         console.log(event.data);
         this.router.navigate(['/error']);
       });

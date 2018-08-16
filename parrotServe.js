@@ -1,6 +1,6 @@
 //--------  Server Requirements ---------//
-var express = require('express');
-var bodyParser = require('body-parser');
+const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 
 //---------  App Setup and Globals ----------//
@@ -63,9 +63,9 @@ function pyParrotCrawl(searchTerms) {
   var startURL = searchTerms.url;
   var nDepth = searchTerms.n;
   var phrase = searchTerms.searchPhrase;
-	var pageLimit = 0;
   var type = searchTerms.searchType;
   var width = 0;
+  var searchID = searchTerms.searchID;
 
   //choose the right script depending which search type is specified
   var scriptToRun;
@@ -76,9 +76,6 @@ function pyParrotCrawl(searchTerms) {
     case "RDFS":
       scriptToRun = "rdfs.py";
       break;
-    // case "TDFS":
-    //   scriptToRun = "tdfs.py";
-    //   break;
     }
 
   // set the correct width based on searchType and nDepth
@@ -127,10 +124,10 @@ function pyParrotCrawl(searchTerms) {
 
 //------------  Send results function ------------//
 function sendBack(bod) {
-	console.log("SSEing data back to client!");
-	console.log(JSON.stringify(bod));
-  //console.log(JSON.stringify(bod));
+  // testing trace statements
+	// console.log("SSEing data back to client!");
+	// console.log(JSON.stringify(bod));
   for (clientID in clients) {
-		clients[clientID].write("data: " + JSON.stringify(bod) + "\n\n"); // <- Push a message to a single attached client
+		clients[clientID].write(JSON.stringify(bod)); // <- Push a message to a single attached client
 	};
 }
