@@ -53,7 +53,6 @@ app.route('/post/').post((req,res) => {
 });
 
 
-
 //------------  Python-Shell Call Function ------------//
 //function to call python-shell when search is received
 //Takes JSON-encoded search terms: URL, depth of search, optional search phrase, and search type
