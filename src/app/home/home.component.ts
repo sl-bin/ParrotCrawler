@@ -168,7 +168,7 @@ export class HomeComponent implements OnInit {
 
   // submission handler
   async onSubmit() {
-    var source = new EventSource("http://localhost:12296/events/");
+    var source = new EventSource("http://parrotcrawl.webfactional.com/api/events");
     const formValue = this.homeForm.value;
 
     // for debugging purposes
@@ -185,22 +185,20 @@ export class HomeComponent implements OnInit {
       this.router.navigate(['/waiting']);
 
       source.addEventListener('message', (event:any) => {
+        console.log(event.data);
         this.searchService.updateData(event.data);
         this.searchService.updateSuccess(true);
         this.searchService.updateLoaded(true);
       });
 
       source.addEventListener('error', (event:any) => {
-        this.searchService.updateData(event.data);
-        this.searchService.updateSuccess(false);
-        this.searchService.updateLoaded(true);
         console.log(event.data);
         this.router.navigate(['/error']);
       });
 
     } catch(err) {
       console.log(err);
-      this.router.navigate(['/error']);
+      // this.router.navigate(['/error']);
     }
   };
 }

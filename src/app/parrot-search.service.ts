@@ -22,7 +22,7 @@ export class ParrotSearchService {
   // change to "http://localhost:15943/post/"
 
   // node route URL to accept search POST request
-  private nodeURL = "http://parrotcrawl.webfactional.com/api";
+  private nodeURL = "http://parrotcrawl.webfactional.com/api/events";
 
   //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR DEV VERSION*^^^^^^^^^^^^*//
 
@@ -74,7 +74,7 @@ export class ParrotSearchService {
    postSearch(search: ParrotSearch): Observable<ParrotSearch> {
     //and make the post request
     return this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions).pipe(
-      catchError(this.handleError).pipe(timeout(600000));
+      catchError(this.handleError);
     );
   }
 }
