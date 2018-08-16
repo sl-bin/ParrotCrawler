@@ -169,6 +169,7 @@ export class HomeComponent implements OnInit {
 
   // submission handler
   async onSubmit() {
+    var source = new EventSource("http://localhost:12296/events/");
     const formValue = this.homeForm.value;
 
     // for debugging purposes
@@ -181,20 +182,21 @@ export class HomeComponent implements OnInit {
 
     // this try catch is for error handling
     try {
-      await this.searchService.postSearch( formValue as ParrotSearch ).subscribe(
-        (ret) => {
-          // console.log(ret);
-          this.searchService.updateData(ret);
-          this.searchService.updateSuccess(true);
-          this.searchService.updateLoaded(true);
-        },
-        (err) => {
-          console.log(err);
-          this.searchService.updateLoaded(true);
-          this.router.navigate(['/error']);
-        }
-      );
+      await this.searchService.postSearch( formValue as ParrotSearch ).subscribe();
       this.router.navigate(['/waiting']);
+
+      source.addEventListener('message', (event:any) => {
+        console.log(event.data);
+        this.searchService.updateData(event.data);
+        this.searchService.updateSuccess(true);
+        this.searchService.updateLoaded(true);
+      });
+
+      source.addEventListener('error', (event:any) => {
+        console.log(event.data);
+        this.router.navigate(['/error']);
+      });
+
     } catch(err) {
       console.log(err);
       this.router.navigate(['/error']);
