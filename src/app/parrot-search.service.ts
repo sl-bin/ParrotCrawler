@@ -21,10 +21,10 @@ export class ParrotSearchService {
 
   //*vvvvvvvvvvvv*THIS MUST BE CHANGED FOR PROD VERSION*vvvvvvvvvvvv*//
 
-  // change to "http://parrotcrawl.webfactional.com/api/search"
+  // change to "ws://localhost:15943/search/"
 
   // node route URL to accept search POST request
-  private nodeURL = "ws://localhost:15943/search/";
+  private nodeURL = "http://parrotcrawl.webfactional.com/api/search";
   private ws = new WebSocket(this.nodeURL);
 
   //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR PROD VERSION*^^^^^^^^^^^^*//
