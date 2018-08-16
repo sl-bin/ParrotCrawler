@@ -1,57 +1,30 @@
 //--------  Server Requirements ---------//
 const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+var expressWs = require('express-ws')(app);
 
 //---------  App Setup and Globals ----------//
-var app = express();
 app.use(bodyParser.json());
 app.use(cors());
-
-var clientID = 0;
-var clients = {}; // <- Keep a map of attached clients
+var client;
 
 //------------  Server Routes ------------//
+app.ws('/search/', function(ws, req) {
+  client = ws;
+  ws.on('message', function(msg) {
+    var searchJSON = JSON.parse(msg);
+    // call the parrot crawl function
+    pyParrotCrawl(searchJSON);
+  });
+});
+
+
 //listen for post requests and server subscriptions
 app.listen('15943', () => {
   console.log('ParrotServe started!');
 });
-
-
-//listen for client connections
-app.get('/events/', function (req, res) {
-	req.socket.setTimeout(2147483647);
-	res.writeHead(200, {
-		'Content-Type': 'text/event-stream', // <- Important headers
-		'Cache-Control': 'no-cache',
-		'Connection': 'keep-alive',
-    'Access-Control-Allow-Origin' : '*'
-	});
-	res.write('\n');
-	(function (clientID) {
-		clients[clientID] = res; // <- Add this client to those we consider "attached"
-		req.on("close", function () {
-			delete clients[clientID]
-		}); // <- Remove this client when he disconnects
-	})(++clientID)
-    console.log("Client connected");
-});
-
-
-//recieve the POST search request from the frontend
-app.route('/post/').post((req,res) => {
-  var searchJSON = req.body;
-
-  try{
-    // call the parrot crawl function
-    res.sendStatus(200);
-    pyParrotCrawl(searchJSON);
-  } catch(err){
-    //send that the response was not received
-    res.sendStatus(500).end();
-  }
-});
-
 
 
 //------------  Python-Shell Call Function ------------//
@@ -117,17 +90,8 @@ function pyParrotCrawl(searchTerms) {
        throw err;
      }
      else {
-			 sendBack(searchRes[0]);
+			 client.send(JSON.stringify(searchRes[0]));
      }
    });
 }
 
-//------------  Send results function ------------//
-function sendBack(bod) {
-  // testing trace statements
-	console.log("SSEing data back to client!");
-	console.log(JSON.stringify(bod));
-  for (clientID in clients) {
-		clients[clientID].write("data: " + JSON.stringify(bod) + "\n\n"); // <- Push a message to a single attached client
-	};
-}

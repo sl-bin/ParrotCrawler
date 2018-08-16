@@ -2,10 +2,25 @@
 <html>
 <body>
 	<script>
-		    var source = new EventSource("http://localhost:12296/events/");
-		    source.onmessage = function(e) {
-					document.body.innerHTML += JSON.stringify(e.data);
-		    };
-</script>
+
+	    var ws = new WebSocket('ws://localhost:12296/search/');
+
+			ws.onopen = function(event) {
+
+				var message = {url:"http://cultofthepartyparrot.com",
+				 							 n:1,
+											 pageLimit:0,
+											 searchPhrase:"basket",
+											 searchType:"BFS",
+											 searchID:5
+										 };
+				ws.send(JSON.stringify(message));
+			};
+
+			ws.onmessage = function(event) {
+				console.log(JSON.stringify(event.data));
+			}
+
+	</script>
 </body>
 </html>
