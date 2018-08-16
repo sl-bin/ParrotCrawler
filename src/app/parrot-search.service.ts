@@ -2,16 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { ParrotSearch } from './parrot-search';
 import { ParrotReturn } from './parrot-return';
 
-// the http headers that define the content type
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-  params: new HttpParams(),
-  responseType: 'text' as 'json'
-};
 
 
 @Injectable({ providedIn: 'root' })
@@ -19,10 +14,11 @@ export class ParrotSearchService {
 
   //*vvvvvvvvvvvv*THIS MUST BE CHANGED FOR PROD VERSION*vvvvvvvvvvvv*//
 
-  // change to "http://parrotcrawl.webfactional.com/api"
+  // change to "http://parrotcrawl.webfactional.com/api/search"
 
   // node route URL to accept search POST request
-  private nodeURL = "http://localhost:12296/post/";
+  private nodeURL = "ws://localhost:12296/search/";
+  private ws = new WebSocket(this.nodeURL);
 
   //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR PROD VERSION*^^^^^^^^^^^^*//
 
@@ -33,24 +29,7 @@ export class ParrotSearchService {
   private successSource = new BehaviorSubject(false);
   success = this.successSource.asObservable();
 
-  constructor(private http: HttpClient) { }
-
-  // from: https://angular.io/guide/http
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
-    }
-    // return an observable with a user-facing error message
-    return throwError(
-      'An Error occurred. Please try again.');
-  };
+  constructor(private http: HttpClient, private router: Router) {}
 
   // for updating loaded value from components
   updateLoaded(boolVal){
@@ -71,10 +50,26 @@ export class ParrotSearchService {
   }
 
   // method to recieve search input from form and POST to given URL
-   postSearch(search: ParrotSearch): Observable<ParrotSearch> {
-    //and make the post request
-    return this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions).pipe(
-      catchError(this.handleError)
-    );
+   socketSearch(search: ParrotSearch) {
+    //handle errors with the WebSocket
+    if(this.ws.readyState === this.ws.CLOSED || this.ws.readyState === this.ws.CLOSING){
+      console.log("WebSocket is not open!")
+      this.router.navigate(['/error']);
+    }
+    else{
+      //send over the search terms
+      this.ws.send(JSON.stringify(search));
+      //navigate the user to the waiting page
+      this.router.navigate(['/waiting']);
+    }
+
+    //wait for the server response
+    this.ws.addEventListener('message', (event:any) => {
+      console.log("Data recieved");
+      //update the event handlers
+      this.updateData(event.data);
+      this.updateSuccess(true);
+      this.updateLoaded(true);
+    });
   }
 }
