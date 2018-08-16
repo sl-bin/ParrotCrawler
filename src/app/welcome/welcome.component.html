@@ -1,23 +1,36 @@
 <nav>
-  <h1 class="welcome">ParrotCrawl</h1>
+
+    <h1 class="welcome">
+      <img class="reactive-hidden" src="./assets/middleparrot.gif"/>
+      ParrotCrawl
+      <img class="reactive-hidden" src="./assets/middleparrot.gif"/>
+    </h1>
 </nav>
 <div class="viewWindow">
-  <p>
+  <p class="centered">
     Welcome to the ParrotCrawl the only web crawler inspired by
-    the Cult of the Parrot. <img src="./assets/middleparrot.gif"/>
+    the Cult of the Parrot.
   </p>
   <p>
-    To use the ParrotCrawl enter a url you would like to start
-    from and the crawler will search outward from that website
+    To use ParrotCrawl enter a URL you would like to start
+    from and the crawler will search outward from that webpage
     navigating through each link. If you would like the
     ParrotCrawl to search for a string on the pages it visits
     enter it in the optional field. You will also need to choose
     a value of <i>n</i> which will determine how many links from
-    the URL you have entered the search will continue. You must
+    the original URL that the search will continue for. You must
     also choose a style of search, either depth first or breadth
-    first. The depth first will choose links randomly and continue
-    until either <i>n</i> is reached or the optional search value
-    is found. To start click the 'get started' button!
+    first. The depth first search will choose links randomly and continue
+    until <i>n</i> is reached. The breadth first search will navigate
+    through a limited number of links on each webpage and then navigate
+    through the links on each of those pages until the depth of <i>n</i> is
+    reached. If you choose to use breadth first please note that
+    for each value of <i>n</i> a different number of links per webpage
+    searched will be returned. For <i>n</i> = 1 the max is 1000 links returned
+    from the URL you have given. For <i>n</i> = 2 the max is 30 links returned
+    per webpage navigated to. For <i>n</i> = 3 the max is 10 links returned
+    per webpage navigated to. For <i>n</i> = 4 the max is 5 links returned
+    per webpage navigated to. To start click the 'get started' button!
   </p>
   <div class="btnDiv">
     <input type="submit" class="btn" value="Get Started" routerLink="/home"/>

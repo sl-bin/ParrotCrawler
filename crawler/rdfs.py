@@ -114,12 +114,12 @@ def openURLAsHTML(node):
 		node['title'] = "Invalid Page/Timeout."
 		node['dead'] = 1
 		return None
-	
+
 	except http.client.HTTPException:
 		node['title'] = "HTTP Exception"
 		node['dead'] = 1
 		return None
-	
+
 	except http.client.IncompleteRead as e:
 		HTML = e.partial
 
@@ -152,8 +152,8 @@ if len(sys.argv) < 4:
 URLParam = str(sys.argv[1])
 depthParam = int(sys.argv[2])
 pageLimit = int(sys.argv[3])
-if len(sys.argv) < 4: queryParam = None
-else: queryParam = str(sys.argv[3])
+if len(sys.argv) < 5: queryParam = None
+else: queryParam = str(sys.argv[4])
 
 if pageLimit == 0: pageLimit = float('Infinity')
 
@@ -228,7 +228,7 @@ while currentParentTuple[1] < depthParam:
 			if childURL == parentURL: continue
 
 			# Assign to Queue
-			PagesToCrawl.put( (nextID, data['results'][parentID]['depth'] + 1, childURL) ) 
+			PagesToCrawl.put( (nextID, data['results'][parentID]['depth'] + 1, childURL) )
 			data['results'][parentID]['links'] += 1
 			# Add to parent's children
 			data['results'][parentID]['children'].append(copy.deepcopy(nextID))

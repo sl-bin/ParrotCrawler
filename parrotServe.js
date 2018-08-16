@@ -65,7 +65,7 @@ function pyParrotCrawl(searchTerms) {
   var phrase = searchTerms.searchPhrase;
 	var pageLimit = 0;
   var type = searchTerms.searchType;
-  var searchID = searchTerms.searchID;
+  var width = 0;
 
   //choose the right script depending which search type is specified
   var scriptToRun;
@@ -76,10 +76,30 @@ function pyParrotCrawl(searchTerms) {
     case "RDFS":
       scriptToRun = "rdfs.py";
       break;
-    case "TDFS":
-      scriptToRun = "tdfs.py";
-      break;
+    // case "TDFS":
+    //   scriptToRun = "tdfs.py";
+    //   break;
     }
+
+  // set the correct width based on searchType and nDepth
+  if(scriptToRun === "rdfs.py") {
+    width = 1000;
+  } else {
+    switch(nDepth) {
+      case 1:
+        width = 1000;
+        break;
+      case 2:
+        width = 30;
+        break;
+      case 3:
+        width = 10;
+        break;
+      case 4:
+        width = 5;
+        break;
+      }
+  }
 
   //set up pyshell for a run
   var PythonShell = require('python-shell');
@@ -90,7 +110,7 @@ function pyParrotCrawl(searchTerms) {
       pythonOptions: ['-u'],
       //can change depending on the directory the scripts are held in
       scriptPath: './crawler/',
-      args: [startURL, nDepth, pageLimit, phrase]
+      args: [startURL, nDepth , width, phrase]
   };
 
   console.log("Node: Calling crawler");

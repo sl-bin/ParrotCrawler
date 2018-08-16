@@ -13,10 +13,17 @@ import { ParrotSearchService } from '../parrot-search.service';
 })
 export class ResultsComponent implements OnInit {
 
+  // used to hold data returned to servce from POST/SSE
   data: ParrotReturn;
 
   // used to insert jsons for testing
   // testString: any = ;
+
+  // members used to fill input display
+  inputURL: string;
+  inputN: number;
+  inputType: string;
+  inputSearch: string;
 
   constructor(private searchService: ParrotSearchService) { }
 
@@ -25,14 +32,23 @@ export class ResultsComponent implements OnInit {
     // this.data = this.testString;
 
     this.searchService.data.subscribe((success) => {this.data = JSON.parse(success)});
+
+    // load the vars used for displaying the user input
+    this.loadInputVars(this.data);
+
+    // build the tree
     this.buildPage(this.data);
+
+    // call the jquery code so that its is available
     this.hover();
+    this.grabDrag();
   }
 
   buildPage(data: any) {
     // local vars that store blank (non-dynamic) divs
     var gDiv = $( ".gridNode" );
     var lDiv = $( ".lineGridNode" );
+    var spacer = $( ".spacer" );
 
     // local vars for setting grid deminsions
     var rowCount: string = "";
@@ -42,33 +58,40 @@ export class ResultsComponent implements OnInit {
     var buildHelper = function(data: any, idx: number, offset: number) {
       for(var i: number=0; i < data.results[idx].links; i++) {
         // var for getting the correct grid depth for a given node
-        var nodePos = Math.floor(((data.dimensions.width+2) * (data.results[data.results[idx].children[i]].depth * 2)) + 1);
+        var nodePos = Math.floor(((data.dimensions.width) * (data.results[data.results[idx].children[i]].depth * 2)));
         // var for counting gridNodes to draw lines in (also helps offset)
         var count: number=0;
 
         // add offset from parrent node
         nodePos += offset;
 
+
+
         // if this is not the first element in this loop of the recursion compare
         // at left siblings and find corrent spacing for this node
-        if(i > 0){
+        if(i > 0) {
 
-        // this is an iteritive way of looking down into the lower levels and counting how
-        // many nodes there should be (on all levels) between the left edge and this node
-        // How this actually works is by going down until a node with no links is found and then
-        // adding one to the count. In this way the number of nodes needed for spacing can be counted
-        // NOTE: this could be converted to a recursive function and I might do that later.
-        // currently it is n^5 which is aweful and converting it to a recursive version of the same
-        // sytle of counting loops would be even slower due to function calls, so I am still debating
-        // if I should make this recursive
-          for(var j: number=0; j < i; j++) {
-            if(data.results[data.results[idx].children[j]].links > 0) {
-              for(var k: number=0; k < data.results[data.results[idx].children[j]].links; k++) {
-                if(data.results[data.results[data.results[idx].children[j]].children[k]].links > 0) {
-                  for(var l: number=0; l < data.results[data.results[data.results[idx].children[j]].children[k]].links; l++){
-                    if(data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]].links > 0) {
-                      for(var m: number=0; m < data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]].links; m++){
-                        count++;
+          if(data.input.type === "bfs") {
+            // this is an iteritive way of looking down into the lower levels and counting how
+            // many nodes there should be (on all levels) between the left edge and this node
+            // How this actually works is by going down until a node with no links is found and then
+            // adding one to the count. In this way the number of nodes needed for spacing can be counted
+            // NOTE: this could be converted to a recursive function and I might do that later.
+            // currently it is n^5 which is aweful and converting it to a recursive version of the same
+            // sytle of counting loops would be even slower due to function calls, so I am still debating
+            // if I should make this recursive
+              for(var j: number=0; j < i; j++) {
+                if(data.results[data.results[idx].children[j]].links > 0) {
+                  for(var k: number=0; k < data.results[data.results[idx].children[j]].links; k++) {
+                    if(data.results[data.results[data.results[idx].children[j]].children[k]].links > 0) {
+                      for(var l: number=0; l < data.results[data.results[data.results[idx].children[j]].children[k]].links; l++){
+                        if(data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]].links > 0) {
+                          for(var m: number=0; m < data.results[data.results[data.results[data.results[idx].children[j]].children[k]].children[l]].links; m++){
+                            count++;
+                          }
+                        } else {
+                          count++;
+                        }
                       }
                     } else {
                       count++;
@@ -78,49 +101,49 @@ export class ResultsComponent implements OnInit {
                   count++;
                 }
               }
-            } else {
-              count++;
-            }
-          }
 
 
-          // adjust for parent links
-          nodePos += count - i;
+              // adjust for parent links
+              nodePos += count - i;
 
-          // draw the lines between the parent node and this node
-          for(var j: number=count; j > 1; j--) {
-            // connects parent node (works for highest levels)
-            if(j === count){
-              $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j - 1) + " .topRight").addClass("borderBottom");
-              $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j - 1) + " .bottomRight").addClass("borderTop");
-            }
+              // draw the lines between the parent node and this node
+              for(var j: number=count-1; j > 0; j--) {
+                // connects parent node (works for highest levels)
+                if(j === count-1){
+                  $("#node" + String((nodePos + i) - (data.dimensions.width) - j - 1) + " .topRight").addClass("borderBottom");
+                  $("#node" + String((nodePos + i) - (data.dimensions.width) - j - 1) + " .bottomRight").addClass("borderTop");
+                }
 
-            // adds a horizontal line to the nodes it is looping over
-            $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j) + " .topRight").addClass("borderBottom");
-            $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j) + " .topLeft").addClass("borderBottom");
-            $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j) + " .bottomRight").addClass("borderTop");
-            $("#node" + String((nodePos + i) - (data.dimensions.width+1) - j) + " .bottomLeft").addClass("borderTop");
+                // adds a horizontal line to the nodes it is looping over
+                $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .topRight").addClass("borderBottom");
+                $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .topLeft").addClass("borderBottom");
+                $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .bottomRight").addClass("borderTop");
+                $("#node" + String((nodePos + i) - (data.dimensions.width) - j) + " .bottomLeft").addClass("borderTop");
+              }
+          } else {
+            $("#node" + String((nodePos + i) - (data.dimensions.width) - j - 1) + " .topRight").addClass("borderBottom");
+            $("#node" + String((nodePos + i) - (data.dimensions.width) - j - 1) + " .bottomRight").addClass("borderTop");
           }
 
           // adds a connecting lines from drawn line down to thi node
-          $("#node" + String((nodePos + i) - (data.dimensions.width+2)) + " .topLeft").addClass("borderBottom");
-          $("#node" + String((nodePos + i) - (data.dimensions.width+2)) + " .bottomRight").addClass("borderLeft");
-          $("#node" + String((nodePos + i) - (data.dimensions.width+2)) + " .bottomLeft").addClass("borderTop borderRight");
+          $("#node" + String((nodePos + i) - (data.dimensions.width)) + " .topLeft").addClass("borderBottom");
+          $("#node" + String((nodePos + i) - (data.dimensions.width)) + " .bottomRight").addClass("borderLeft");
+          $("#node" + String((nodePos + i) - (data.dimensions.width)) + " .bottomLeft").addClass("borderTop borderRight");
 
           // connects parent node (works for lowest levels)
-          $("#node" + String((nodePos + i) - (data.dimensions.width+2) - 1) + " .topRight").addClass("borderBottom");
-          $("#node" + String((nodePos + i) - (data.dimensions.width+2) - 1) + " .bottomRight").addClass("borderTop");
+          $("#node" + String((nodePos + i) - (data.dimensions.width) - 1) + " .topRight").addClass("borderBottom");
+          $("#node" + String((nodePos + i) - (data.dimensions.width) - 1) + " .bottomRight").addClass("borderTop");
         } else {
           // draws the vertical line from the parent node to the first child
-          $("#node" + String(nodePos - (data.dimensions.width+2)) + " .topRight").addClass("borderLeft");
-          $("#node" + String(nodePos - (data.dimensions.width+2)) + " .topLeft").addClass("borderRight");
-          $("#node" + String(nodePos - (data.dimensions.width+2)) + " .bottomRight").addClass("borderLeft");
-          $("#node" + String(nodePos - (data.dimensions.width+2)) + " .bottomLeft").addClass("borderRight");
+          $("#node" + String(nodePos - (data.dimensions.width)) + " .topRight").addClass("borderLeft");
+          $("#node" + String(nodePos - (data.dimensions.width)) + " .topLeft").addClass("borderRight");
+          $("#node" + String(nodePos - (data.dimensions.width)) + " .bottomRight").addClass("borderLeft");
+          $("#node" + String(nodePos - (data.dimensions.width)) + " .bottomLeft").addClass("borderRight");
         }
 
         // create the node by adding a class and a link for the url and title
         if(data.results[data.results[idx].children[i]].dead) {
-          $("#node" + String(nodePos + i)).addClass("deadNode")
+          $("#node" + String(nodePos + i)).addClass("deadNode");
           $("#node" + String(nodePos + i) + " a").removeClass("hidden").addClass("static");
         } else if(data.results[data.results[idx].children[i]].found) {
           $("#node" + String(nodePos + i)).addClass("foundNode")
@@ -150,15 +173,28 @@ export class ResultsComponent implements OnInit {
             "<p>No Title</p>"
           );
         } else {
-          $("#node" + String(nodePos + i) + " a").append(
-            "<p>"+ data.results[data.results[idx].children[i]].title + "</p>"
-          );
+          if(data.results[data.results[idx].children[i]].title.length > 55) {
+            $("#node" + String(nodePos + i) + " a").append(
+              "<p>"+ data.results[data.results[idx].children[i]].title.substring(0,54) + "...</p>"
+            );
+          } else {
+            $("#node" + String(nodePos + i) + " a").append(
+              "<p>"+ data.results[data.results[idx].children[i]].title + "</p>"
+            );
+          }
         }
 
         // set url
-        $("#node" + String(nodePos + i) + " a").append(
-          "<p>"+ data.results[data.results[idx].children[i]].url + "</p>"
-        );
+        if(data.results[data.results[idx].children[i]].url.length > 55) {
+          $("#node" + String(nodePos + i) + " a").append(
+            "<p>"+ data.results[data.results[idx].children[i]].url.substring(0,54) + "...</p>"
+          );
+        } else {
+          $("#node" + String(nodePos + i) + " a").append(
+            "<p>"+ data.results[data.results[idx].children[i]].url + "</p>"
+          );
+        }
+
 
         // set number of links
         if((data.input.type === ("rdfs" || "tdfs")) && (i !== 0)){
@@ -177,23 +213,23 @@ export class ResultsComponent implements OnInit {
 
         // recursivly build next level of tree
         if(data.results[data.results[idx].children[i]].links !== 0) {
-          buildHelper(data, data.results[idx].children[i], (nodePos - (((data.dimensions.width+2) * (data.results[data.results[idx].children[i]].depth * 2)) + 1)) + i);
+          buildHelper(data, data.results[idx].children[i], (nodePos - (((data.dimensions.width) * (data.results[data.results[idx].children[i]].depth * 2)))) + i);
         }
       }
     }
 
     // clone the blank div into the viewWindow to make the grid
-    for(var i: number=0; i < (data.dimensions.height*2)*(data.dimensions.width+2); i++) {
+    for(var i: number=0; i < (data.dimensions.height*2)*(data.dimensions.width); i++) {
       $(gDiv).clone().appendTo(".gridDisplay").removeClass("hidden").attr("id", "node" + String(i));
       // used for testing. Add to above statement to see node numbers in rendered page
-      // .append("<p>node" + String(i) + "</p>").css("border", "1px solid white")
+      // .text("node" + String(i))
     }
 
     // add the subgrid to every other row of gridNodes
     // used for drawing lines
     for(var i: number=1; i <= (data.dimensions.height * 2); i += 2) {
-      for(var j: number=0; j < (data.dimensions.width+2); j++) {
-        var currentNode: string = String(Math.floor(((data.dimensions.width+2) * i) + j));
+      for(var j: number=0; j < (data.dimensions.width); j++) {
+        var currentNode: string = String(Math.floor(((data.dimensions.width) * i) + j));
         $("#node" + currentNode).removeClass("gridNode").addClass("lineGrid");
         $(lDiv).clone().appendTo("#node" + currentNode).removeClass("hidden").addClass("topLeft");
         $(lDiv).clone().appendTo("#node" + currentNode).removeClass("hidden").addClass("topRight");
@@ -203,30 +239,54 @@ export class ResultsComponent implements OnInit {
     }
 
     //style the topNode and add link for url and title
-    $("#node1").addClass("topNode");
-    if(data.results[0].found){
-      $("#node1").addClass("topFound");
+
+
+
+    if(data.results[0].dead) {
+      $("#node0").addClass("topDead");
+      $("#node0 a").removeClass("hidden");
+    } else {
+      if(data.results[0].found){
+        $("#node0").addClass("topFound");
+      } else {
+        $("#node0").addClass("topNode");
+      }
+      $("#node0 a").removeClass("hidden").attr("href", data.results[0].url);
     }
-    $("#node1 a").removeClass("hidden").attr("href", data.results[0].url);
+
 
     // set the top nodes title
     if(data.results[0].title === ""){
-      $("#node1 a").append(
+      $("#node0 a").append(
         "<p>No Title</p>"
       );
     } else {
-      $("#node1 a").append(
-        "<p>" + data.results[0].title + "</p>"
-      );
+      if(data.results[0].title.length > 55) {
+        $("#node0 a").append(
+            "<p>"+ data.results[0].title.substring(0,54) + "...</p>"
+          );
+      } else {
+        $("#node0 a").append(
+          "<p>" + data.results[0].title + "</p>"
+        );
+      }
+
+
     }
 
     // set the top nodes url
-    $("#node1 a").append(
-      "<p>" + data.results[0].url + "</p>"
-    );
+    if(data.results[0].title.length > 55) {
+      $("#node0 a").append(
+          "<p>"+ data.results[0].url.substring(0,54) + "...</p>"
+        );
+    } else {
+      $("#node0 a").append(
+        "<p>" + data.results[0].url + "</p>"
+      );
+    }
 
     // set number of links
-    $("#node1").append(
+    $("#node0").append(
       "<p>links: " + data.results[0].links + "</p>"
     );
 
@@ -235,43 +295,72 @@ export class ResultsComponent implements OnInit {
 
 
     // this sets the grid templates
-    // this method is used instead of repeat() because Microsoft Edge
-    // does not accept repeat()
-    for(var i: number=1; i <= (data.dimensions.height*2)+1; i++) {
+    // this method is used instead of repeat()
+    for(var i: number=1; i <= data.dimensions.height; i++) {
       rowCount += "150px 75px ";
     }
-    for(var i: number=1; i <= data.dimensions.width+2; i++) {
+    for(var i: number=1; i <= data.dimensions.width; i++) {
       colCount += "300px ";
     }
 
     // set grid dimensions
     $( ".gridDisplay" ).css("grid-template-rows", rowCount);
     $( ".gridDisplay" ).css("grid-template-columns", colCount);
+    $( ".container" ).css( "width", String(300 * data.dimensions.width) + "px");
+    $( ".container" ).css( "hieght", String(225 * data.dimensions.height) + "px");
   }
+
+
 
   // handles hovering over text
   hover() {
     $( ".normalNode, .deadNode, .foundNode" ).hover( function() {
       switch($(".gridDisplay").attr("class")) {
-        case "gridDisplay out1": $( this ).addClass("in4 topZ");
+        case "gridDisplay out1": $( this ).addClass("inNode4 topZ");
         break;
-        case "gridDisplay out2": $( this ).addClass("in3 topZ");
+        case "gridDisplay out2": $( this ).addClass("inNode3 topZ");
         break;
-        case "gridDisplay out3": $( this ).addClass("in2 topZ");
+        case "gridDisplay out3": $( this ).addClass("inNode2 topZ");
         break;
-        case "gridDisplay noZoom": $( this ).addClass("in1 topZ");
+        case "gridDisplay noZoom": $( this ).addClass("inNode1 topZ");
         break;
-        case "gridDisplay in1": $( this ).addClass("in1 topZ");
+        case "gridDisplay in1": $( this ).addClass("inNode1 topZ");
         break;
         case "gridDisplay in2":
         break;
       }
     }, function() {
-      $( this ).removeClass("in1");
-      $( this ).removeClass("in2");
-      $( this ).removeClass("in3");
-      $( this ).removeClass("in4");
+      $( this ).removeClass("inNode1");
+      $( this ).removeClass("inNode2");
+      $( this ).removeClass("inNode3");
+      $( this ).removeClass("inNode4");
       $( this ).removeClass("topZ");
+    })
+  }
+
+  // grab and drag
+  // adapted form https://codepen.io/JTParrett/pen/uzGvy
+  grabDrag() {
+    $(function(){
+      var curDown = false,
+          curYPos = 0,
+          curXPos = 0;
+      $(".container").mousemove(function(vW){
+        if(curDown === true){
+         $(".viewWindow").scrollTop($(".viewWindow").scrollTop() + ((curYPos - vW.pageY)/16));
+         $(".viewWindow").scrollLeft($(".viewWindow").scrollLeft() + ((curXPos - vW.pageX)/16));
+        }
+      });
+
+      $(".viewWindow").mousedown(function(vW){
+        curDown = true;
+        curYPos = vW.pageY;
+        curXPos = vW.pageX;
+      });
+
+      $(".viewWindow").mouseup(function(){
+        curDown = false;
+      });
     })
   }
 
@@ -279,18 +368,30 @@ export class ResultsComponent implements OnInit {
   zoomIn() {
     switch($(".gridDisplay").attr("class")) {
       case "gridDisplay out1": $(".gridDisplay").removeClass("out1").addClass("out2");
+        $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 0.25)) + "px");
+        $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 0.25)) + "px");
       break;
       case "gridDisplay out2": $(".gridDisplay").removeClass("out2").addClass("out3");
+        $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 0.5)) + "px");
+        $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 0.5)) + "px");
       break;
       case "gridDisplay out3": $(".gridDisplay").removeClass("out3").addClass("noZoom");
+        $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 1)) + "px");
+        $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 1)) + "px");
       break;
       case "gridDisplay noZoom": $(".gridDisplay").removeClass("noZoom").addClass("in1");
+        $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 1.5)) + "px");
+        $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 1.5)) + "px");
       break;
       case "gridDisplay in1": $(".gridDisplay").removeClass("in1").addClass("in2");
+        $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 2)) + "px");
+        $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 2)) + "px");
       break;
       case "gridDisplay in2":
       break;
     }
+
+    console.log($(".container").css("width"));
   }
 
   // handles zoom out button
@@ -299,16 +400,68 @@ export class ResultsComponent implements OnInit {
       case "gridDisplay out1":
       break;
       case "gridDisplay out2": $(".gridDisplay").removeClass("out2").addClass("out1");
+        $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 0.12)) + "px");
+        $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 0.12)) + "px");
       break;
       case "gridDisplay out3": $(".gridDisplay").removeClass("out3").addClass("out2");
+        $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 0.25)) + "px");
+        $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 0.25)) + "px");
       break;
       case "gridDisplay noZoom": $(".gridDisplay").removeClass("noZoom").addClass("out3");
+        $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 0.5)) + "px");
+        $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 0.5)) + "px");
       break;
       case "gridDisplay in1": $(".gridDisplay").removeClass("in1").addClass("noZoom");
+        $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 1)) + "px");
+        $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 1)) + "px");
       break;
       case "gridDisplay in2": $(".gridDisplay").removeClass("in2").addClass("in1");
+        $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 1.5)) + "px");
+        $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 1.5)) + "px");
       break;
     }
+
+    console.log($(".container").css("width"));
   }
 
+  // handles jump left button
+  jumpLeft() {
+    // var leftScroll = $(".viewWindow").scrollLeft(0);
+    $(".viewWindow").animate({scrollLeft: 0}, 800);
+  }
+
+  // handles jump right button
+  jumpCenter() {
+    var center = $(".container").width()/2;
+    $(".viewWindow").animate({scrollLeft: center}, 800);
+  }
+
+  // handles jump right button
+  jumpRight() {
+    var right = $(".container").width();
+    $(".viewWindow").animate({scrollLeft: right}, 800);
+  }
+
+  loadInputVars(data: any) {
+    // load the vars used for displaying the user input
+    // parse the url
+    if(data.input.url.length > 40) {
+      this.inputURL = data.input.url.substring(0,39) + "...";
+    } else {
+      this.inputURL = data.input.url;
+    }
+
+    // parse n (no parsing needed)
+    this.inputN = data.input.n;
+
+    // parse type (no parsing needed)
+    this.inputType = data.input.type;
+
+    // parse the search phrase
+    if(data.input.search.length > 40) {
+      this.inputSearch = data.input.search.substring(0,39) + "...";
+    } else {
+      this.inputSearch = data.input.search;
+    }
+  }
 }

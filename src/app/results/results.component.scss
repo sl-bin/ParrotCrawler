@@ -10,20 +10,51 @@ nav {
   overflow: hidden;
   background-color: #333;
   border-bottom: solid 2px #222;
-  padding-right: 20vh;
 
   .navRight {
     float: right;
+    padding-right: 2%;
+
+    li {
+
+      @media only screen and (max-width: 430px) {
+        font-size: 0.5em;
+      }
+      @media only screen and (min-width: 431px) {
+        font-size: 1em;
+      }
+      @media only screen and (min-width: 600px) {
+        font-size: 1.5em;
+      }
+      @media only screen and (min-width: 701px) {
+        font-size: 2em;
+      }
+    }
   }
 
   .navLeft {
     float: left;
+    padding-left: 2%;
+
+    li {
+      @media only screen and (max-width: 430px) {
+        font-size: 0.5em;
+      }
+      @media only screen and (min-width: 431px) {
+        font-size: 1em;
+      }
+      @media only screen and (min-width: 600px) {
+        font-size: 1.5em;
+      }
+      @media only screen and (min-width: 701px) {
+        font-size: 2em;
+      }
+    }
   }
 }
 
 /* styles the buttons on the nav */
 .navItem {
-  font-size: 35px;
   float: right;
   display: inline-block;
   color: white;
@@ -151,13 +182,25 @@ no matter how you do it*/
   position: fixed;
   margin: 0;
   border: 6px solid #222;
-  min-width: 20%;
-  max-width: 20%;
-  min-height: 10%;
+  min-width: 300px;
+  min-height: 100px;
+  max-height: 125px;
   background-color: #333;
   padding: 4px;
   text-align: center;
-  // overflow: hidden;
+
+  @media only screen and (max-width: 600px) {
+    max-width: 300px;
+    font-size: 0.75em;
+  }
+  @media only screen and (min-width: 601px) {
+    max-width: 350px;
+    font-size: 0.9em;
+  }
+  @media only screen and (min-width: 751px) {
+    max-width: 400px;
+    font-size: 1em;
+  }
 }
 
 .gridDisplay {
@@ -166,17 +209,22 @@ no matter how you do it*/
   height: 100%;
   width: 100%;
   text-align: center;
-  // cursor: move;
-  // cursor: grab;
-  // cursor: -moz-grab;
-  // cursor: -webkit-grab;
 }
 
-// .girDisplay:active {
-//   cursor: grabbing;
-//   cursor: -moz-grabbing;
-//   cursor: -webkit-grabbing;
-// }
+.container {
+  margin: 0;
+  padding: 225px 300px;
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+.container:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
 
 .lineGrid {
   display: grid;
@@ -188,57 +236,76 @@ no matter how you do it*/
 .out1 {
   -webkit-transform: scale(.12);
   transform: scale(.12);
-  margin-top: -100px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
 }
 
 .out2 {
   -webkit-transform: scale(.25);
   transform: scale(.25);
-  margin-top: -50px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
 }
 
 .out3 {
   -webkit-transform: scale(.5);
   transform: scale(.5);
-  margin-top: 0px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
+
 }
 
 .noZoom {
   -webkit-transform: scale(1);
   transform: scale(1);
-  margin-top: 50px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
 }
 
 .in1 {
   -webkit-transform: scale(1.5);
   transform: scale(1.5);
-  margin-top: 200px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
 }
 
 .in2 {
   -webkit-transform: scale(2);
   transform: scale(2);
-  margin-top: 400px;
-  margin-left: 0;
+  -webkit-transform-origin-x: 0;
+  transform-origin-x: 0;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
 }
 
-.in3 {
+.inNode1 {
+  -webkit-transform: scale(1.5);
+  transform: scale(1.5);
+}
+
+.inNode2 {
+  -webkit-transform: scale(2);
+  transform: scale(2);
+}
+
+.inNode3 {
   -webkit-transform: scale(3);
   transform: scale(3);
-  margin-top: 400px;
-  margin-left: 0;
 }
 
-.in4 {
+.inNode4 {
   -webkit-transform: scale(4);
   transform: scale(4);
-  margin-top: 400px;
-  margin-left: 0;
 }
 
 .topZ {
@@ -247,7 +314,7 @@ no matter how you do it*/
 }
 
 .gridNode {
-  overflow: hidden;
+  word-wrap: break-word;
   border-radius: 10px;
   margin: 0 2px;
   -moz-text-fill-color: white;
@@ -302,6 +369,11 @@ no matter how you do it*/
   -webkit-text-stroke-width: .5px;
 }
 
+.topDead .linkNode:hover {
+  color: white;
+  text-decoration: none;
+}
+
 .static:hover {
   color: white;
   text-decoration: none;
@@ -310,13 +382,21 @@ no matter how you do it*/
 .topNode {
   background-color: #7faef9;
   border: 6px solid #3c6bb7;
-  border-radius: 10px;
-  transform: scale(1.25);
 }
 
 .topFound {
   background-color: #73e280;
   border: 6px solid #199e1d;
+}
+
+.topDead {
+  background-color: #ff6851;
+  border: 6px solid #bf202d;
+}
+
+.topNode, .topFound, .topDead {
+  border-radius: 10px;
+  transform: scale(1.25);
 }
 
 .deadNode {
