@@ -369,6 +369,11 @@ no matter how you do it*/
   -webkit-text-stroke-width: .5px;
 }
 
+.topDead .linkNode:hover {
+  color: white;
+  text-decoration: none;
+}
+
 .static:hover {
   color: white;
   text-decoration: none;
@@ -377,13 +382,21 @@ no matter how you do it*/
 .topNode {
   background-color: #7faef9;
   border: 6px solid #3c6bb7;
-  border-radius: 10px;
-  transform: scale(1.25);
 }
 
 .topFound {
   background-color: #73e280;
   border: 6px solid #199e1d;
+}
+
+.topDead {
+  background-color: #ff6851;
+  border: 6px solid #bf202d;
+}
+
+.topNode, .topFound, .topDead {
+  border-radius: 10px;
+  transform: scale(1.25);
 }
 
 .deadNode {

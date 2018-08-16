@@ -29,31 +29,17 @@ export class ResultsComponent implements OnInit {
 
   ngOnInit() {
     // used to insert jsons for testing
-    this.data = this.testString;
+    // this.data = this.testString;
+
+    this.searchService.data.subscribe((success) => {this.data = JSON.parse(success)});
 
     // load the vars used for displaying the user input
-    // parse the url
-    if(this.data.input.url.length > 40) {
-      this.inputURL = this.data.input.url.substring(0,39) + "...";
-    } else {
-      this.inputURL = this.data.input.url;
-    }
+    this.loadInputVars(this.data);
 
-    // parse n (no parsing needed)
-    this.inputN = this.data.input.n;
-
-    // parse type (no parsing needed)
-    this.inputType = this.data.input.type;
-
-    // parse the search phrase
-    if(this.data.input.search.length > 40) {
-      this.inputSearch = this.data.input.search.substring(0,39) + "...";
-    } else {
-      this.inputSearch = this.data.input.search;
-    }
-
-    // this.searchService.data.subscribe((success) => {this.data = JSON.parse(success)});
+    // build the tree
     this.buildPage(this.data);
+
+    // call the jquery code so that its is available
     this.hover();
     this.grabDrag();
   }
@@ -157,7 +143,7 @@ export class ResultsComponent implements OnInit {
 
         // create the node by adding a class and a link for the url and title
         if(data.results[data.results[idx].children[i]].dead) {
-          $("#node" + String(nodePos + i)).addClass("deadNode")
+          $("#node" + String(nodePos + i)).addClass("deadNode");
           $("#node" + String(nodePos + i) + " a").removeClass("hidden").addClass("static");
         } else if(data.results[data.results[idx].children[i]].found) {
           $("#node" + String(nodePos + i)).addClass("foundNode")
@@ -253,11 +239,21 @@ export class ResultsComponent implements OnInit {
     }
 
     //style the topNode and add link for url and title
-    $("#node0").addClass("topNode");
-    if(data.results[0].found){
-      $("#node0").addClass("topFound");
+
+
+
+    if(data.results[0].dead) {
+      $("#node0").addClass("topDead");
+      $("#node0 a").removeClass("hidden");
+    } else {
+      if(data.results[0].found){
+        $("#node0").addClass("topFound");
+      } else {
+        $("#node0").addClass("topNode");
+      }
+      $("#node0 a").removeClass("hidden").attr("href", data.results[0].url);
     }
-    $("#node0 a").removeClass("hidden").attr("href", data.results[0].url);
+
 
     // set the top nodes title
     if(data.results[0].title === ""){
@@ -288,7 +284,6 @@ export class ResultsComponent implements OnInit {
         "<p>" + data.results[0].url + "</p>"
       );
     }
-
 
     // set number of links
     $("#node0").append(
@@ -447,4 +442,26 @@ export class ResultsComponent implements OnInit {
     $(".viewWindow").animate({scrollLeft: right}, 800);
   }
 
+  loadInputVars(data: any) {
+    // load the vars used for displaying the user input
+    // parse the url
+    if(data.input.url.length > 40) {
+      this.inputURL = data.input.url.substring(0,39) + "...";
+    } else {
+      this.inputURL = data.input.url;
+    }
+
+    // parse n (no parsing needed)
+    this.inputN = data.input.n;
+
+    // parse type (no parsing needed)
+    this.inputType = data.input.type;
+
+    // parse the search phrase
+    if(data.input.search.length > 40) {
+      this.inputSearch = data.input.search.substring(0,39) + "...";
+    } else {
+      this.inputSearch = data.input.search;
+    }
+  }
 }
