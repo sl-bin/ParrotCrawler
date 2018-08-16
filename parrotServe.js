@@ -13,7 +13,7 @@ var clients = {}; // <- Keep a map of attached clients
 
 //------------  Server Routes ------------//
 //listen for post requests and server subscriptions
-app.listen('12296', () => {
+app.listen('15943', () => {
   console.log('ParrotServe started!');
 });
 
@@ -125,9 +125,9 @@ function pyParrotCrawl(searchTerms) {
 //------------  Send results function ------------//
 function sendBack(bod) {
   // testing trace statements
-	// console.log("SSEing data back to client!");
-	// console.log(JSON.stringify(bod));
+	console.log("SSEing data back to client!");
+	console.log(JSON.stringify(bod));
   for (clientID in clients) {
-		clients[clientID].write(JSON.stringify(bod)); // <- Push a message to a single attached client
+		clients[clientID].write("data: " + JSON.stringify(bod) + "\n\n"); // <- Push a message to a single attached client
 	};
 }
