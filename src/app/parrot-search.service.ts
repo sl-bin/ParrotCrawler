@@ -57,13 +57,22 @@ export class ParrotSearchService {
       // console.log("successData made it back: " + this.successSource.getValue());
   }
 
+  connectSock(){
+    this.ws = new WebSocket(this.nodeURL);
+  }
 
   // method to recieve search input from form and communicate with server
    socketSearch(search: ParrotSearch) {
+
     //handle errors with the WebSocket
     if(this.ws.readyState === this.ws.CLOSED || this.ws.readyState === this.ws.CLOSING){
+      try{
+          this.connectSock();
+      }
+      catch(err){
       console.log("WebSocket is not open!")
       this.router.navigate(['/error']);
+      }
     }
     else{
       //send over the search terms
@@ -72,13 +81,27 @@ export class ParrotSearchService {
       this.router.navigate(['/waiting']);
     }
 
-    //wait for the server response
-    this.ws.addEventListener('message', (event:any) => {
-      console.log("Data recieved");
-      //update the event handlers
-      this.updateData(event.data);
-      this.updateSuccess(true);
-      this.updateLoaded(true);
-    });
+    //recieve the search terms
+    if(this.ws.readyState === this.ws.CLOSED || this.ws.readyState === this.ws.CLOSING){
+      try{
+          this.connectSock();
+      }
+      catch(err){
+      console.log("WebSocket is not open!")
+      this.router.navigate(['/error']);
+      }
+    }
+    else{
+      //wait for the server response
+      this.ws.addEventListener('message', (event:any) => {
+        console.log("Data recieved");
+        //update the event handlers
+        this.updateData(event.data);
+        this.updateSuccess(true);
+        this.updateLoaded(true);
+      });
+    }
+
+
   }
 }
