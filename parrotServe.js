@@ -1,7 +1,7 @@
 //--------  Server Requirements ---------//
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
 const cors = require('cors');
 var expressWs = require('express-ws')(app);
 
@@ -17,13 +17,12 @@ app.ws('/search/', function(ws, req) {
     var searchJSON = JSON.parse(msg);
     // call the parrot crawl function
     pyParrotCrawl(searchJSON);
-
   });
 });
 
 
 //listen for post requests and server subscriptions
-app.listen('12296', () => {
+app.listen('15943', () => {
   console.log('ParrotServe started!');
 });
 
@@ -37,9 +36,9 @@ function pyParrotCrawl(searchTerms) {
   var startURL = searchTerms.url;
   var nDepth = searchTerms.n;
   var phrase = searchTerms.searchPhrase;
-	var pageLimit = 0;
   var type = searchTerms.searchType;
   var width = 0;
+  var searchID = searchTerms.searchID;
 
   //choose the right script depending which search type is specified
   var scriptToRun;
@@ -50,9 +49,6 @@ function pyParrotCrawl(searchTerms) {
     case "RDFS":
       scriptToRun = "rdfs.py";
       break;
-    // case "TDFS":
-    //   scriptToRun = "tdfs.py";
-    //   break;
     }
 
   // set the correct width based on searchType and nDepth
@@ -98,3 +94,4 @@ function pyParrotCrawl(searchTerms) {
      }
    });
 }
+

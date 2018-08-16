@@ -8,6 +8,13 @@ import { ParrotSearch } from './parrot-search';
 import { ParrotReturn } from './parrot-return';
 
 
+// the http headers that define the content type
+const httpOptions = {
+  headers: new HttpHeaders().set("Content-Type", "application/json"),
+  params: new HttpParams(),
+  responseType: 'text' as 'json'
+};
+
 
 @Injectable({ providedIn: 'root' })
 export class ParrotSearchService {
@@ -17,7 +24,7 @@ export class ParrotSearchService {
   // change to "http://parrotcrawl.webfactional.com/api/search"
 
   // node route URL to accept search POST request
-  private nodeURL = "ws://localhost:12296/search/";
+  private nodeURL = "ws://localhost:15943/search/";
   private ws = new WebSocket(this.nodeURL);
 
   //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR PROD VERSION*^^^^^^^^^^^^*//

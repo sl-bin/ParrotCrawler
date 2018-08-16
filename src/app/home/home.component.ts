@@ -17,7 +17,6 @@ export class HomeComponent implements OnInit {
 
   homeForm: FormGroup;
 
-  // TODO: edit regex to allow for http and www to be left off
   // from https://gist.github.com/dperini/729294
   regex = new RegExp(
     "^" +
