@@ -21,7 +21,7 @@ export class ParrotSearchService {
 
   //*vvvvvvvvvvvv*THIS MUST BE CHANGED FOR PROD VERSION*vvvvvvvvvvvv*//
 
-  // change to "http://parrotcrawl.webfactional.com/api/search"
+  // change to "ws://parrotcrawl.webfactional.com/api/search/"
 
   // node route URL to accept search POST request
   private nodeURL = "ws://localhost:15943/search/";
@@ -56,7 +56,7 @@ export class ParrotSearchService {
       // console.log("successData made it back: " + this.successSource.getValue());
   }
 
-  // method to recieve search input from form and POST to given URL
+  // method to send search terms and recieve search results to/from node via WebSockets
    socketSearch(search: ParrotSearch) {
     //handle errors with the WebSocket
     if(this.ws.readyState === this.ws.CLOSED || this.ws.readyState === this.ws.CLOSING){
