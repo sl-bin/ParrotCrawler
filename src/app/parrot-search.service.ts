@@ -22,7 +22,7 @@ export class ParrotSearchService {
   // change to "http://parrotcrawl.webfactional.com/api"
 
   // node route URL to accept search POST request
-  private nodeURL = "http://localhost:12296/";
+  private nodeURL = "http://localhost:12296/post/";
 
   //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR PROD VERSION*^^^^^^^^^^^^*//
 
@@ -72,8 +72,6 @@ export class ParrotSearchService {
 
   // method to recieve search input from form and POST to given URL
    postSearch(search: ParrotSearch): Observable<ParrotSearch> {
-
-    // console.log('Here we are in Angular, and the data sent to node is: ' + JSON.stringify(search));
     //and make the post request
     return this.http.post<ParrotSearch>(this.nodeURL, search, httpOptions).pipe(
       catchError(this.handleError)

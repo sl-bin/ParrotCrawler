@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<script>
+		    var source = new EventSource("http://localhost:12296/events/");
+		    source.onmessage = function(e) {
+					document.body.innerHTML += JSON.stringify(e.data);
+		    };
+</script>
+</body>
+</html>
