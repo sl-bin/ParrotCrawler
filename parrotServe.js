@@ -11,8 +11,10 @@ app.use(cors());
 var client;
 
 //------------  Server Routes ------------//
+//route to accept a websocket request
 app.ws('/search/', function(ws, req) {
   client = ws;
+  //when search terms are recieved from the client
   ws.on('message', function(msg) {
     var searchJSON = JSON.parse(msg);
     // call the parrot crawl function
@@ -21,7 +23,7 @@ app.ws('/search/', function(ws, req) {
 });
 
 
-//listen for post requests and server subscriptions
+//listen for incoming connections 
 app.listen('15943', () => {
   console.log('ParrotServe started!');
 });
