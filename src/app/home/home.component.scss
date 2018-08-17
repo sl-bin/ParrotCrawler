@@ -41,6 +41,7 @@ form {
 
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button {
+     transform: scale(1.5);
      opacity: 1;
   }
 
