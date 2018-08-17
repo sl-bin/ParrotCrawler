@@ -14,5 +14,5 @@ app.use(express.static('dist/ParrotCrawler'));
 
 
 app.get('/*', function(req,res){
-  res.sendFile('index.html', { root : VIEWS });
+  res.sendFile('dist/ParrotCrawler/index.html', { root : VIEWS });
 })
