@@ -95,7 +95,7 @@ function pyParrotCrawl(searchTerms) {
         try{
             console.log("Node: search results are");
             console.log(JSON.stringify(searchRes[0]));
-			      client.send(JSON.stringify(searchRes[0]));
+	    client.send(JSON.stringify(searchRes[0]));
         }
         catch(error){
           console.log(error);
