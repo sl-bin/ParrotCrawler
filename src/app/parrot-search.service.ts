@@ -8,14 +8,6 @@ import { ParrotSearch } from './parrot-search';
 import { ParrotReturn } from './parrot-return';
 
 
-// the http headers that define the content type
-const httpOptions = {
-  headers: new HttpHeaders().set("Content-Type", "application/json"),
-  params: new HttpParams(),
-  responseType: 'text' as 'json'
-};
-
-
 @Injectable({ providedIn: 'root' })
 export class ParrotSearchService {
 
@@ -37,7 +29,6 @@ export class ParrotSearchService {
   success = this.successSource.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
-
 
   // for updating loaded value from components
   updateLoaded(boolVal){
@@ -62,7 +53,7 @@ export class ParrotSearchService {
   }
 
   // method to send search terms and recieve search results to/from node via WebSockets
-   socketSearch(search: ParrotSearch) {
+  socketSearch(search: ParrotSearch) {
 
     //handle errors with the WebSocket
     if(this.ws.readyState === this.ws.CLOSED || this.ws.readyState === this.ws.CLOSING){
@@ -70,8 +61,8 @@ export class ParrotSearchService {
           this.connectSock();
       }
       catch(err){
-      console.log("WebSocket is not open!")
-      this.router.navigate(['/error']);
+        console.log("WebSocket is not open!")
+        this.router.navigate(['/error']);
       }
     }
     else{
@@ -87,8 +78,8 @@ export class ParrotSearchService {
           this.connectSock();
       }
       catch(err){
-      console.log("WebSocket is not open!")
-      this.router.navigate(['/error']);
+        console.log("WebSocket is not open!")
+        this.router.navigate(['/error']);
       }
     }
     else{
@@ -101,7 +92,5 @@ export class ParrotSearchService {
         this.updateLoaded(true);
       });
     }
-
-
   }
 }
