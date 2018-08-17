@@ -1,0 +1,102 @@
+ParrotCrawl Crawler Scripts --------------------------------------------- Rena Griffiths   2018
+
+
+CALLING A SCRIPT ------------------------------------------------------------------------------
+	Each crawler script utilizes command-line arguments in order to crawl/fetch data.
+	Calling a script without arguments will provide its usage instructions.
+
+	USAGE:
+		RDFS >> bfs.py  [starting URL] [depth] [page-limit] [(query)]
+		BFS  >> rdfs.py [starting URL] [depth] [page-limit] [(query)]
+
+		Query field is optional.
+		If page-limit is set to 0, rdfs.py will remain unlimited.
+		If page-limit is set to 0, bfs.py will default to its standard page-limit formula.
+		Formula variables can be set at line 17, just after the dependencies list.
+		Standard page-limit formula:
+			page-limit = ( maxSearchTime / pageLoadSpeed - 1 )^( 1 / targetDepth )
+		
+OUTPUT ----------------------------------------------------------------------------------------
+
+	Crawler data is output all at once via STDOUT at the end of the script.
+	Data output is formatted into a stringified JSON object.
+	This JSON object has 3 parts: "input", "dimensions", and "results".
+	Visited pages are referred to as nodes.
+
+	'INPUT' -------------------------------------------------------------------------------
+	The 'input' object describes the user's input parameters and follows the following format:
+	{
+		"url"	: "str",
+		"n"	: int,
+		"type"	: "str"
+		"query"	: "str"
+	}
+
+		KEY/VALUE PAIRS ------
+		url:    the starting URL of the page input by the user.
+		n:      the depth constraint input by the user.
+		type:   the crawler mode selected by the user.
+			Options are:    "bfs" - breadth-first-search
+					"rdfs" - random depth-first-search
+		query:  the query term input by the user.
+
+
+	'DIMENSIONS' -------------------------------------------------------------------------------
+	The 'dimensions' object describes the data dimensions for graphical display and follows the following format:
+	{
+		"height": int,
+		"width"	: int
+	}
+
+		KEY/VALUE PAIRS ------
+		height: the total height of the tree. Count starts at 1, including the starting page.
+		width:  the width of the widest part of the tree.
+			The width of any nth tier equals the total node count found at that level.
+                    	
+			RDFS Example: On an n=3 tree, a parent node on level 1 with 27 children has a level 2 width of 27, regardless of how many children are held by level 2 nodes. If level 1 has a width of 1 and level 3 has a width of 15, then level 2's width of 27 is returned as the 'width' value.
+			BFS Example: On an n=3 tree, a parent node on level 1 with 5 children has a level 2 width of 5. If 3 nodes on level 2 have 3 children each (and the remaining 2 nodes have none), then level 3 has a width of 9. 9 is returned as the 'width' value.
+
+	NODES IN 'RESULTS' -------------------------------------------------------------------------------
+	The 'results' object holds the scraped data from visited pages.
+	Each page visited is referred to as a node. Each node is represented by a JSON item in the following format:
+	{	
+		"id"	: int,
+		"depth"	: int,
+		"title"	: "str",
+		"url"	: "str",
+		"dead"	: int,
+		"found"	: int,
+		"links"	: int,
+		"children": [list of ints]
+	}
+
+	Within the data output, nodes are collected into a list of JSON objects matched to the key, "results".
+	Node entries in "results" are always ordered according to id value.
+
+		KEY/VALUE PAIRS ------
+		id:     Unique id of the page, assigned in order of discovery. The starting URL is assigned an id value of 0.
+		depth:  The "tree depth" of the page. The depth of the starting URL is always 0, and all of its children are 1.
+		title:  The string text found within the html title tags of the page.
+			If the URL is not of html/text type, a value of "No Title" is given.
+		url:    The URL of the page in string format.
+		dead:   A boolean value signifying the status of the page.
+			Bad status codes will set this value to 1, and its data will not be parsed.
+		found:  A boolean value signifying whether the user's query term was found on the page.
+			A found query sets this value to 1.
+		links:  The number of scrapable links on the page. Also the length of the page's 'children' array.
+			Href values beginning with "#" or containing empty strings are not included.
+		children:   A list of 'child' links found on the page. These are in the form of id values.
+
+SAMPLE OUTPUT FORMAT:
+	{
+		"input":	{ input key-value pairs	     },
+		"dimensions":	{ dimensions key-value pairs },
+		"results": 	[
+			{ node 0 key-value pairs },
+			{ node 1 key-value pairs },
+			...
+			{ node n key-value pairs }
+		]
+	}
+
+--- END DOCUMENTATION.TXT ---
