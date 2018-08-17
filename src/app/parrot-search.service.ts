@@ -8,14 +8,6 @@ import { ParrotSearch } from './parrot-search';
 import { ParrotReturn } from './parrot-return';
 
 
-// the http headers that define the content type
-const httpOptions = {
-  headers: new HttpHeaders().set("Content-Type", "application/json"),
-  params: new HttpParams(),
-  responseType: 'text' as 'json'
-};
-
-
 @Injectable({ providedIn: 'root' })
 export class ParrotSearchService {
 
@@ -24,7 +16,7 @@ export class ParrotSearchService {
   // change to "ws://localhost:15943/search/"
 
   // node route URL to accept search POST request
-  private nodeURL = "http://parrotcrawl.webfactional.com/api/search";
+  private nodeURL = "ws://parrotcrawl.webfactional.com/api/search";
   private ws = new WebSocket(this.nodeURL);
 
   //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR PROD VERSION*^^^^^^^^^^^^*//
@@ -56,12 +48,21 @@ export class ParrotSearchService {
       // console.log("successData made it back: " + this.successSource.getValue());
   }
 
-  // method to recieve search input from form and POST to given URL
+  connectSock(){
+    this.ws = new WebSocket(this.nodeURL);
+  }
+
+  // method to send search terms and recieve search results to/from node via WebSockets
    socketSearch(search: ParrotSearch) {
     //handle errors with the WebSocket
     if(this.ws.readyState === this.ws.CLOSED || this.ws.readyState === this.ws.CLOSING){
-      console.log("WebSocket is not open!")
-      this.router.navigate(['/error']);
+      try{
+          this.connectSock();
+      }
+      catch(err){
+        console.log("WebSocket is not open!")
+        this.router.navigate(['/error']);
+      }
     }
     else{
       //send over the search terms
@@ -70,13 +71,25 @@ export class ParrotSearchService {
       this.router.navigate(['/waiting']);
     }
 
-    //wait for the server response
-    this.ws.addEventListener('message', (event:any) => {
-      console.log("Data recieved");
-      //update the event handlers
-      this.updateData(event.data);
-      this.updateSuccess(true);
-      this.updateLoaded(true);
-    });
+    //recieve the search terms
+    if(this.ws.readyState === this.ws.CLOSED || this.ws.readyState === this.ws.CLOSING){
+      try{
+          this.connectSock();
+      }
+      catch(err){
+        console.log("WebSocket is not open!")
+        this.router.navigate(['/error']);
+      }
+    }
+    else{
+      //wait for the server response
+      this.ws.addEventListener('message', (event:any) => {
+        console.log("Data recieved");
+        //update the event handlers
+        this.updateData(event.data);
+        this.updateSuccess(true);
+        this.updateLoaded(true);
+      });
+    }
   }
 }

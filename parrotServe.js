@@ -90,8 +90,9 @@ function pyParrotCrawl(searchTerms) {
        throw err;
      }
      else {
-			 client.send(JSON.stringify(searchRes[0]));
+       console.log("Node: search results are");
+       console.log(JSON.stringify(searchRes[0]));
+       client.send(JSON.stringify(searchRes[0]));
      }
    });
 }
-
