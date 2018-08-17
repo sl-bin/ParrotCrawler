@@ -61,7 +61,7 @@ export class ParrotSearchService {
     this.ws = new WebSocket(this.nodeURL);
   }
 
-  // method to recieve search input from form and communicate with server
+  // method to send search terms and recieve search results to/from node via WebSockets
    socketSearch(search: ParrotSearch) {
 
     //handle errors with the WebSocket

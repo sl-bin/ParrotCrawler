@@ -21,7 +21,7 @@ app.ws('/search/', function(ws, req) {
 });
 
 
-//listen for post requests and server subscriptions
+//listen for incoming websocket connections
 app.listen('15943', () => {
   console.log('ParrotServe started!');
 });
