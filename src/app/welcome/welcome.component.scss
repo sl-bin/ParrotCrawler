@@ -6,15 +6,19 @@ nav {
 p {
   padding: 1% 5%;
   @media only screen and (max-width: 750px) {
-    font-size: 1em;
+    font-size: 0.8em;
   }
   @media only screen and (min-width: 751px) {
-    font-size: 1.6em;
+    font-size: 1em;
+  }
+  @media only screen and (min-width: 1000px) {
+    font-size: 1.2em;
   }
 }
 
 .viewWindow {
   text-align: justify;
+  height: 86vh;
 }
 
 .welcome {
@@ -46,10 +50,23 @@ p {
 
 .btn {
   @media only screen and (max-width: 750px) {
-    font-size: 2.5em;
+    font-size: 2em;
   }
   @media only screen and (min-width: 751px) {
     font-size: 4em;
   }
   margin-bottom: 2vh;
+}
+
+.spacer {
+  height: 20vh;
+}
+
+.redText {
+  color: #ff6851;
+}
+
+
+.greenText {
+  color: #73e280;
 }

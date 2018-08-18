@@ -41,6 +41,7 @@ form {
 
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button {
+     transform: scale(1.5);
      opacity: 1;
   }
 
@@ -56,11 +57,22 @@ form {
     -moz-appearance:button;
     appearance:button;
     background:#AAA;
-    width: 3em;
-    height: 3em;
     border-radius:50%;
     outline: none;
     margin-right: 1%;
+
+    @media only screen and (max-width: 750px) {
+      width: 1.5em;
+      height: 1.5em;
+    }
+    @media only screen and (min-width: 751px) {
+      width: 2em;
+      height: 2em;
+    }
+    @media only screen and (min-width: 1120px) {
+      width: 3em;
+      height: 3em;
+    }
   }
 
   input[type="radio"]:checked{

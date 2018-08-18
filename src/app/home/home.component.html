@@ -43,6 +43,7 @@
       <div class="pastSearchDiv hidden">
         <label>Previous Searches:
           <select class = "pastSearches" formControlName="prevSearchDrop" (ngModelChange)="onSelect($event)">
+            <option></option>
             <option [ngValue]="prevSearch" *ngFor="let prevSearch of prevSearches | slice: 1">
               {{ prevSearch.url }} n={{ prevSearch.n }} {{ prevSearch.searchType }} "{{ prevSearch.searchPhrase }}"
             </option>

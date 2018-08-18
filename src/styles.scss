@@ -13,12 +13,17 @@ better ways to do this using @media queries
 that will insure that even tiny screens display
 the page in a readable way)*/
 html, body {
-  position:fixed;
+  @media only screen and (min-width: 750px) {
+    position:fixed;
+  }
   top:0;
   bottom:0;
   left:0;
   right:0;
+  -ms-overflow-style: none;
 }
+
+
 
 /* set defalt text */
 body {
@@ -36,7 +41,7 @@ body {
 .viewWindow {
   position: relative;
   min-height: 1px;
-  height: 86vh;
+  height: 90vh;
   min-width: 1px;
   width: 96%;
   background: -webkit-linear-gradient(#111, #3F3F3F); /* For Safari 5.1 to 6.0 */

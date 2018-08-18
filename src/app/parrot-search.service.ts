@@ -54,7 +54,6 @@ export class ParrotSearchService {
 
   // method to send search terms and recieve search results to/from node via WebSockets
   socketSearch(search: ParrotSearch) {
-
     //handle errors with the WebSocket
     if(this.ws.readyState === this.ws.CLOSED || this.ws.readyState === this.ws.CLOSING){
       try{

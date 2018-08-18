@@ -23,6 +23,7 @@ app.ws('/search/', function(ws, req) {
 });
 
 
+
 //listen for incoming websocket connections
 app.listen('15943', () => {
   console.log('ParrotServe started!');
@@ -92,14 +93,9 @@ function pyParrotCrawl(searchTerms) {
        throw err;
      }
      else {
-        try{
-            console.log("Node: search results are");
-            console.log(JSON.stringify(searchRes[0]));
-	    client.send(JSON.stringify(searchRes[0]));
-        }
-        catch(error){
-          console.log(error);
-        }
-      }
+       console.log("Node: search results are");
+       console.log(JSON.stringify(searchRes[0]));
+       client.send(JSON.stringify(searchRes[0]));
+     }
    });
 }
