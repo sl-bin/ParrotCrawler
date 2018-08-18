@@ -89,13 +89,23 @@ function pyParrotCrawl(searchTerms) {
   console.log("Node: Calling crawler");
   //call crawl script and pass it the search terms
   PythonShell.run(scriptToRun, options, function(err, searchRes) {
+     // if the script errors out, send why to the client
      if(err) {
+       client.send(JSON.stringify(err));
        throw err;
      }
+     //otherwise try to send the results
      else {
-       console.log("Node: search results are");
-       console.log(JSON.stringify(searchRes[0]));
-       client.send(JSON.stringify(searchRes[0]));
+       try{
+         console.log("Node: search results are");
+         console.log(JSON.stringify(searchRes[0]));
+         client.send(JSON.stringify(searchRes[0]));
+       }
+      //if the client is disconnected, terminate the python script
+       catch(err){
+         console.log("Client disconnected. Terminating script");
+         console.log(err);
+       }
      }
    });
 }
