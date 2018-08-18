@@ -120,6 +120,10 @@ def openURLAsHTML(node):
 		node['dead'] = 1
 		return None
 
+	except UnicodeEncodeError:
+		currentTitle = "Unicode Error"
+		isDead = 1
+		
 	except http.client.IncompleteRead as e:
 		HTML = e.partial
 
