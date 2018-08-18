@@ -109,6 +109,9 @@ def crawl(newPage):
 		isDead = 1
 	except http.client.IncompleteRead as e:
 		currentHTML = e.partial
+	except UnicodeEncodeError:
+		currentTitle = "Unicode Error"
+		isDead = 1
 
 	else:
 		currentURL = currentHTML.geturl()	# Update our URL in case a redirect was followed.
@@ -159,6 +162,7 @@ def crawl(newPage):
 				# Increment width
 				currentWidth += 1
 				parentNode['links'] += 1
+
 
 		currentPage.decompose()
 	if currentHTML != None: currentHTML.close()
