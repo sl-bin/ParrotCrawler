@@ -20,6 +20,7 @@ html, body {
   bottom:0;
   left:0;
   right:0;
+  -ms-overflow-style: none;
 }
 
 
@@ -40,7 +41,7 @@ body {
 .viewWindow {
   position: relative;
   min-height: 1px;
-  height: 86vh;
+  height: 90vh;
   min-width: 1px;
   width: 96%;
   background: -webkit-linear-gradient(#111, #3F3F3F); /* For Safari 5.1 to 6.0 */

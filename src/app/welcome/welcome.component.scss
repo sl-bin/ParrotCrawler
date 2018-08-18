@@ -18,7 +18,7 @@ p {
 
 .viewWindow {
   text-align: justify;
-  padding-bottom: 2vh;
+  height: 86vh;
 }
 
 .welcome {
@@ -56,4 +56,17 @@ p {
     font-size: 4em;
   }
   margin-bottom: 2vh;
+}
+
+.spacer {
+  height: 20vh;
+}
+
+.redText {
+  color: #ff6851;
+}
+
+
+.greenText {
+  color: #73e280;
 }

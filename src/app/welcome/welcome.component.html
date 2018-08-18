@@ -12,27 +12,44 @@
     the Cult of the Parrot.
   </p>
   <p>
-    To use ParrotCrawl enter a URL you would like to start
-    from and the crawler will search outward from that webpage
-    navigating through each link. If you would like the
-    ParrotCrawl to search for a string on the pages it visits
-    enter it in the optional field. You will also need to choose
-    a value of <i>n</i> which will determine how many links from
-    the original URL that the search will continue for. You must
-    also choose a style of search, either depth first or breadth
-    first. The depth first search will choose links randomly and continue
-    until <i>n</i> is reached. The breadth first search will navigate
-    through a limited number of links on each webpage and then navigate
-    through the links on each of those pages until the depth of <i>n</i> is
-    reached. If you choose to use breadth first please note that
-    for each value of <i>n</i> a different number of links per webpage
-    searched will be returned. For <i>n</i> = 1 the max is 1000 links returned
-    from the URL you have given. For <i>n</i> = 2 the max is 30 links returned
-    per webpage navigated to. For <i>n</i> = 3 the max is 10 links returned
-    per webpage navigated to. For <i>n</i> = 4 the max is 5 links returned
-    per webpage navigated to. To start click the 'get started' button!
+    To use ParrotCrawl, enter a URL you would like to start from.
+    The crawler will search outward from that webpage, navigating
+    through each link.
   </p>
+ <p>
+   If you would like the ParrotCrawl to search for a string on the
+   pages it visits, enter it in the optional field. You will also
+   need to choose a value of <i>n</i> which will determine how many
+   links from the original URL that the search will continue for.
+   You must also choose a style of search: either depth-first or
+   breadth-first. The depth-first search will choose links randomly
+   and continue until <i>n</i> is reached. The breadth-first search
+   will navigate through a limited number of links on each webpage
+   and then navigate through the links on each of those pages until
+   the depth of <i>n</i> is reached.
+ </p>
+  <p>
+    If you choose to use breadth-first, please note that for each
+    value of <i>n</i> a different number of links per webpage searched
+    will be returned. For <i>n</i> = 1 the max is 1000 links returned
+    from the URL you have given. For <i>n</i> = 2 the max is 30 links
+    returned per webpage navigated to. For <i>n</i> = 3 the max is 10
+    links returned per webpage navigated to. For <i>n</i> = 4 the max
+    is 5 links returned per webpage navigated to.
+  </p>
+  <p>
+   Once on the results page, nodes in <span class="redText">red</span>
+   indicate dead links, and nodes in <span class="greenText">green</span>
+   indicate that your optional search phrase appeared on that page.
+  </p>
+  <p>Please note that if you are using a web shield or other similar
+    antivirus software, you may receive errors on searches that take
+    a while to complete.
+ </p>
+
+  <p class="centered">To start, click the 'get started' button!</p>
   <div class="btnDiv">
     <input type="submit" class="btn" value="Get Started" routerLink="/home"/>
   </div>
+  <div class="spacer"></div>
 </div>
