@@ -13,10 +13,10 @@ export class ParrotSearchService {
 
   //*vvvvvvvvvvvv*THIS MUST BE CHANGED FOR PROD VERSION*vvvvvvvvvvvv*//
 
-  // change to "ws://localhost:15943/search/"
+  // change to "ws://parrotcrawl.webfactional.com/api/search/"
 
   // node route URL to accept search POST request
-  private nodeURL = "ws://parrotcrawl.webfactional.com/api/search";
+  private nodeURL = "ws://localhost:15943/search/";
   private ws = new WebSocket(this.nodeURL);
 
   //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR PROD VERSION*^^^^^^^^^^^^*//
@@ -53,7 +53,7 @@ export class ParrotSearchService {
   }
 
   // method to send search terms and recieve search results to/from node via WebSockets
-   socketSearch(search: ParrotSearch) {
+  socketSearch(search: ParrotSearch) {
     //handle errors with the WebSocket
     if(this.ws.readyState === this.ws.CLOSED || this.ws.readyState === this.ws.CLOSING){
       try{
