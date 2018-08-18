@@ -150,7 +150,7 @@ def appendFinalDimensions(data, greatestWidth):
 
 # VALIDATE ARGS ------------------------------------------------------
 if len(sys.argv) < 4:
-	print("\tUsage: bfs.py [starting URL] [depth] [page-limit] [(query)]")
+	print("\tUsage: rdfs.py [starting URL] [depth] [page-limit] [(query)]")
 	print("\t***Set [page-limit] to 0 for no limit.***")
 	sys.exit(2)
 
