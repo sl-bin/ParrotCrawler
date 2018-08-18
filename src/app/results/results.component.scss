@@ -80,9 +80,9 @@ nav {
   border: solid 2px white;
   border-radius: 120px;
   @media only screen and (max-width: 750px) {
-    transform: scale(.5)
-    top: 70vh;
-    right: 6vw;
+    transform: scale(.5);
+    top: 50vh;
+    right: 2vw;
   }
   @media only screen and (min-width: 751px) {
     top: 75vh;
