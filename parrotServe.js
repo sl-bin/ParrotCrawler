@@ -74,6 +74,7 @@ function pyParrotCrawl(searchTerms) {
       }
   }
 
+
   //set up pyshell for a run
   var PythonShell = require('python-shell');
   var options = {

@@ -6,6 +6,8 @@ import * as $ from 'jquery';
 import { ParrotSearch } from './parrot-search';
 import { ParrotSearchService } from './parrot-search.service';
 
+import {enableProdMode} from '@angular/core';
+enableProdMode();
 
 @Component({
   selector: 'app-root',
