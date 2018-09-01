@@ -1,3 +1,6 @@
+// import variables from src file
+@import '../../variables';
+
 form {
   display: inline-block;
   width:90%;
@@ -47,8 +50,8 @@ form {
 
   input[type="text"], input[type="number"] {
     font-size: 1em;
-    border: 1px solid #AAA;
-    background-color: #AAA;
+    border: 1px solid $inputField;
+    background-color: $inputField;
     outline: none;
   }
 
@@ -56,7 +59,7 @@ form {
     -webkit-appearance:button;
     -moz-appearance:button;
     appearance:button;
-    background:#AAA;
+    background:$inputField;
     border-radius:50%;
     outline: none;
     margin-right: 1%;
@@ -76,23 +79,19 @@ form {
   }
 
   input[type="radio"]:checked{
-    border: 1em solid black;
+    border: 1em solid $black;
   }
 
   .pastSearches {
-    background-color: #AAA;
+    background-color: $inputField;
     font-size: 1em;
     overflow: hidden;
     width: 50%;
   }
 }
 
-.disable {
-  color: #777;
-}
-
 fieldset {
-  border: 4px solid white;
+  border: 4px solid $white;
 }
 
 .viewWindow {
@@ -102,7 +101,7 @@ fieldset {
 .fade {
   border: 4px solid;
   border-bottom: none;
-  border-image: linear-gradient(white, transparent) 1;
+  border-image: linear-gradient($white, transparent) 1;
 }
 
 .btn {
@@ -111,19 +110,19 @@ fieldset {
 }
 
 .btn[disabled] {
-  background-color: #DDD;
-  border: solid 2px black;
-  color: #AAA;
+  background-color: $disabled;
+  border: solid 2px $black;
+  color: $inputField;
 }
 
 .btn[disabled]:hover {
-  background-color: #DDD;
-  border: solid 2px black;
-  color: #AAA;
+  background-color: $disabled;
+  border: solid 2px $black;
+  color: $inputField;
 }
 
 .required {
-  color: #ea1b10;
+  color: $required;
   padding: 0 2%;
 }
 

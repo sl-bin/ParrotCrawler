@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@import './variables';
+
 /* clears any automatic margins and padding
 that affect the entire document */
 * {
@@ -28,8 +30,8 @@ html, body {
 /* set defalt text */
 body {
   font-family: "Arial Black";
-  color: white;
-  background: #3F3F3F;
+  color: $white;
+  background: $background;
 }
 
 ::-webkit-scrollbar {
@@ -44,10 +46,10 @@ body {
   height: 90vh;
   min-width: 1px;
   width: 96%;
-  background: -webkit-linear-gradient(#111, #3F3F3F); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(#111, #3F3F3F); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(#111, #3F3F3F); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(#111, #3F3F3F); /* Standard syntax */
+  background: -webkit-linear-gradient($viewWindow, $background); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient($viewWindow, $background); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient($viewWindow, $background); /* For Firefox 3.6 to 15 */
+  background: linear-gradient($viewWindow, $background); /* Standard syntax */
   margin-left: 2%;
   margin-right: 2%;
   margin-top: 2%;
@@ -65,9 +67,9 @@ body {
   margin-top: 1%;
 
   .btn {
-    background-color: #AAA;
-    border: solid 2px black;
-    color: black;
+    background-color: $buttonBackgroundOrTextHover;
+    border: solid 2px $black;
+    color: $buttonText;
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
@@ -76,8 +78,8 @@ body {
   }
 
   .btn:hover {
-    background-color: #111;
-    color: #AAA;
+    background-color: $buttonBackgroundHover;
+    color: $buttonBackgroundOrTextHover;
   }
 }
 

@@ -1,0 +1,49 @@
+// scss color variables
+
+// basic colors for use with borders
+$black: #0A0A0A;
+$white: #FAFAFA;
+
+// background colors
+$background: #3F3F3F;
+$viewWindow: #111;
+
+// welcome page colors
+$welcomeText: $white;
+// $rainbowText: orange, yellow, green, cyan, blue, indigo;
+$rainbowText: #FF8C00, #FFFF00, #008000, #00FFFF, #0000FF, #4B0082;
+
+// button colors
+$buttonText: #0A0A0A;
+$buttonBackgroundOrTextHover: #AAA;
+$buttonBackgroundHover: #111;
+
+// form colors
+$inputField: #AAA;
+$disabled: #DDD;
+$required: #EA1B10;
+
+// results colors
+$navBackground: #333;
+$navBorder: #222;
+$navText: $white;
+$navBackgroundHover: #AAA;
+
+// zoom control colors
+$zoomInactiveTop: #111;
+$zoomInactiveBottomActiveTop: #3F3F3F;
+$zoomActiveBottom: $white;
+$zoomText: $white;
+$zoomTextStroke: #121212;
+
+// results page grid colors
+$gridText: $white;
+$gridTextStroke: #111;
+$normalTextHover: #3C6BB7;
+$foundTextHover: #199E1D;
+$normalNodeBackground: #7FAEF9;
+$foundNodeBackground: #73E280;
+$deadNodeBackground: #FF6851;
+$normalNodeBorder: #3C6BB7;
+$foundNodeBorder: #199E1D;
+$deadNodeBorder: #BF202D;

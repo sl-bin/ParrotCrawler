@@ -1,3 +1,6 @@
+// import variables from src file
+@import '../../variables';
+
 /* sets up look of header/navbar */
 nav {
   padding: 0;
@@ -22,7 +25,7 @@ p {
 }
 
 .welcome {
-  background: linear-gradient(to right bottom, orange , yellow, green, cyan, blue, violet);
+  background: linear-gradient(to right bottom, $rainbowText);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   @media only screen and (max-width: 750px) {
@@ -34,7 +37,7 @@ p {
   @media only screen and (min-width: 1035px) {
     font-size: 7em;
   }
-  color: white;
+  color: $welcomeText;
   text-align: center;
   line-height: 1em;
 }
@@ -63,10 +66,10 @@ p {
 }
 
 .redText {
-  color: #ff6851;
+  color: $deadNodeBackground;
 }
 
 
 .greenText {
-  color: #73e280;
+  color: $foundNodeBackground;
 }

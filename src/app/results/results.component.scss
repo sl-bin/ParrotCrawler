@@ -1,3 +1,6 @@
+// import variables from src file
+@import '../../variables';
+
 /* sets up look of header/navbar */
 .viewWindow {
   height: 89vh;
@@ -8,8 +11,8 @@ nav {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
-  border-bottom: solid 2px #222;
+  background-color: $navBackground;
+  border-bottom: solid 2px $navBackground;
 
   .navRight {
     float: right;
@@ -57,27 +60,25 @@ nav {
 .navItem {
   float: right;
   display: inline-block;
-  color: white;
+  color: $navText;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-  border-left: solid 4px #222;
-  border-right: solid 4px #222;
+  border-left: solid 4px $navBackground;
+  border-right: solid 4px $navBackground;
   outline: none;
 }
 
 .navItem:hover {
-  color: #333;
-  background-color: #AAA;
+  color: $navBackground;
+  background-color: $navBackgroundHover;
 }
-
-/* note how badly these classes/selectors are named :) */
 
 /* styles the div that contains the zoom buttons and the border */
 .zooms {
   margin: 40px;
   position: fixed;
-  border: solid 2px white;
+  border: solid 2px $white;
   border-radius: 120px;
   @media only screen and (max-width: 750px) {
     transform: scale(.5);
@@ -92,11 +93,11 @@ nav {
 
 /* styles the zoom in button (makes it a half circle) */
 .zoomIn {
-  background: #111;
-  background: -webkit-linear-gradient(#111, #3F3F3F); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(#111, #3F3F3F); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(#111, #3F3F3F); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(#111, #3F3F3F); /* Standard syntax */
+  background: $zoomInactiveTop;
+  background: -webkit-linear-gradient($zoomInactiveTop, $zoomInactiveBottomActiveTop); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient($zoomInactiveTop, $zoomInactiveBottomActiveTop); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient($zoomInactiveTop, $zoomInactiveBottomActiveTop); /* For Firefox 3.6 to 15 */
+  background: linear-gradient($zoomInactiveTop, $zoomInactiveBottomActiveTop); /* Standard syntax */
   display: inline-block;
   border-bottom-left-radius: 120px;
   border-top-left-radius: 120px;
@@ -106,20 +107,20 @@ nav {
 }
 
 .zoomIn:active {
-  background: -webkit-linear-gradient(#3F3F3F, white); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(#3F3F3F, white); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(#3F3F3F, white); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(#3F3F3F, white); /* Standard syntax */
+  background: -webkit-linear-gradient($zoomInactiveBottomActiveTop, $zoomActiveBottom); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient($zoomInactiveBottomActiveTop, $zoomActiveBottom); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient($zoomInactiveBottomActiveTop, $zoomActiveBottom); /* For Firefox 3.6 to 15 */
+  background: linear-gradient($zoomInactiveBottomActiveTop, $zoomActiveBottom); /* Standard syntax */
   display: inline-block;
 }
 
 /* styles the zoom out button (make it a half circle) */
 .zoomOut {
-  background: #111;
-  background: -webkit-linear-gradient(#111, #3F3F3F); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(#111, #3F3F3F); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(#111, #3F3F3F); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(#111, #3F3F3F); /* Standard syntax */
+  background: $zoomInactiveTop;
+  background: -webkit-linear-gradient($zoomInactiveTop, $zoomInactiveBottomActiveTop); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient($zoomInactiveTop, $zoomInactiveBottomActiveTop); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient($zoomInactiveTop, $zoomInactiveBottomActiveTop); /* For Firefox 3.6 to 15 */
+  background: linear-gradient($zoomInactiveTop, $zoomInactiveBottomActiveTop); /* Standard syntax */
   display: inline-block;
   border-bottom-right-radius: 120px;
   border-top-right-radius: 120px;
@@ -129,10 +130,10 @@ nav {
 }
 
 .zoomOut:active {
-  background: -webkit-linear-gradient(#3F3F3F, white); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(#3F3F3F, white); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(#3F3F3F, white); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(#3F3F3F, white); /* Standard syntax */
+  background: -webkit-linear-gradient($zoomInactiveBottomActiveTop, $zoomActiveBottom); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient($zoomInactiveBottomActiveTop, $zoomActiveBottom); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient($zoomInactiveBottomActiveTop, $zoomActiveBottom); /* For Firefox 3.6 to 15 */
+  background: linear-gradient($zoomInactiveBottomActiveTop, $zoomActiveBottom); /* Standard syntax */
   display: inline-block;
 }
 
@@ -141,9 +142,11 @@ adds text stroke and cneters mostly*/
 .zoom {
   text-align: center;
   font-size: 90px;
-  color: white;
+  color: $zoomText;
   -webkit-text-stroke-width: 4px;
-  -webkit-text-stroke-color: #121212;
+  -moz-text-stroke-width: 4px;
+  -webkit-text-stroke-color: $zoomTextStroke;
+  -moz-text-stroke-color: $zoomTextStroke;
 }
 
 /* centers the plus sign
@@ -162,7 +165,7 @@ no matter how you do it*/
 }
 
 .plus:active {
-  color: #121212;
+  color: $zoomTextStroke;
 }
 
 /* centers the minus sign
@@ -181,18 +184,18 @@ no matter how you do it*/
 }
 
 .minus:active {
-  color: #121212;
+  color: $zoomTextStroke;
 }
 
 .input {
   z-index: 99;
   position: fixed;
   margin: 0;
-  border: 6px solid #222;
+  border: 6px solid $navBackground;
   min-width: 300px;
   min-height: 100px;
   max-height: 125px;
-  background-color: #333;
+  background-color: $navBackground;
   padding: 4px;
   text-align: center;
 
@@ -324,10 +327,10 @@ no matter how you do it*/
   word-wrap: break-word;
   border-radius: 10px;
   margin: 0 2px;
-  -moz-text-fill-color: white;
-  -webkit-text-fill-color: white;
-  -moz-text-stroke-color: #111;
-  -webkit-text-stroke-color: #111;
+  -moz-text-fill-color: $gridText;
+  -webkit-text-fill-color: $gridText;
+  -moz-text-stroke-color: $gridTextStroke;
+  -webkit-text-stroke-color: $gridTextStroke;
   -moz-text-stroke-width: .5px;
   -webkit-text-stroke-width: .5px;
 }
@@ -338,67 +341,67 @@ no matter how you do it*/
 }
 
 .normalNode {
-  background-color: #7faef9;
-  border: 6px solid #3c6bb7;
+  background-color: $normalNodeBackground;
+  border: 6px solid $normalNodeBorder;
   border-radius: 10px;
 }
 
 .linkNode {
-  color: white;
+  color: $white;
   text-decoration: none;
-  -moz-text-fill-color: white;
-  -webkit-text-fill-color: white;
-  -moz-text-stroke-color: #111;
-  -webkit-text-stroke-color: #111;
+  -moz-text-fill-color: $gridText;
+  -webkit-text-fill-color: $gridText;
+  -moz-text-stroke-color: $gridTextStroke;
+  -webkit-text-stroke-color: $gridTextStroke;
   -moz-text-stroke-width: .5px;
   -webkit-text-stroke-width: .5px;
 }
 
 .normalNode .linkNode:hover, .topNode .linkNode:hover {
-  color: #3c6bb7;
+  color: $normalTextHover;
   text-decoration: none;
-  -moz-text-fill-color: #3c6bb7;
-  -webkit-text-fill-color: #3c6bb7;
-  -moz-text-stroke-color: #111;
-  -webkit-text-stroke-color: #111;
+  -moz-text-fill-color: $normalTextHover;
+  -webkit-text-fill-color: $normalTextHover;
+  -moz-text-stroke-color: $gridTextStroke;
+  -webkit-text-stroke-color: $gridTextStroke;
   -moz-text-stroke-width: .5px;
   -webkit-text-stroke-width: .5px;
 }
 
 .foundNode .linkNode:hover, .topFound .linkNode:hover {
-  color: #199e1d;
+  color: $foundTextHover;
   text-decoration: none;
-  -moz-text-fill-color: #199e1d;
-  -webkit-text-fill-color: #199e1d;
-  -moz-text-stroke-color: #111;
-  -webkit-text-stroke-color: #111;
+  -moz-text-fill-color: $foundTextHover;
+  -webkit-text-fill-color: $foundTextHover;
+  -moz-text-stroke-color: $gridTextStroke;
+  -webkit-text-stroke-color: $gridTextStroke;
   -moz-text-stroke-width: .5px;
   -webkit-text-stroke-width: .5px;
 }
 
 .topDead .linkNode:hover {
-  color: white;
+  color: $gridText;
   text-decoration: none;
 }
 
 .static:hover {
-  color: white;
+  color: $gridText;
   text-decoration: none;
 }
 
 .topNode {
-  background-color: #7faef9;
-  border: 6px solid #3c6bb7;
+  background-color: $normalNodeBackground;
+  border: 6px solid $normalNodeBorder;
 }
 
 .topFound {
-  background-color: #73e280;
-  border: 6px solid #199e1d;
+  background-color: $foundNodeBackground;
+  border: 6px solid $foundNodeBorder;
 }
 
 .topDead {
-  background-color: #ff6851;
-  border: 6px solid #bf202d;
+  background-color: $deadNodeBackground;
+  border: 6px solid $deadNodeBorder;
 }
 
 .topNode, .topFound, .topDead {
@@ -407,29 +410,29 @@ no matter how you do it*/
 }
 
 .deadNode {
-  background-color: #ff6851;
-  border: 6px solid #bf202d;
+  background-color: $deadNodeBackground;
+  border: 6px solid $deadNodeBorder;
   border-radius: 10px;
 }
 
 .foundNode {
-  background-color: #73e280;
-  border: 6px solid #199e1d;
+  background-color: $foundNodeBackground;
+  border: 6px solid $foundNodeBorder;
   border-radius: 10px;
 }
 
 .borderRight {
-  border-right: 2px solid white;
+  border-right: 2px solid $white;
 }
 
 .borderLeft {
-  border-left: 2px solid white;
+  border-left: 2px solid $white;
 }
 
 .borderTop {
-  border-top: 2px solid white;
+  border-top: 2px solid $white;
 }
 
 .borderBottom {
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid $white;
 }
