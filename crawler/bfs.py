@@ -3,7 +3,6 @@ import time
 import threading
 from queue import Empty
 from queue import Queue
-
 import http
 import sys
 import urllib.request
@@ -13,15 +12,17 @@ import copy
 import re
 import string
 
-num_threads = 20
-maxSearchTime = 280 # Seconds
-pageLoadSpeed = 0.184815	# Average page load speed (seconds)
+num_threads = 20			# For multi-threading
+maxSearchTime = 280			# Maximum target search time
+pageLoadSpeed = 0.184815	# Average page load speed factor (seconds)
 
 # URLs Per Page Limit Function -----------------------------------------
 def getPageLimit(targetDepth, maxSearchTime, pageLoadSpeed):
 	return int(( maxSearchTime / pageLoadSpeed - 1 )**(1 / targetDepth)) # Integer to return floor calculation
 
 # Query Functions ------------------------------------------------------
+
+# For use with the beautiful soup library. This function defines the relevant html tags to search for user queries.
 def relevant_text(tag):
 	return	tag.name == "title" or\
 			tag.name == "p" or\
@@ -34,19 +35,20 @@ def relevant_text(tag):
 			tag.name == "h5" or\
 			tag.name == "h6"
 
+# Incorporates the above-mentioned relevant html tags to search a given page for a given query string.
 def querySearch(page, query):
 	betterText = ""
+
+	# Collect all text from relevant html tags.
 	for each in page.find_all(relevant_text):
 		betterText += each.get_text()
 
-	# Can be deleted after testing/verification of return text.
-	#newText = betterText.replace("\n", " ")
-	#print(newText)
-
+	# Search collected text for target query.
 	result = betterText.find(query)
 	if result >= 0: hasQuery = 1
 	else: hasQuery = 0
 
+	# Return search result
 	return hasQuery
 
 
@@ -55,27 +57,35 @@ def querySearch(page, query):
 def getID(item):
 	return item['id']
 
-# THREADING WORK FUNCTION  ---------------------------------------------
+# THREADING WORK FUNCTIONS  ---------------------------------------------
 
+# Worker threads perform crawl/scrape operations on one URL from the work queue at a time.
 def worker():
 	while True:
 		newPage = PagesToCrawl.get()
 		crawl(newPage)
 		PagesToCrawl.task_done()
 
+# One manager thread oversees the worker threads by blocking and signaling to the main method once all queue work is complete.
 def manager():
 	PagesToCrawl.join()
 	exit()
 
-# CRAWLER FUNCTION	----------------------------------------------------
-#	Thread Work  	----------------------------------------------------
+# CRAWL FUNCTION	----------------------------------------------------
+#	Work to be performed by each worker thread	------------------------
+#
+#	1. Set up node data - Sets local variables and creates new default node object
+#	2. Visit page 		- Opens page w/error handling and collects temp data
+#	3. Assign node data - Assigns temp data to node object and scrapes/assigns child data
+#	4. Append node data collected by thread to the main data set
+# ----------------------------------------------------------------------
 def crawl(newPage):
 
-	global nextID
+	global nextID 	# Threads pull unique IDs from this shared source by using the 'nextID_lock' mutex.
 
-		# 1. SET UP NODE DATA
+	# 1. SET UP NODE DATA
 
-		# Set local thread variables
+	# Set local thread variables
 	currentID = newPage[0]
 	currentDepth = newPage[1]
 	currentURL = newPage[2]
@@ -118,7 +128,7 @@ def crawl(newPage):
 		currentRes = currentHTML.info()
 		currentType = currentRes.get_content_type() # We only want to open text/html files.
 
-		# Page was successfully opened --> convert to bs4 object and collect data.
+		# Page was successfully opened --> convert to bs4 object and collect initial data.
 		currentPage = BeautifulSoup(currentHTML.read().decode('utf-8', 'ignore'), "lxml")
 		if currentPage.title is None: currentTitle = "No Title"
 		else: currentTitle = currentPage.title.getText()
@@ -133,42 +143,45 @@ def crawl(newPage):
 	parentNode['found'] = hasQuery
 	parentNode['dead'] = isDead
 
-	# --> If we are at target depth OR page is dead, we don't want to collect child URL data.
+	# Collect child URL data if page is readable and we are not yet at the target depth.
+	# If we are at target depth OR page is dead, there is no reason to collect child URL data.
 	if isDead != 1 and currentDepth < targetDepth:
 		links = currentPage.find_all("a", href=True)
 
 		currentWidth = 0
 		for link in links:
 			if currentWidth < URLsPerPageLimit:
-				# Check URL:
+				# Check URL: <-- THIS NEEDS WORK
 				if link['href'] == '' or link['href'][0] == "#":
 					continue
 
 				else:
 					childURL = str(urllib.parse.urljoin(currentURL, link['href']))
 
+				# If the child URL is identical to its parent, skip it.
 				if childURL == currentURL: continue
 
-				# Take next ID:
+				# Take/Assign a unique ID using mutex:
 				thisNextID = 0
 				with nextID_lock:
 					thisNextID = nextID
 					nextID += 1
 
-				# Assign ID, add to queue.
+				# Assign ID, add child URL to queue.
 				PagesToCrawl.put( copy.deepcopy( (thisNextID, currentDepth+1, childURL) ) )
 				# Add child ID to node data
 				parentNode['children'].append(copy.deepcopy(thisNextID))
-				# Increment width
-				currentWidth += 1
 				parentNode['links'] += 1
+				# Increment the current width
+				currentWidth += 1
 
 
-		currentPage.decompose()
-	if currentHTML != None: currentHTML.close()
+		currentPage.decompose()					# Manual garbage collection
+	if currentHTML != None: currentHTML.close()	# Manual garbage collection
 
 
-	# APPEND NODE DATA TO RESULT SET
+	# 4. APPEND NODE DATA TO RESULT SET
+	# Once thread data collection is complete, use mutex to add it to the main data set.
 	with data_lock:
 		data['results'].append(copy.deepcopy(parentNode))
 
@@ -176,41 +189,43 @@ def crawl(newPage):
 
 # MAIN ---------------------------------------------------------------
 
-
 # VALIDATE ARGS ------------------------------------------------------
+
+# Usage Statement ----------------------------------------------------
 if len(sys.argv) < 4:
 	print("\tUsage: bfs.py [starting URL] [depth] [page-limit] [(query)]")
 	print("\t***Set [page-limit] to 0 to default to standard formula.***")
 	sys.exit(2)
 
-URLParam = str(sys.argv[1])
+# Assign preliminary arguments ---------------------------------------
+startingURL = str(sys.argv[1])
 targetDepth = int(sys.argv[2])
 pageLimit = int(sys.argv[3])
 if len(sys.argv) < 5: queryParam = None
 else: queryParam = str(sys.argv[4])
 
+# Determine page limit from user input (and forumla if necessary)
 if pageLimit == 0:
 	URLsPerPageLimit = getPageLimit(targetDepth, maxSearchTime, pageLoadSpeed)
 else: URLsPerPageLimit = pageLimit
-# print("URL Limit is: {}".format(URLsPerPageLimit))	# Max number of child links to be collected from any parent
+# print("URL Limit is: {}".format(URLsPerPageLimit))	# DEBUG
 
-# Set URL Opener - assign valid user-agent to prevent bot detection
+# Set URL Opener - assign valid user-agent
 opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-#opener.addheaders = [('User-agent', 'rudeparrot-bot (http://parrotcrawl.webfactional.com')]
+#opener.addheaders = [('User-agent', 'parrot-bot (http://parrotcrawl.webfactional.com')]
 
-# THREAD LOCKS
+# Set up thread locks/mutexes
 nextID_lock = threading.Lock()
 data_lock = threading.Lock()
 
-# INTER-THREAD VARIABLE
-nextID = 1
+nextID = 1	# Inter-thread variable to ensure unique IDs for each page visited
 
-# Set up dataset:
+# Set up main dataset. (Refer to documentation.txt for layout of JSON data)
 data = {}
 
 data['input'] = {}
-data['input']['url'] = URLParam
+data['input']['url'] = startingURL
 data['input']['n'] = targetDepth
 data['input']['type'] = "bfs"
 data['input']['search'] = queryParam
@@ -223,15 +238,15 @@ data['results'] = []
 
 # BEGIN CRAWLER --------------------------------------------------------------
 
-time0 = time.time()
+time0 = time.time()				# Start stopwatch
 
 # Add starting page to queue of URLs to crawl (as a tuple: (id, depth, "url"))
 PagesToCrawl = Queue()
-PagesToCrawl.put( (0, 0, URLParam) )
+PagesToCrawl.put( (0, 0, startingURL) )
 
 # Set Up/Start Threads
 
-# Manager Thread - Watches work queue, takes locking system call
+# Manager Thread - Watches work queue, takes locking system call and dies once work is complete
 terminator = threading.Thread(target=manager)
 terminator.daemon = True
 
@@ -256,12 +271,13 @@ for each in data['results']:
 	if each['links'] > 0:
 		data['dimensions']['width'] += each['links'] - 1
 
+# Multi-threading may result in out-of-order nodes: sort by key ID
 data['results'].sort(key=getID)
 
 # Output Data Set
 print(json.dumps(data))
 
-time1 = time.time()
-#print("Total time: ", time1-time0)
+time1 = time.time()						# Stop stopwatch
+#print("Total time: ", time1-time0)		# Show timing
 
 #-----------------------------------------------------------------------------
