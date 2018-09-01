@@ -22,10 +22,10 @@ export class LocalStorageService {
 
   //save function that accepts ParrotSearch objects to save to localstorage
   public saveInLocal(searchJSON): void {
-    var prevTest = false;
-    var keyCount = parseInt(this.storage.get("0"));
+    let  prevTest = false;
+    let  keyCount = parseInt(this.storage.get("0"));
 
-    for(var i = 0; i <= keyCount; i++) {
+    for(let  i = 0; i <= keyCount; i++) {
       let testJSON = JSON.parse( this.storage.get(String(i)) );
       if(testJSON.url === searchJSON.url && testJSON.n === searchJSON.n
         && testJSON.searchType === searchJSON.searchType
@@ -39,8 +39,8 @@ export class LocalStorageService {
       delete searchJSON.prevSearchDrop;
 
       //save the search at the next index in the localStorage Array
-      var searchString = JSON.stringify(searchJSON);
-      var keyCount = parseInt(this.storage.get("0"));
+      let  searchString = JSON.stringify(searchJSON);
+      let  keyCount = parseInt(this.storage.get("0"));
       keyCount++;
 
       this.storage.set("0", String(keyCount));
@@ -51,12 +51,12 @@ export class LocalStorageService {
 
   //get function that gets all the searches in localStorage
   public getFromLocal(): ParrotSearch[] {
-    var searchArray: ParrotSearch[] = [];
+    let  searchArray: ParrotSearch[] = [];
     //get the number of search results from localStorage
-    var keyCount = parseInt(this.storage.get("0"));
+    let  keyCount = parseInt(this.storage.get("0"));
 
     //loop through the localStorage and save each search in the array
-    for(var i = 0; i <= keyCount; i++) {
+    for(let  i = 0; i <= keyCount; i++) {
       let searchJSON = JSON.parse( this.storage.get(String(i)) );
       searchArray.push(searchJSON);
     }

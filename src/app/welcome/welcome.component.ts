@@ -9,9 +9,9 @@ export class WelcomeComponent implements OnInit {
 
   constructor() { }
 
-  slide(bd){
-    bd.slideUp();
-  }
+  // slide(bd){
+  //   bd.slideUp();
+  // }
 
   ngOnInit() {
   }

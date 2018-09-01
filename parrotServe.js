@@ -3,12 +3,12 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
-var expressWs = require('express-ws')(app);
+let  expressWs = require('express-ws')(app);
 
 //---------  App Setup and Globals ----------//
 app.use(bodyParser.json());
 app.use(cors());
-var client;
+let  client;
 
 //------------  Server Routes ------------//
 //route to accept a websocket request
@@ -16,7 +16,7 @@ app.ws('/search/', function(ws, req) {
   client = ws;
   //when search terms are recieved from the client
   ws.on('message', function(msg) {
-    var searchJSON = JSON.parse(msg);
+    let  searchJSON = JSON.parse(msg);
     // call the parrot crawl function
     pyParrotCrawl(searchJSON);
   });
@@ -36,15 +36,15 @@ app.listen('15943', () => {
 //Returns web crawler results as string
 function pyParrotCrawl(searchTerms) {
   //parse search terms out into individual variables
-  var startURL = searchTerms.url;
-  var nDepth = searchTerms.n;
-  var phrase = searchTerms.searchPhrase;
-  var type = searchTerms.searchType;
-  var width = 0;
-  var searchID = searchTerms.searchID;
+  let  startURL = searchTerms.url;
+  let  nDepth = searchTerms.n;
+  let  phrase = searchTerms.searchPhrase;
+  let  type = searchTerms.searchType;
+  let  width = 0;
+  let  searchID = searchTerms.searchID;
 
   //choose the right script depending which search type is specified
-  var scriptToRun;
+  let  scriptToRun;
   switch(type) {
     case "BFS":
       scriptToRun = "bfs.py";
@@ -76,8 +76,8 @@ function pyParrotCrawl(searchTerms) {
 
 
   //set up pyshell for a run
-  var PythonShell = require('python-shell');
-  var options = {
+  let  PythonShell = require('python-shell');
+  let  options = {
       mode: 'json',
       //we will need to change this depending on where python interpreter is installed
       pythonPath: 'python3',
