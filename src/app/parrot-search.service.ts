@@ -11,15 +11,15 @@ import { ParrotReturn } from './parrot-return';
 @Injectable({ providedIn: 'root' })
 export class ParrotSearchService {
 
-  //*vvvvvvvvvvvv*THIS MUST BE CHANGED FOR DEV VERSION*vvvvvvvvvvvv*//
+  //*vvvvvvvvvvvv*THIS MUST BE CHANGED FOR PROD VERSION*vvvvvvvvvvvv*//
 
-  // change to "ws://localhost:15943/search/"
+  // change to "ws://parrotcrawl.webfactional.com/api/search/"
 
   // node route URL to accept search POST request
-  private nodeURL = "ws://parrotcrawl.webfactional.com/api/search/";
+  private nodeURL = "ws://localhost:15943/search/";
   private ws = new WebSocket(this.nodeURL);
 
-  //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR DEV VERSION*^^^^^^^^^^^^*//
+  //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR PROD VERSION*^^^^^^^^^^^^*//
 
   private dataSource = new BehaviorSubject("null");
   data = this.dataSource.asObservable();
