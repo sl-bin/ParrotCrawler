@@ -16,7 +16,7 @@ export class ParrotSearchService {
   // change to "ws://localhost:15943/search/
 
   // node route URL to accept search POST request
-  private nodeURL = "ws://parrotcrawl.webfactional.com/api/search/"";
+  private nodeURL = "ws://parrotcrawl.webfactional.com/api/search/";
   private ws = new WebSocket(this.nodeURL);
 
   //*^^^^^^^^^^^^*THIS MUST BE CHANGED FOR DEV VERSION*^^^^^^^^^^^^*//
