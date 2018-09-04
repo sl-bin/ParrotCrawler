@@ -19,6 +19,30 @@ p {
   }
 }
 
+.github {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+  z-index: 99;
+  @media only screen and (max-width: 490px) {
+    -webkit-transform: scale(.5);
+    transform: scale(.5);
+  }
+  @media only screen and (min-width: 491px) {
+    -webkit-transform: scale(.75);
+    transform: scale(.75);
+  }
+  @media only screen and (min-width: 1160px) {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  -webkit-transform-origin-x: 100%;
+  transform-origin-x: 100%;
+  -webkit-transform-origin-y: 0;
+  transform-origin-y: 0;
+}
+
 .viewWindow {
   text-align: justify;
   height: 86vh;
