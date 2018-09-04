@@ -39,11 +39,15 @@ export class ResultsComponent implements OnInit {
     // build the tree
     this.buildPage(this.data);
 
+    // set the zoom based on screen width
+    this.setZoom();
+
     // call the jquery code so that its is available
     this.hover();
     this.grabDrag();
   }
 
+  // build the graph of links
   buildPage(data: any) {
     // local vars that store blank (non-dynamic) divs
     let gDiv = $( ".gridNode" );
@@ -310,7 +314,18 @@ export class ResultsComponent implements OnInit {
     $( ".container" ).css( "hieght", String(225 * data.dimensions.height) + "px");
   }
 
+  // zoom out for smaller screens
+  setZoom(){
+    if($(window).width() < 1000){
+      $(".gridDisplay").removeClass("noZoom").addClass("out3");
+      $(".viewWindow").scrollLeft(250);
 
+      $(".viewWindow").scrollTop(95);
+
+      $(".container").css("width", String(Math.floor((300 * this.data.dimensions.width) * 0.5)) + "px");
+      $(".container").css("height", String(Math.floor((225 * this.data.dimensions.height) * 0.5)) + "px");
+    }
+  }
 
   // handles hovering over text
   hover() {
@@ -347,8 +362,8 @@ export class ResultsComponent implements OnInit {
           curXPos = 0;
       $(".container").mousemove(function(vW){
         if(curDown === true){
-         $(".viewWindow").scrollTop($(".viewWindow").scrollTop() + ((curYPos - vW.pageY)/16));
-         $(".viewWindow").scrollLeft($(".viewWindow").scrollLeft() + ((curXPos - vW.pageX)/16));
+          $(".viewWindow").scrollTop($(".viewWindow").scrollTop() + ((curYPos - vW.pageY)/16));
+          $(".viewWindow").scrollLeft($(".viewWindow").scrollLeft() + ((curXPos - vW.pageX)/16));
         }
       });
 
@@ -425,7 +440,7 @@ export class ResultsComponent implements OnInit {
   // handles jump left button
   jumpLeft() {
     // var leftScroll = $(".viewWindow").scrollLeft(0);
-    $(".viewWindow").animate({scrollLeft: 0}, 800);
+    $(".viewWindow").animate({scrollLeft: 300}, 800);
   }
 
   // handles jump right button
@@ -436,7 +451,7 @@ export class ResultsComponent implements OnInit {
 
   // handles jump right button
   jumpRight() {
-    let right = $(".container").width();
+    let right = ($(".container").width());
     $(".viewWindow").animate({scrollLeft: right}, 800);
   }
 

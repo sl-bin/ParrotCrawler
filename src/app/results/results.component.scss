@@ -80,14 +80,29 @@ nav {
   position: fixed;
   border: solid 2px $white;
   border-radius: 120px;
+  
   @media only screen and (max-width: 750px) {
+    -webkit-transform: scale(.5);
     transform: scale(.5);
-    top: 50vh;
-    right: 2vw;
+    // top: 70vh;
+    right: -6vw;
   }
   @media only screen and (min-width: 751px) {
-    top: 75vh;
+    // top: 75vh;
     right: 2vw;
+  }
+
+  @media only screen and (max-height: 325px) {
+    top: 55vh;
+  }
+  @media only screen and (min-height: 326px) {
+    top: 60vh;
+  }
+  @media only screen and (min-height: 400px) {
+    top: 65vh;
+  }
+  @media only screen and (min-height: 600px) {
+    top: 75vh;
   }
 }
 
@@ -192,23 +207,37 @@ no matter how you do it*/
   position: fixed;
   margin: 0;
   border: 6px solid $navBorder;
-  min-width: 300px;
-  min-height: 100px;
-  max-height: 125px;
   background-color: $navBackground;
   padding: 4px;
   text-align: center;
 
-  @media only screen and (max-width: 600px) {
+  @media only screen and (max-width: 450px) {
     max-width: 260px;
+    min-width: 200px;
+    min-height: 75px;
+    max-height: 100px;
     font-size: 0.75em;
+  }
+  @media only screen and (min-width: 600px) {
+    max-width: 260px;
+    min-width: 260px;
+    min-height: 100px;
+    max-height: 125px;
+    font-size: 0.75em;
+
   }
   @media only screen and (min-width: 601px) {
     max-width: 350px;
+    min-width: 300px;
+    min-height: 100px;
+    max-height: 125px;
     font-size: 0.9em;
   }
   @media only screen and (min-width: 751px) {
     max-width: 400px;
+    min-width: 300px;
+    min-height: 100px;
+    max-height: 125px;
     font-size: 1em;
   }
 }
