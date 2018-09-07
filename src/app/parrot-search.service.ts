@@ -71,10 +71,10 @@ export class ParrotSearchService {
       this.router.navigate(['/waiting']);
     }
 
-    this.ws.addEventListener('close', (event:any) => {
-      console.log("WebSocket is not open!")
-      this.router.navigate(['/error']);
-    });
+    // this.ws.addEventListener('close', (event:any) => {
+    //   console.log("WebSocket is not open!")
+    //   this.router.navigate(['/error']);
+    // });
 
     //recieve the search terms
     if(this.ws.readyState === this.ws.CLOSED || this.ws.readyState === this.ws.CLOSING){
